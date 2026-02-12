@@ -1,0 +1,82 @@
+name: Build and Push Images
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: backend
+            context: backend
+            dockerfile: backend/Dockerfile
+            nextauth_secret: ""
+          - name: admin
+            context: admin
+            dockerfile: admin/Dockerfile
+            nextauth_secret: NEXTAUTH_URL_ADMIN
+          - name: frontend
+            context: frontend
+            dockerfile: frontend/Dockerfile
+            nextauth_secret: ""
+          - name: mentor
+            context: mentor
+            dockerfile: mentor/Dockerfile
+            nextauth_secret: NEXTAUTH_URL_MENTOR
+          - name: homepage
+            context: homepage
+            dockerfile: homepage/Dockerfile
+            nextauth_secret: ""
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}-${{ matrix.name }}
+          tags: |
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NEXT_BASE_API_URL=${{ secrets.NEXT_BASE_API_URL }}
+            NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}
+            NEXTAUTH_URL=${{ matrix.nextauth_secret != '' && secrets[matrix.nextauth_secret] || '' }}
+            NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
+            NEXT_GOOGLE_KEY=${{ secrets.NEXT_GOOGLE_KEY }}
+            NEXT_GOOGLE_AUTH_CLIENT_ID=${{ secrets.NEXT_GOOGLE_AUTH_CLIENT_ID }}
+            NEXT_GOOGLE_AUTH_CLIENT_SECRET=${{ secrets.NEXT_GOOGLE_AUTH_CLIENT_SECRET }}
