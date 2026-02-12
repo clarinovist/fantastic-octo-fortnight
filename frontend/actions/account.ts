@@ -4,7 +4,11 @@ import {
   updateMe,
   updateMeLocation,
 } from "@/services/account"
-import type { BaseResponse, MeResponse } from "@/utils/types"
+import {
+  deleteTutorDocument,
+  uploadTutorDocument,
+} from "@/services/document"
+import type { BaseResponse, MeResponse, TutorDocumentResponse } from "@/utils/types"
 import { updateTag } from "next/cache"
 
 export async function updateAccountAction(data: FormData): Promise<BaseResponse<MeResponse>> {
@@ -36,6 +40,20 @@ export async function updateAccountLocationAction(
   const response = await updateMeLocation({ latitude, longitude })
 
   updateTag("me")
+
+  return response
+}
+export async function uploadTutorDocumentAction(
+  data: FormData
+): Promise<BaseResponse<TutorDocumentResponse>> {
+  const document = data.get("document") as string
+  const response = await uploadTutorDocument({ document })
+
+  return response
+}
+
+export async function deleteTutorDocumentAction(id: string): Promise<BaseResponse<null>> {
+  const response = await deleteTutorDocument(id)
 
   return response
 }
