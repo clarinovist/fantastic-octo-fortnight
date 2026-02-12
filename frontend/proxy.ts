@@ -48,7 +48,11 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+<<<<<<< HEAD
   if (isHomePage && emailVerificationToken) {
+=======
+  if (url.pathname === "/login" && emailVerificationToken) {
+>>>>>>> 1a19ced (chore: update service folders from local)
     const resp = await verifyEmailAction(emailVerificationToken);
     if (resp.data?.accessToken) {
       if (targetPath?.value) {

@@ -569,7 +569,11 @@ function SidebarMenuAction({
         "peer-data-[size=lg]/menu-button:top-2.5",
         "group-data-[collapsible=icon]:hidden",
         showOnHover &&
+<<<<<<< HEAD
           "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+=======
+        "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
+>>>>>>> 1a19ced (chore: update service folders from local)
         className
       )}
       {...props}
@@ -608,7 +612,11 @@ function SidebarMenuSkeleton({
 }) {
   // Random width between 50 to 90%.
   const width = React.useMemo(() => {
+<<<<<<< HEAD
     return `${Math.floor(Math.random() * 40) + 50}%`;
+=======
+    return "70%";
+>>>>>>> 1a19ced (chore: update service folders from local)
   }, []);
 
   return (

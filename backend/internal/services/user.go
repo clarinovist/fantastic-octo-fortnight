@@ -681,3 +681,48 @@ func (s *UserService) prepareRoleSpecificRecord(user *model.User, roleName strin
 		return nil, nil
 	}
 }
+<<<<<<< HEAD
+=======
+
+// ChangePassword changes the user password
+func (s *UserService) ChangePassword(ctx context.Context, userID uuid.UUID, req dto.ChangePasswordRequest) error {
+	user, err := s.user.GetByID(ctx, userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			logger.WarnCtx(ctx).Str("userID", userID.String()).Msg("user not found during password change")
+			return Error(shared.MakeError(ErrBadRequest, "user not found"))
+		}
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to get user during password change")
+		return Error(shared.MakeError(ErrInternalServer))
+	}
+
+	// Verify old password
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
+		logger.WarnCtx(ctx).Str("userID", userID.String()).Msg("invalid old password during password change")
+		return Error(shared.MakeError(ErrBadRequest, "invalid old password"))
+	}
+
+	// Hash new password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to hash new password")
+		return Error(shared.MakeError(ErrInternalServer))
+	}
+
+	user.Password = string(hashedPassword)
+	user.UpdatedAt = time.Now()
+
+	if err := s.user.Update(ctx, user); err != nil {
+		logger.ErrorCtx(ctx).Err(err).
+			Str("userID", userID.String()).
+			Msg("failed to update user password")
+		return Error(shared.MakeError(ErrInternalServer))
+	}
+
+	logger.InfoCtx(ctx).
+		Str("userID", userID.String()).
+		Msg("password changed successfully")
+
+	return nil
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

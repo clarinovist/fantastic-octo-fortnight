@@ -11,7 +11,10 @@ import {
 import { Icon } from "@/components/ui/icon"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/utils/helpers/formatter"
+<<<<<<< HEAD
 import { IS_PREMIUM_ENABLED } from "@/utils/constants"
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 import type { MeResponse } from "@/utils/types"
 import { Lock, Pencil, User } from "lucide-react"
 import Image from "next/image"
@@ -181,7 +184,11 @@ export function AccountInfoView({ detail, onEdit }: AccountInfoViewProps) {
 
         {/* Actions */}
         <div className="mt-8 space-y-2 flex flex-col items-center">
+<<<<<<< HEAD
           {IS_PREMIUM_ENABLED && detail?.role === "student" && (
+=======
+          {detail?.role === "student" && (
+>>>>>>> 1a19ced (chore: update service folders from local)
             <Dialog>
               <DialogTrigger asChild>
                 <button className="text-blue-600 font-medium cursor-pointer">

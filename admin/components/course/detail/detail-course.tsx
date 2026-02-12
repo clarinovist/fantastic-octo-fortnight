@@ -139,9 +139,13 @@ export function DetailCourse({ course }: DetailCourseProps) {
   const router = useRouter();
 
   // State for selected schedule
+<<<<<<< HEAD
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
+=======
+  // State for selected schedule
+>>>>>>> 1a19ced (chore: update service folders from local)
   const [selectedTab, setSelectedTab] = useState<"online" | "offline">(
     "online"
   );
@@ -159,6 +163,7 @@ export function DetailCourse({ course }: DetailCourseProps) {
 
   // Handle schedule changes from DetailCourseSchedule
   const handleScheduleChange = (
+<<<<<<< HEAD
     date: string | null,
     time: string | null,
     timezone: string | null,
@@ -167,6 +172,13 @@ export function DetailCourse({ course }: DetailCourseProps) {
     setSelectedDate(date);
     setSelectedTime(time);
     setSelectedTimezone(timezone);
+=======
+    _date: string | null,
+    _time: string | null,
+    _timezone: string | null,
+    tab?: "online" | "offline"
+  ) => {
+>>>>>>> 1a19ced (chore: update service folders from local)
     if (tab) {
       setSelectedTab(tab);
     }
@@ -432,6 +444,7 @@ export function DetailCourse({ course }: DetailCourseProps) {
                 {(["all", "offline"] as string[]).includes(
                   course.tutor.classType
                 ) && (
+<<<<<<< HEAD
                   <div className="max-w-1/2 flex flex-col gap-2">
                     <span className="text-sm font-extrabold">OFFLINE</span>
                     <div className="flex items-center gap-2">
@@ -486,6 +499,61 @@ export function DetailCourse({ course }: DetailCourseProps) {
                     )}
                   </div>
                 )}
+=======
+                    <div className="max-w-1/2 flex flex-col gap-2">
+                      <span className="text-sm font-extrabold">OFFLINE</span>
+                      <div className="flex items-center gap-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M2.90768 2.05043C3.5763 1.40036 4.37008 0.884705 5.2437 0.532891C6.11732 0.181077 7.05367 0 7.99928 0C8.94489 0 9.88124 0.181077 10.7549 0.532891C11.6285 0.884705 12.4223 1.40036 13.0909 2.05043C14.4414 3.36413 15.2 5.14543 15.2 7.00273C15.2 8.86003 14.4414 10.6413 13.0909 11.955L11.9306 13.069L9.42595 15.4389C9.06615 15.7774 8.59139 15.9763 8.09119 15.998C7.59098 16.0197 7.09987 15.8628 6.71043 15.5569L6.57363 15.4389L4.47219 13.454L2.90871 11.955C1.5585 10.6414 0.800049 8.86029 0.800049 7.00323C0.800049 5.14617 1.5585 3.36509 2.90871 2.05142M7.99928 4.50033C7.31727 4.50033 6.6632 4.76371 6.18094 5.23253C5.69869 5.70136 5.42776 6.33722 5.42776 7.00023C5.42776 7.66325 5.69869 8.29911 6.18094 8.76793C6.6632 9.23675 7.31727 9.50013 7.99928 9.50013C8.68128 9.50013 9.33536 9.23675 9.81761 8.76793C10.2999 8.29911 10.5708 7.66325 10.5708 7.00023C10.5708 6.33722 10.2999 5.70136 9.81761 5.23253C9.33536 4.76371 8.68128 4.50033 7.99928 4.50033Z"
+                            fill="#7000FE"
+                          />
+                        </svg>
+                        <span className="text-sm">
+                          {course.tutor.location.fullName}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                {(["all", "online"] as string[]).includes(
+                  course.tutor.classType
+                ) && (
+                    <div
+                      className={`max-w-1/2 lg:max-w-fit flex flex-col gap-2 ${(["all"] as string[]).includes(course.tutor.classType)
+                        ? "border-l-2 border-muted-foreground pl-4"
+                        : ""
+                        }`}
+                    >
+                      <span className="text-sm font-extrabold">ONLINE</span>
+                      {course.tutor.onlineChannel.map(
+                        (
+                          platform: { channel: string; imageURL?: string },
+                          idx: number
+                        ) => (
+                          <div key={idx} className="flex gap-2">
+                            {platform.imageURL && (
+                              <Image
+                                src={`${platform.imageURL}`}
+                                alt={platform.channel}
+                                width={16}
+                                height={16}
+                              />
+                            )}
+                            <span className="text-sm text-[#6B6B6B]">
+                              {platform.channel}
+                            </span>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+>>>>>>> 1a19ced (chore: update service folders from local)
               </div>
               <Button className="bg-[#7000FE] hover:bg-[#7000FE]/90 text-white w-full md:w-fit">
                 {course.tutor.level}

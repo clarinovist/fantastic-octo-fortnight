@@ -27,6 +27,7 @@ export default function RatingDialog({
 
   // Initialize form with existing review data or reset
   useEffect(() => {
+<<<<<<< HEAD
     if (isOpen && review) {
       setRating(review.rate || 0)
       setReviewText(review.review || "")
@@ -37,6 +38,20 @@ export default function RatingDialog({
       setReviewText("")
       setWillLearnAgain("")
     }
+=======
+    requestAnimationFrame(() => {
+      if (isOpen && review) {
+        setRating(review.rate || 0)
+        setReviewText(review.review || "")
+        setWillLearnAgain(review.recommendByStudent || "")
+      } else if (!isOpen) {
+        setIsEditMode(false)
+        setRating(0)
+        setReviewText("")
+        setWillLearnAgain("")
+      }
+    })
+>>>>>>> 1a19ced (chore: update service folders from local)
   }, [isOpen, review])
 
   const handleSubmit = () => {
@@ -180,11 +195,18 @@ export default function RatingDialog({
                   <button
                     key={option.value}
                     onClick={() => setWillLearnAgain(option.value)}
+<<<<<<< HEAD
                     className={`py-2 px-4 rounded-full font-bold transition-all border-2 ${
                       willLearnAgain === option.value
                         ? "bg-main text-white border-main"
                         : "bg-white text-main/50 border-main/50 hover:bg-main/50 hover:text-white disabled:hover:bg-white disabled:hover:text-main/50"
                     } disabled:cursor-not-allowed disabled:opacity-70`}
+=======
+                    className={`py-2 px-4 rounded-full font-bold transition-all border-2 ${willLearnAgain === option.value
+                        ? "bg-main text-white border-main"
+                        : "bg-white text-main/50 border-main/50 hover:bg-main/50 hover:text-white disabled:hover:bg-white disabled:hover:text-main/50"
+                      } disabled:cursor-not-allowed disabled:opacity-70`}
+>>>>>>> 1a19ced (chore: update service folders from local)
                   >
                     {option.label}
                   </button>

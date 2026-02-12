@@ -4,7 +4,10 @@ export * from './booking';
 export * from './course';
 export * from './file';
 export * from './location';
+<<<<<<< HEAD
 export * from './notification';
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 
 export type BaseResponse<T> = {
   data: T;

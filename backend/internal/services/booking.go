@@ -15,11 +15,20 @@ import (
 	"github.com/lesprivate/backend/internal/repositories"
 	"github.com/lesprivate/backend/shared"
 	"github.com/lesprivate/backend/shared/logger"
+<<<<<<< HEAD
+=======
+	"github.com/shopspring/decimal"
+>>>>>>> 1a19ced (chore: update service folders from local)
 )
 
 type BookingService struct {
 	config              *config.Config
 	booking             *repositories.BookingRepository
+<<<<<<< HEAD
+=======
+	student             *repositories.StudentRepository
+	course              *repositories.CourseRepository
+>>>>>>> 1a19ced (chore: update service folders from local)
 	notification        *repositories.NotificationRepository
 	review              *repositories.ReviewRepository
 	notificationService *NotificationService
@@ -29,6 +38,11 @@ type BookingService struct {
 func NewBookingService(
 	config *config.Config,
 	booking *repositories.BookingRepository,
+<<<<<<< HEAD
+=======
+	student *repositories.StudentRepository,
+	course *repositories.CourseRepository,
+>>>>>>> 1a19ced (chore: update service folders from local)
 	notification *repositories.NotificationRepository,
 	review *repositories.ReviewRepository,
 	notificationService *NotificationService,
@@ -37,6 +51,11 @@ func NewBookingService(
 	return &BookingService{
 		config:              config,
 		booking:             booking,
+<<<<<<< HEAD
+=======
+		student:             student,
+		course:              course,
+>>>>>>> 1a19ced (chore: update service folders from local)
 		notification:        notification,
 		review:              review,
 		notificationService: notificationService,
@@ -449,3 +468,144 @@ func (s *BookingService) ReminderTutor(ctx context.Context, id uuid.UUID) error 
 
 	return nil
 }
+<<<<<<< HEAD
+=======
+
+func (s *BookingService) CreateBookingForAdmin(ctx context.Context, req dto.AdminCreateBookingRequest) (*model.Booking, error) {
+	// Validate student exists
+	student, err := s.student.GetByID(ctx, req.StudentID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("student_id", req.StudentID.String()).Msg("[CreateBookingForAdmin] Error getting student")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+	if student == nil {
+		logger.InfoCtx(ctx).Str("student_id", req.StudentID.String()).Msg("[CreateBookingForAdmin] Student not found")
+		return nil, shared.MakeError(ErrEntityNotFound, "student")
+	}
+
+	// Validate course exists
+	course, err := s.course.GetByID(ctx, req.CourseID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("course_id", req.CourseID.String()).Msg("[CreateBookingForAdmin] Error getting course")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+	if course == nil {
+		logger.InfoCtx(ctx).Str("course_id", req.CourseID.String()).Msg("[CreateBookingForAdmin] Course not found")
+		return nil, shared.MakeError(ErrEntityNotFound, "course")
+	}
+
+	// Parse date
+	bookingDate, _ := time.Parse("2006-01-02", req.BookingDate)
+
+	// Create booking
+	booking := &model.Booking{
+		ID:           uuid.New(),
+		StudentID:    req.StudentID,
+		TutorID:      req.TutorID,
+		CourseID:     req.CourseID,
+		BookingDate:  bookingDate,
+		BookingTime:  req.BookingTime,
+		Timezone:     req.Timezone,
+		ClassType:    model.ClassType(req.ClassType),
+		Status:       model.BookingStatus(req.Status),
+		NotesTutor:   null.StringFrom(req.NotesTutor),
+		NotesStudent: null.StringFrom(req.NotesStudent),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+		CreatedBy:    uuid.MustParse(model.SystemID), // Admin creates on behalf
+		UpdatedBy:    uuid.MustParse(model.SystemID),
+	}
+
+	booking.GenerateCode()
+
+	// Parse coordinates if provided
+	if req.Latitude != "" && req.Longitude != "" {
+		lat, _ := decimal.NewFromString(req.Latitude)
+		lng, _ := decimal.NewFromString(req.Longitude)
+		booking.Latitude = lat
+		booking.Longitude = lng
+	}
+
+	// Set expiration for pending bookings
+	if booking.Status == model.BookingStatusPending {
+		booking.ExpiredAt = time.Now().Add(s.config.Booking.ExpiredDuration)
+	}
+
+	// Create in repository
+	err = s.booking.Create(ctx, booking)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("booking_id", booking.ID.String()).Msg("[CreateBookingForAdmin] Error creating booking")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+
+	// Fetch created booking with relations
+	createdBooking, err := s.booking.GetByID(ctx, booking.ID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("booking_id", booking.ID.String()).Msg("[CreateBookingForAdmin] Error fetching created booking")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+
+	logger.InfoCtx(ctx).
+		Str("booking_id", booking.ID.String()).
+		Str("student_id", req.StudentID.String()).
+		Str("tutor_id", req.TutorID.String()).
+		Msg("[CreateBookingForAdmin] Booking created successfully by admin")
+
+	return createdBooking, nil
+}
+
+func (s *BookingService) UpdateBookingForAdmin(ctx context.Context, id uuid.UUID, req dto.AdminUpdateBookingRequest) (*model.Booking, error) {
+	// Get existing booking
+	booking, err := s.booking.GetByID(ctx, id)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("booking_id", id.String()).Msg("[UpdateBookingForAdmin] Error getting booking")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+	if booking == nil {
+		logger.InfoCtx(ctx).Str("booking_id", id.String()).Msg("[UpdateBookingForAdmin] Booking not found")
+		return nil, shared.MakeError(ErrEntityNotFound, "booking")
+	}
+
+	// Update fields if provided
+	if req.Status != nil {
+		booking.Status = model.BookingStatus(*req.Status)
+		// Clear expiration for non-pending bookings
+		if booking.Status != model.BookingStatusPending {
+			booking.ExpiredAt = time.Time{}
+		}
+	}
+	if req.BookingDate != nil {
+		bookingDate, _ := time.Parse("2006-01-02", *req.BookingDate)
+		booking.BookingDate = bookingDate
+	}
+	if req.BookingTime != nil {
+		booking.BookingTime = *req.BookingTime
+	}
+	if req.NotesTutor != nil {
+		booking.NotesTutor = null.StringFrom(*req.NotesTutor)
+	}
+	if req.NotesStudent != nil {
+		booking.NotesStudent = null.StringFrom(*req.NotesStudent)
+	}
+
+	booking.UpdatedAt = time.Now()
+	booking.UpdatedBy = uuid.MustParse(model.SystemID)
+
+	// Update in repository
+	err = s.booking.Update(ctx, booking)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("booking_id", id.String()).Msg("[UpdateBookingForAdmin] Error updating booking")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+
+	// Re-fetch with relations
+	updatedBooking, err := s.booking.GetByID(ctx, id)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Str("booking_id", id.String()).Msg("[UpdateBookingForAdmin] Error re-fetching booking")
+		return nil, shared.MakeError(ErrInternalServer)
+	}
+
+	logger.InfoCtx(ctx).Str("booking_id", id.String()).Msg("[UpdateBookingForAdmin] Booking updated successfully by admin")
+	return updatedBooking, nil
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

@@ -19,12 +19,22 @@ import (
 type WebhookXenditFunc func(ctx context.Context, request dto.WebhookXenditRequest) error
 
 type WebhookService struct {
+<<<<<<< HEAD
 	subscription *repositories.SubscriptionRepository
 	payment      *repositories.PaymentRepository
 	student      *repositories.StudentRepository
 	notification *NotificationService
 	xendit       map[string]WebhookXenditFunc
 	config       *config.Config
+=======
+	subscription  *repositories.SubscriptionRepository
+	payment       *repositories.PaymentRepository
+	student       *repositories.StudentRepository
+	notification  *NotificationService
+	mentorBalance *MentorBalanceService
+	xendit        map[string]WebhookXenditFunc
+	config        *config.Config
+>>>>>>> 1a19ced (chore: update service folders from local)
 }
 
 func NewWebhookService(
@@ -33,6 +43,7 @@ func NewWebhookService(
 	student *repositories.StudentRepository,
 	notification *NotificationService,
 	config *config.Config,
+<<<<<<< HEAD
 ) *WebhookService {
 	s := &WebhookService{
 		subscription: subscription,
@@ -41,6 +52,18 @@ func NewWebhookService(
 		notification: notification,
 		config:       config,
 		xendit:       make(map[string]WebhookXenditFunc),
+=======
+	mentorBalance *MentorBalanceService,
+) *WebhookService {
+	s := &WebhookService{
+		subscription:  subscription,
+		payment:       payment,
+		student:       student,
+		notification:  notification,
+		config:        config,
+		mentorBalance: mentorBalance,
+		xendit:        make(map[string]WebhookXenditFunc),
+>>>>>>> 1a19ced (chore: update service folders from local)
 	}
 
 	s.xendit[dto.WebhookXenditEventTypeRecurringCycleSucceeded] = s.handleWebhookXenditRecurringCycleSucceeded
@@ -176,6 +199,23 @@ func (s *WebhookService) handleWebhookXenditPaymentSessionCompleted(ctx context.
 		}
 	}()
 
+<<<<<<< HEAD
+=======
+	// Credit mentor balance if payment is for a booking
+	if payment.TutorID != uuid.Nil {
+		go func() {
+			if err := s.mentorBalance.CreditFromBooking(
+				context.Background(),
+				payment.TutorID,
+				payment.Amount,
+				payment.ID,
+			); err != nil {
+				logger.ErrorCtx(context.Background()).Err(err).Msg("[handleWebhookXenditPaymentSessionCompleted] failed to credit mentor balance")
+			}
+		}()
+	}
+
+>>>>>>> 1a19ced (chore: update service folders from local)
 	return nil
 }
 

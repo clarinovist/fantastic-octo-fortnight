@@ -14,6 +14,10 @@ import (
 	"github.com/lesprivate/backend/infras"
 	v1 "github.com/lesprivate/backend/internal/handlers/v1"
 	adminV1 "github.com/lesprivate/backend/internal/handlers/v1/admin"
+<<<<<<< HEAD
+=======
+	mentorV1 "github.com/lesprivate/backend/internal/handlers/v1/mentor"
+>>>>>>> 1a19ced (chore: update service folders from local)
 	"github.com/lesprivate/backend/internal/repositories"
 	"github.com/lesprivate/backend/internal/services"
 	"github.com/lesprivate/backend/shared/email"
@@ -24,6 +28,10 @@ import (
 
 var persistence = wire.NewSet(
 	infras.NewMySQL,
+<<<<<<< HEAD
+=======
+	infras.ProvideGORM,
+>>>>>>> 1a19ced (chore: update service folders from local)
 	infras.NewRedis,
 	infras.NewLinode,
 )
@@ -31,6 +39,10 @@ var persistence = wire.NewSet(
 var handlers = wire.NewSet(
 	v1.NewApi,
 	adminV1.NewApi,
+<<<<<<< HEAD
+=======
+	mentorV1.NewMentorHandler,
+>>>>>>> 1a19ced (chore: update service folders from local)
 )
 
 var external = wire.NewSet(
@@ -64,6 +76,12 @@ var svc = wire.NewSet(
 	email.NewEmailService,
 	google.NewGoogleOAuthService,
 	provideJWT,
+<<<<<<< HEAD
+=======
+	services.NewMentorStudentService,
+	services.NewMentorBalanceService,
+	services.NewMentorBalanceAdminService,
+>>>>>>> 1a19ced (chore: update service folders from local)
 	provideXendit,
 )
 
@@ -87,6 +105,13 @@ var repo = wire.NewSet(
 	repositories.NewSubscriptionPriceRepository,
 	repositories.NewPaymentRepository,
 	repositories.NewCourseViewRepository,
+<<<<<<< HEAD
+=======
+	repositories.NewMentorStudentRepository,
+	repositories.NewMentorBalanceRepository,
+	repositories.NewWithdrawalRepository,
+	repositories.NewMentorInviteCodeRepository,
+>>>>>>> 1a19ced (chore: update service folders from local)
 )
 
 // provideJWT creates a JWT service from config

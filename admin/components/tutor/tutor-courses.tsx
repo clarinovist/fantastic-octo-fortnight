@@ -1,6 +1,9 @@
 "use client";
 
+<<<<<<< HEAD
 import { Card } from "@/components/ui/card";
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 import type { TutorCourse } from "@/utils/types";
 import { Edit2, Trash2 } from "lucide-react";
 

@@ -119,7 +119,19 @@ export function CustomDropdown({
         }
       }
 
+<<<<<<< HEAD
       setPosition(newPosition)
+=======
+      requestAnimationFrame(() => {
+        setPosition(prev => {
+          const isSame =
+            prev.left === newPosition.left &&
+            prev.right === newPosition.right &&
+            prev.transform === newPosition.transform;
+          return isSame ? prev : newPosition;
+        })
+      })
+>>>>>>> 1a19ced (chore: update service folders from local)
     }
   }, [isOpen, align, minWidth, isMobile])
 

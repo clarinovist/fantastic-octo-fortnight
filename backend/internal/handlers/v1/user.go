@@ -7,6 +7,10 @@ import (
 	"github.com/lesprivate/backend/internal/model/dto"
 	"github.com/lesprivate/backend/shared/base"
 	"github.com/lesprivate/backend/shared/logger"
+<<<<<<< HEAD
+=======
+	"github.com/lesprivate/backend/transport/http/middleware"
+>>>>>>> 1a19ced (chore: update service folders from local)
 	"github.com/lesprivate/backend/transport/http/response"
 )
 
@@ -359,3 +363,55 @@ func (a *Api) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, result, base.SetMessage(result.Message))
 }
+<<<<<<< HEAD
+=======
+
+// ChangePassword
+// @Summary Change user password
+// @Description Change user password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body dto.ChangePasswordRequest true "Change password request"
+// @Success 200 {object} base.Base
+// @Failure 400 {object} base.Base
+// @Failure 500 {object} base.Base
+// @Router /v1/auth/password [put]
+func (a *Api) ChangePassword(w http.ResponseWriter, r *http.Request) {
+	var (
+		req dto.ChangePasswordRequest
+		ctx = r.Context()
+	)
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to decode JSON request")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"), base.SetError(err.Error()))
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage(err.Error()), base.SetError(err.Error()))
+		return
+	}
+
+	claims, ok := middleware.GetUserClaims(ctx)
+	if !ok {
+		logger.ErrorCtx(ctx).Msg("failed to get claims from context")
+		response.Failure(w, base.SetStatusCode(http.StatusUnauthorized), base.SetMessage("Unauthorized"))
+		return
+	}
+
+	if err := a.user.ChangePassword(ctx, claims.UserID, req); err != nil {
+		if serviceErr, ok := err.(base.Error); ok {
+			response.Failure(w, base.CustomError(serviceErr))
+			return
+		}
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to change password")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("Internal server error"))
+		return
+	}
+
+	response.Success(w, http.StatusOK, nil, base.SetMessage("Password changed successfully"))
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

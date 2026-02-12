@@ -19,15 +19,21 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
+<<<<<<< HEAD
 import { BookingCourseAcceptAction } from "./booking-course-accept-action"
 import { BookingCourseRejectAction } from "./booking-course-reject-action"
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 import { ReportDialog } from "./booking-report"
 
 type BookingCourseDetailProps = {
   isReportable?: boolean
   isShowStatus?: boolean
+<<<<<<< HEAD
   isAcceptable?: boolean
   isRejectable?: boolean
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
   booking?: BookingDetail | null
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -38,8 +44,11 @@ export function BookingCourseDetail({
   booking,
   isReportable,
   isShowStatus,
+<<<<<<< HEAD
   isAcceptable,
   isRejectable,
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
   open,
   onOpenChange,
   loading,
@@ -248,6 +257,7 @@ export function BookingCourseDetail({
                 )}
               </div>
             )}
+<<<<<<< HEAD
             {(isRejectable || isAcceptable) && (
               <div className="flex gap-4 mt-12 justify-end">
                 {isRejectable && booking?.id && (
@@ -258,6 +268,8 @@ export function BookingCourseDetail({
                 )}
               </div>
             )}
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
           </main>
         </div>
       </DialogContent>

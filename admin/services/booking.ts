@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+"use server"
+
+>>>>>>> 1a19ced (chore: update service folders from local)
 import type { BaseResponse, Booking, BookingDetail, BookingStatus } from "@/utils/types";
 import { fetcherBase } from "./base";
 
@@ -44,3 +49,35 @@ export async function tutorBookingReminder(bookingId: string): Promise<BaseRespo
     next: { tags: ['booking'] },
   });
 }
+<<<<<<< HEAD
+=======
+
+export type BookingPayload = {
+  studentId: string;
+  tutorId: string;
+  courseId: string;
+  bookingDate: string;
+  bookingTime: string;
+  classType: "online" | "offline";
+  timezone: string;
+  status: BookingStatus;
+  notesTutor?: string;
+  notesStudent?: string;
+}
+
+export async function createBooking(data: BookingPayload): Promise<BaseResponse<BookingDetail>> {
+  return fetcherBase<BookingDetail>('/v1/admin/bookings', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    next: { tags: ['bookings'] },
+  });
+}
+
+export async function updateBooking(id: string, data: Partial<BookingPayload>): Promise<BaseResponse<BookingDetail>> {
+  return fetcherBase<BookingDetail>(`/v1/admin/bookings/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+    next: { tags: ['booking', 'bookings'] },
+  });
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

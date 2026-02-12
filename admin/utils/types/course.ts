@@ -1,6 +1,19 @@
 export type CourseStatus = "Draft" | "Waiting for Approval" | "Accepted" | "Rejected";
+<<<<<<< HEAD
 export type ClassType = "online" | "offline" | "all";
 
+=======
+
+export type ClassType = "online" | "offline" | "all";
+
+export type CourseCategory = {
+  id: string;
+  name: string;
+  slug?: string;
+};
+
+
+>>>>>>> 1a19ced (chore: update service folders from local)
 export type Course = {
   id: string;
   updatedAt: string;

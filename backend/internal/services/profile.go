@@ -21,6 +21,11 @@ type ProfileService struct {
 	student       *repositories.StudentRepository
 	tutor         *repositories.TutorRepository
 	tutorDocument *repositories.TutorDocumentRepository
+<<<<<<< HEAD
+=======
+	booking       *repositories.BookingRepository
+	review        *repositories.ReviewRepository
+>>>>>>> 1a19ced (chore: update service folders from local)
 	courseService *CourseService
 	notification  *NotificationService
 }
@@ -30,6 +35,11 @@ func NewProfileService(
 	student *repositories.StudentRepository,
 	tutor *repositories.TutorRepository,
 	tutorDocument *repositories.TutorDocumentRepository,
+<<<<<<< HEAD
+=======
+	booking *repositories.BookingRepository,
+	review *repositories.ReviewRepository,
+>>>>>>> 1a19ced (chore: update service folders from local)
 	courseService *CourseService,
 	notification *NotificationService,
 ) ProfileService {
@@ -38,6 +48,11 @@ func NewProfileService(
 		student:       student,
 		tutor:         tutor,
 		tutorDocument: tutorDocument,
+<<<<<<< HEAD
+=======
+		booking:       booking,
+		review:        review,
+>>>>>>> 1a19ced (chore: update service folders from local)
 		courseService: courseService,
 		notification:  notification,
 	}
@@ -322,6 +337,10 @@ func (s *ProfileService) updateTutorProfile(ctx context.Context, req dto.UpdateP
 	}
 	tutor.DateOfBirth = null.TimeFrom(dateOfBirth)
 	tutor.PhoneNumber = null.StringFrom(req.PhoneNumber)
+<<<<<<< HEAD
+=======
+	tutor.Address = null.StringFrom(req.Address)
+>>>>>>> 1a19ced (chore: update service folders from local)
 	if req.SocialMediaLink != nil {
 		links := make([]model.SocialMediaLink, 0)
 		for socialMedia, link := range req.SocialMediaLink {
@@ -482,6 +501,34 @@ func (s *ProfileService) fillProfileForTutor(ctx context.Context, userID uuid.UU
 	}
 	profile.LevelPoint = tutor.LevelPoint
 	profile.Level = null.StringFrom(tutor.LevelByPoint())
+<<<<<<< HEAD
+=======
+	profile.Address = tutor.Address
+	profile.JoinedAt = tutor.CreatedAt
+
+	// Get total sessions
+	totalSessions, err := s.booking.Count(ctx, model.BookingFilter{
+		TutorID: userID,
+		Status:  model.BookingStatusAccepted,
+	})
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).
+			Str("user_id", userID.String()).
+			Msg("[ProfileService.UpdateProfile] Failed to get total sessions")
+		// Don't fail the whole request, just log error
+	}
+	profile.TotalSessions = totalSessions
+
+	// Get average rating
+	avgRating, err := s.review.GetTotalRatingTutor(ctx, tutor.ID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).
+			Str("user_id", userID.String()).
+			Msg("[ProfileService.UpdateProfile] Failed to get average rating")
+		// Don't fail
+	}
+	profile.AverageRating = avgRating
+>>>>>>> 1a19ced (chore: update service folders from local)
 
 	location, err := s.courseService.GetLocationByLatLong(ctx, profile.Latitude.Decimal, profile.Longitude.Decimal)
 	if err != nil {

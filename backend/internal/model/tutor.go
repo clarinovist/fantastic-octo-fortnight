@@ -98,6 +98,10 @@ type Tutor struct {
 	LevelOfEducation null.String         `json:"level_of_education"`
 	ResponseTime     null.Int            `json:"response_time"`
 	Status           null.String         `json:"status"`
+<<<<<<< HEAD
+=======
+	Address          null.String         `json:"address"`
+>>>>>>> 1a19ced (chore: update service folders from local)
 	CreatedAt        time.Time           `json:"created_at"`
 	UpdatedAt        time.Time           `json:"updated_at"`
 	DeletedAt        null.Time           `gorm:"index" json:"deleted_at"`

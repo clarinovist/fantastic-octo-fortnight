@@ -9,6 +9,21 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
+<<<<<<< HEAD
+=======
+# Build args
+ARG NEXT_BASE_API_URL
+ARG NEXT_GOOGLE_KEY
+ARG NEXT_GOOGLE_AUTH_CLIENT_ID
+ARG NEXT_GOOGLE_AUTH_CLIENT_SECRET
+
+# Set ENVs availability for build time
+ENV NEXT_BASE_API_URL=$NEXT_BASE_API_URL
+ENV NEXT_GOOGLE_KEY=$NEXT_GOOGLE_KEY
+ENV NEXT_GOOGLE_AUTH_CLIENT_ID=$NEXT_GOOGLE_AUTH_CLIENT_ID
+ENV NEXT_GOOGLE_AUTH_CLIENT_SECRET=$NEXT_GOOGLE_AUTH_CLIENT_SECRET
+
+>>>>>>> 1a19ced (chore: update service folders from local)
 # Build application
 RUN npm run build
 

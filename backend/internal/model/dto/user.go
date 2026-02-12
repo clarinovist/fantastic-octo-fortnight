@@ -264,3 +264,27 @@ func (r *ResetPasswordRequest) Validate() error {
 type ResetPasswordResponse struct {
 	Message string `json:"message"`
 }
+<<<<<<< HEAD
+=======
+
+type ChangePasswordRequest struct {
+	OldPassword string `json:"oldPassword" form:"oldPassword"`
+	NewPassword string `json:"newPassword" form:"newPassword"`
+}
+
+func (r *ChangePasswordRequest) Validate() error {
+	if strings.TrimSpace(r.OldPassword) == "" {
+		return errors.New("old password is required")
+	}
+	if strings.TrimSpace(r.NewPassword) == "" {
+		return errors.New("new password is required")
+	}
+	if len(r.NewPassword) < 8 {
+		return errors.New("new password must be at least 8 characters long")
+	}
+	if r.OldPassword == r.NewPassword {
+		return errors.New("new password cannot be the same as the old password")
+	}
+	return nil
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

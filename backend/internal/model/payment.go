@@ -32,6 +32,12 @@ type Payment struct {
 	DeletedBy     uuid.NullUUID
 
 	Student Student `gorm:"foreignKey:StudentID"`
+<<<<<<< HEAD
+=======
+
+	TutorID uuid.UUID `gorm:"type:char(36)"`
+	Tutor   Tutor     `gorm:"foreignKey:TutorID"`
+>>>>>>> 1a19ced (chore: update service folders from local)
 }
 
 func (p *Payment) Name() string {

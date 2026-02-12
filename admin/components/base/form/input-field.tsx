@@ -21,7 +21,12 @@ export function InputField({
   required,
   disabled,
   className,
+<<<<<<< HEAD
 }: InputFieldProps) {
+=======
+  type = "text",
+}: InputFieldProps & { type?: string }) {
+>>>>>>> 1a19ced (chore: update service folders from local)
   return (
     <FieldWrapper
       name={name}
@@ -33,7 +38,11 @@ export function InputField({
       {(field) => (
         <Input
           {...field}
+<<<<<<< HEAD
           type="text"
+=======
+          type={type}
+>>>>>>> 1a19ced (chore: update service folders from local)
           placeholder={placeholder}
           disabled={disabled}
         />

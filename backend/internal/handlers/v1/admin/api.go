@@ -13,6 +13,7 @@ import (
 var decoder = shared.Decoder
 
 type Api struct {
+<<<<<<< HEAD
 	course            *services.CourseService
 	student           *services.StudentService
 	tutor             *services.TutorService
@@ -26,6 +27,22 @@ type Api struct {
 	jwt               *jwt.JWT
 	userRepo          *repositories.UserRepository
 	roleRepo          *repositories.RoleRepository
+=======
+	course             *services.CourseService
+	student            *services.StudentService
+	tutor              *services.TutorService
+	tutorDocument      *services.TutorDocumentService
+	studentReview      *services.StudentReviewService
+	tutorReview        *services.TutorReviewService
+	notification       *services.NotificationService
+	booking            *services.BookingService
+	subscriptionPrice  *services.SubscriptionPriceService
+	dashboard          *services.DashboardService
+	mentorBalanceAdmin *services.MentorBalanceAdminService
+	jwt                *jwt.JWT
+	userRepo           *repositories.UserRepository
+	roleRepo           *repositories.RoleRepository
+>>>>>>> 1a19ced (chore: update service folders from local)
 }
 
 func NewApi(
@@ -39,11 +56,16 @@ func NewApi(
 	booking *services.BookingService,
 	subscriptionPrice *services.SubscriptionPriceService,
 	dashboard *services.DashboardService,
+<<<<<<< HEAD
+=======
+	mentorBalanceAdmin *services.MentorBalanceAdminService,
+>>>>>>> 1a19ced (chore: update service folders from local)
 	jwt *jwt.JWT,
 	userRepo *repositories.UserRepository,
 	roleRepo *repositories.RoleRepository,
 ) *Api {
 	return &Api{
+<<<<<<< HEAD
 		course:            course,
 		student:           student,
 		tutor:             tutor,
@@ -57,6 +79,22 @@ func NewApi(
 		jwt:               jwt,
 		userRepo:          userRepo,
 		roleRepo:          roleRepo,
+=======
+		course:             course,
+		student:            student,
+		tutor:              tutor,
+		tutorDocument:      tutorDocument,
+		studentReview:      studentReview,
+		tutorReview:        tutorReview,
+		notification:       notification,
+		booking:            booking,
+		subscriptionPrice:  subscriptionPrice,
+		dashboard:          dashboard,
+		mentorBalanceAdmin: mentorBalanceAdmin,
+		jwt:                jwt,
+		userRepo:           userRepo,
+		roleRepo:           roleRepo,
+>>>>>>> 1a19ced (chore: update service folders from local)
 	}
 }
 
@@ -116,7 +154,13 @@ func (a *Api) Router(r chi.Router) {
 
 	r.Route("/bookings", func(r chi.Router) {
 		r.Get("/", a.GetBookings)
+<<<<<<< HEAD
 		r.Get("/{id}", a.GetBookingDetail)
+=======
+		r.Post("/", a.CreateBooking)
+		r.Get("/{id}", a.GetBookingDetail)
+		r.Put("/{id}", a.UpdateBooking)
+>>>>>>> 1a19ced (chore: update service folders from local)
 		r.Post("/{id}/reminder-student", a.SendReminderToStudent)
 		r.Post("/{id}/reminder-tutor", a.SendReminderToTutor)
 	})
@@ -136,4 +180,13 @@ func (a *Api) Router(r chi.Router) {
 		r.Get("/statistic-tutor-view", a.GetDashboardStatisticTutorView)
 		r.Get("/statistic-category-view", a.GetDashboardStatisticCategoryView)
 	})
+<<<<<<< HEAD
+=======
+
+	r.Route("/withdrawals", func(r chi.Router) {
+		r.Get("/", a.ListWithdrawals)
+		r.Post("/{id}/approve", a.ApproveWithdrawal)
+		r.Post("/{id}/reject", a.RejectWithdrawal)
+	})
+>>>>>>> 1a19ced (chore: update service folders from local)
 }

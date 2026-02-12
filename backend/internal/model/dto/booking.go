@@ -1,6 +1,10 @@
 package dto
 
 import (
+<<<<<<< HEAD
+=======
+	"fmt"
+>>>>>>> 1a19ced (chore: update service folders from local)
 	"time"
 
 	"strings"
@@ -272,3 +276,76 @@ func NewAdminBookingDetail(booking *model.Booking) AdminBookingDetail {
 		UpdatedAt:     booking.UpdatedAt,
 	}
 }
+<<<<<<< HEAD
+=======
+
+type AdminCreateBookingRequest struct {
+	StudentID    uuid.UUID `json:"studentId" validate:"required"`
+	TutorID      uuid.UUID `json:"tutorId" validate:"required"`
+	CourseID     uuid.UUID `json:"courseId" validate:"required"`
+	BookingDate  string    `json:"bookingDate" validate:"required"` // Format: YYYY-MM-DD
+	BookingTime  string    `json:"bookingTime" validate:"required"` // Format: HH:MM
+	ClassType    string    `json:"classType" validate:"required"`
+	Timezone     string    `json:"timezone" validate:"required"`
+	Latitude     string    `json:"latitude"`
+	Longitude    string    `json:"longitude"`
+	NotesTutor   string    `json:"notesTutor"`
+	NotesStudent string    `json:"notesStudent"`
+	Status       string    `json:"status" validate:"required"`
+}
+
+func (r *AdminCreateBookingRequest) Validate() error {
+	// Parse and validate booking date
+	_, err := time.Parse("2006-01-02", r.BookingDate)
+	if err != nil {
+		return fmt.Errorf("invalid booking date format, expected YYYY-MM-DD: %w", err)
+	}
+
+	// Parse and validate booking time
+	_, err = time.Parse("15:04", r.BookingTime)
+	if err != nil {
+		return fmt.Errorf("invalid booking time format, expected HH:MM: %w", err)
+	}
+
+	// Validate latitude/longitude if provided
+	if r.Latitude != "" {
+		if _, err := decimal.NewFromString(r.Latitude); err != nil {
+			return fmt.Errorf("invalid latitude format: %w", err)
+		}
+	}
+	if r.Longitude != "" {
+		if _, err := decimal.NewFromString(r.Longitude); err != nil {
+			return fmt.Errorf("invalid longitude format: %w", err)
+		}
+	}
+
+	return nil
+}
+
+type AdminUpdateBookingRequest struct {
+	ID           uuid.UUID `json:"-"` // Set from path parameter
+	Status       *string   `json:"status,omitempty"`
+	BookingDate  *string   `json:"bookingDate,omitempty"` // Format: YYYY-MM-DD
+	BookingTime  *string   `json:"bookingTime,omitempty"` // Format: HH:MM
+	NotesTutor   *string   `json:"notesTutor,omitempty"`
+	NotesStudent *string   `json:"notesStudent,omitempty"`
+}
+
+func (r *AdminUpdateBookingRequest) Validate() error {
+	if r.BookingDate != nil {
+		_, err := time.Parse("2006-01-02", *r.BookingDate)
+		if err != nil {
+			return fmt.Errorf("invalid booking date format, expected YYYY-MM-DD: %w", err)
+		}
+	}
+
+	if r.BookingTime != nil {
+		_, err := time.Parse("15:04", *r.BookingTime)
+		if err != nil {
+			return fmt.Errorf("invalid booking time format, expected HH:MM: %w", err)
+		}
+	}
+
+	return nil
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

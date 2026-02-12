@@ -115,7 +115,10 @@ export function TutorDetails({ tutor, documents, courses }: TutorDetailsProps) {
       } else {
         result = await deleteStudentReviewAction(deletingReviewId);
       }
+<<<<<<< HEAD
       console.log(result);
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 
       if (result.success) {
         toast.success("Review deleted successfully");
@@ -224,11 +227,18 @@ export function TutorDetails({ tutor, documents, courses }: TutorDetailsProps) {
                 status:
               </p>
               <span
+<<<<<<< HEAD
                 className={`inline-block text-xs px-2 py-1 rounded-full font-medium capitalize ${
                   tutor.status === "active"
                     ? "bg-green-100 text-green-800"
                     : "bg-red-100 text-red-800"
                 }`}
+=======
+                className={`inline-block text-xs px-2 py-1 rounded-full font-medium capitalize ${tutor.status === "active"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                  }`}
+>>>>>>> 1a19ced (chore: update service folders from local)
               >
                 {tutor.status}
               </span>

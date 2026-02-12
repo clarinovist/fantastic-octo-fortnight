@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+"use server"
+
+>>>>>>> 1a19ced (chore: update service folders from local)
 import type { BaseResponse, Student, StudentDetail } from "@/utils/types";
 import { fetcherBase } from "./base";
 

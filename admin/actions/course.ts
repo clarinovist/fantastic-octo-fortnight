@@ -39,8 +39,11 @@ export async function approveCourseAction(id: string, reviewNotes: string) {
         error: result.message || result.error || "Failed to approve course"
       }
     }
+<<<<<<< HEAD
 
     console.log("Course approved successfully:", result)
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
     updateTag("courses")
     updateTag("course")
     return { success: true }
@@ -64,8 +67,11 @@ export async function rejectCourseAction(id: string, reviewNotes: string) {
         error: result.message || result.error || "Failed to reject course"
       }
     }
+<<<<<<< HEAD
 
     console.log("Course rejected successfully:", result)
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
     updateTag("courses")
     updateTag("course")
     return { success: true }
@@ -89,8 +95,11 @@ export async function createCourseAction(payload: CreateCoursePayload) {
         error: result.message || result.error || "Failed to create course"
       }
     }
+<<<<<<< HEAD
 
     console.log("Course created successfully:", result)
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
     updateTag("courses")
     updateTag("course")
     return { success: true, data: result.data }
@@ -114,8 +123,11 @@ export async function deleteCourseAction(id: string) {
         error: result.message || result.error || "Failed to delete course"
       }
     }
+<<<<<<< HEAD
 
     console.log("Course deleted successfully:", result)
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
     updateTag("courses")
     updateTag("course")
     return { success: true }

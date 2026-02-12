@@ -18,6 +18,10 @@ type UpdateProfileRequest struct {
 	Gender          string            `json:"gender"`
 	DateOfBirth     string            `json:"dateOfBirth"`
 	PhoneNumber     string            `json:"phoneNumber"`
+<<<<<<< HEAD
+=======
+	Address         string            `json:"address"`
+>>>>>>> 1a19ced (chore: update service folders from local)
 	SocialMediaLink map[string]string `json:"socialMediaLink"`
 }
 
@@ -72,4 +76,11 @@ type ProfileResponse struct {
 	FinishUpdateProfile bool                `json:"finish_update_profile"`
 	Location            Location            `json:"location"`
 	IsPremium           bool                `json:"isPremium"`
+<<<<<<< HEAD
+=======
+	Address             null.String         `json:"address"`
+	TotalSessions       int64               `json:"total_sessions"`
+	AverageRating       float64             `json:"average_rating"`
+	JoinedAt            time.Time           `json:"joined_at"`
+>>>>>>> 1a19ced (chore: update service folders from local)
 }

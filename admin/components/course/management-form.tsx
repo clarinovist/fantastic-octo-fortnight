@@ -2,6 +2,7 @@
 
 import { createCourseAction, updateCourseAction } from "@/actions/course";
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CurrencyIdrInput } from "@/components/ui/currency-idr-input";
@@ -25,12 +26,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+=======
+import { Form } from "@/components/ui/form";
+>>>>>>> 1a19ced (chore: update service folders from local)
 import type { CreateCoursePayload } from "@/services/course";
 import type {
   ClassType,
   CourseDetail,
   CoursePayload,
   CourseSchedule,
+<<<<<<< HEAD
   Tutor,
 } from "@/utils/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -174,6 +179,21 @@ const SearchIcon = ({ className }: { className?: string }) => (
     <path fillRule="evenodd" clipRule="evenodd" fill="#7000FE" />
   </svg>
 );
+=======
+} from "@/utils/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+
+import { formSchema, FormData, DAYS_OF_WEEK } from "./management/form-schema";
+import { useSchedule } from "./management/use-schedule";
+import { BasicInfoSection } from "./management/sections/basic-info";
+import { AboutSection } from "./management/sections/about";
+import { PricingSection } from "./management/sections/pricing";
+import { ScheduleSection } from "./management/sections/schedule";
+>>>>>>> 1a19ced (chore: update service folders from local)
 
 type ManagementFormProps = {
   detail?: CourseDetail;
@@ -207,10 +227,17 @@ const transformDetailToFormData = (detail: CourseDetail): Partial<FormData> => {
       detail.tutor.classType === "all"
         ? ["Online", "Offline"]
         : detail.tutor.classType === "online"
+<<<<<<< HEAD
         ? ["Online"]
         : detail.tutor.classType === "offline"
         ? ["Offline"]
         : [],
+=======
+          ? ["Online"]
+          : detail.tutor.classType === "offline"
+            ? ["Offline"]
+            : [],
+>>>>>>> 1a19ced (chore: update service folders from local)
     courseCategoryID: detail.courseCategory.id,
     coursePrices: {
       offline: detail.coursePrices.offline?.map((price) => ({
@@ -230,35 +257,58 @@ const transformDetailToFormData = (detail: CourseDetail): Partial<FormData> => {
     ),
     description: detail.description,
     isFreeFirstCourse: detail.isFreeFirstCourse,
+<<<<<<< HEAD
     // Fix: Ensure we're using the correct field name and it's an array
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
     levelEducationCourses: Array.isArray(detail.levelEducationCourse)
       ? [...detail.levelEducationCourse]
       : [],
     onlineChannel:
       detail.onlineChannel?.map((channel) => channel).filter(Boolean) || [],
     title: detail.title,
+<<<<<<< HEAD
     // Fix: Extract subcategory IDs from subCourseCategories
     subCategoryIDs:
       detail.subCourseCategories?.map((subCat) => subCat.id) || [],
     tutorDescription: detail.tutor.description,
     // Set the 1-hour prices from the coursePrices
+=======
+    subCategoryIDs:
+      detail.subCourseCategories?.map((subCat) => subCat.id) || [],
+    tutorDescription: detail.tutor.description,
+>>>>>>> 1a19ced (chore: update service folders from local)
     oneHourOnlinePrice: detail.coursePrices.online?.find(
       (p) => p.durationInHour === 1
     )
       ? parseInt(
+<<<<<<< HEAD
           detail.coursePrices.online
             .find((p) => p.durationInHour === 1)!
             .price.replace(/[^\d]/g, "")
         ) || 0
+=======
+        detail.coursePrices.online
+          .find((p) => p.durationInHour === 1)!
+          .price.replace(/[^\d]/g, "")
+      ) || 0
+>>>>>>> 1a19ced (chore: update service folders from local)
       : 0,
     oneHourOfflinePrice: detail.coursePrices.offline?.find(
       (p) => p.durationInHour === 1
     )
       ? parseInt(
+<<<<<<< HEAD
           detail.coursePrices.offline
             .find((p) => p.durationInHour === 1)!
             .price.replace(/[^\d]/g, "")
         ) || 0
+=======
+        detail.coursePrices.offline
+          .find((p) => p.durationInHour === 1)!
+          .price.replace(/[^\d]/g, "")
+      ) || 0
+>>>>>>> 1a19ced (chore: update service folders from local)
       : 0,
   };
 };
@@ -316,6 +366,7 @@ export function ManagementForm({ detail }: ManagementFormProps) {
     mode: "onChange",
   });
 
+<<<<<<< HEAD
   // Schedule state management
   const [schedulesOnline, setSchedulesOnline] = useState<DaySchedule[]>([]);
   const [schedulesOffline, setSchedulesOffline] = useState<DaySchedule[]>([]);
@@ -779,6 +830,10 @@ export function ManagementForm({ detail }: ManagementFormProps) {
     form.setValue("courseSchedulesOnline", updatedOnlineSchedules);
     form.setValue("courseSchedulesOffline", updatedOfflineSchedules);
   }, [selectedTimezone, form]);
+=======
+  // Use custom hook for schedule management
+  const scheduleProps = useSchedule({ form, detail });
+>>>>>>> 1a19ced (chore: update service folders from local)
 
   // Helper function to convert day name to index (1-7)
   const getDayIndex = (dayName: string): string => {
@@ -975,7 +1030,10 @@ export function ManagementForm({ detail }: ManagementFormProps) {
 
         const payload = transformFormDataToCreatePayload(data);
         const result = await createCourseAction(payload);
+<<<<<<< HEAD
         console.log("Create course result:", result);
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 
         if (result.success) {
           toast.success("Course created successfully");
@@ -984,7 +1042,11 @@ export function ManagementForm({ detail }: ManagementFormProps) {
           toast.error(result.error || "Failed to create course");
         }
       }
+<<<<<<< HEAD
     } catch (error) {
+=======
+    } catch {
+>>>>>>> 1a19ced (chore: update service folders from local)
       toast.error("An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
@@ -992,6 +1054,7 @@ export function ManagementForm({ detail }: ManagementFormProps) {
   };
 
   return (
+<<<<<<< HEAD
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
@@ -2230,5 +2293,39 @@ export function ManagementForm({ detail }: ManagementFormProps) {
         </form>
       </Form>
     </div>
+=======
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} ref={formRef}>
+
+        {/* Basic Info Section */}
+        <BasicInfoSection form={form} />
+
+        {/* About Section */}
+        <AboutSection form={form} isEditMode={isEditMode} />
+
+        {/* Pricing Section */}
+        <PricingSection form={form} />
+
+        {/* Schedule Section */}
+        <ScheduleSection
+          form={form}
+          {...scheduleProps}
+        />
+
+        {/* Submit Button */}
+        <div className="flex justify-end mt-8">
+          <Button type="submit" disabled={isSubmitting} size="lg">
+            {isSubmitting
+              ? isEditMode
+                ? "Updating..."
+                : "Creating..."
+              : isEditMode
+                ? "Update Course"
+                : "Create Course"}
+          </Button>
+        </div>
+      </form>
+    </Form>
+>>>>>>> 1a19ced (chore: update service folders from local)
   );
 }

@@ -1,6 +1,10 @@
 "use server"
 
+<<<<<<< HEAD
 import { login } from "@/services/auth"
+=======
+import { forgotPassword, login, resetPassword } from "@/services/auth"
+>>>>>>> 1a19ced (chore: update service folders from local)
 import { ID_TOKEN, TOKEN_KEY } from "@/utils/constants/cookies"
 import type { BaseResponse, LoginResponse } from "@/utils/types"
 import { cookies } from "next/headers"
@@ -59,4 +63,30 @@ export async function logoutAction() {
   const cookiesStore = await cookies()
   cookiesStore.delete(TOKEN_KEY)
   cookiesStore.delete(ID_TOKEN)
+<<<<<<< HEAD
 }
+=======
+  redirect("/login")
+}
+
+export async function forgotPasswordAction(email: string) {
+  try {
+    const res = await forgotPassword(email);
+    return res;
+  } catch (error) {
+    const err = error as { message?: string };
+    return { success: false, message: err.message || "Gagal mengirim email reset password." };
+  }
+}
+
+export async function resetPasswordAction(token: string, newPassword: string) {
+  try {
+    const res = await resetPassword(token, newPassword);
+    return res;
+  } catch (error) {
+    const err = error as { message?: string };
+    return { success: false, message: err.message || "Gagal mengatur ulang password." };
+  }
+}
+
+>>>>>>> 1a19ced (chore: update service folders from local)

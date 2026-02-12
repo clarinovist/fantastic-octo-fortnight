@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 "use client";
 
+=======
+import * as React from "react";
+>>>>>>> 1a19ced (chore: update service folders from local)
 import { logoutAction } from "@/actions/auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,12 +27,39 @@ import { useRouter } from "next/navigation";
 export function NavUser({ user }: { user: MeResponse }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+<<<<<<< HEAD
+=======
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+>>>>>>> 1a19ced (chore: update service folders from local)
 
   const handleLogout = async () => {
     await logoutAction();
     router.push("/login");
   };
 
+<<<<<<< HEAD
+=======
+  if (!mounted) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" className="opacity-0">
+            <div className="size-8 rounded-lg bg-sidebar-accent/50" />
+            <div className="flex-1 space-y-1">
+              <div className="h-4 w-24 bg-sidebar-accent/50 rounded" />
+              <div className="h-3 w-32 bg-sidebar-accent/50 rounded" />
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
+>>>>>>> 1a19ced (chore: update service folders from local)
   return (
     <SidebarMenu>
       <SidebarMenuItem>

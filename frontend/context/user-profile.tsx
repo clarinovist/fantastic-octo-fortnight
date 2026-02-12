@@ -25,7 +25,11 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
       ?.split("=")[1]
 
     if (!token) {
+<<<<<<< HEAD
       setProfile(null)
+=======
+      Promise.resolve().then(() => setProfile(null))
+>>>>>>> 1a19ced (chore: update service folders from local)
       return
     }
 
@@ -38,7 +42,13 @@ export function UserProfileProvider({ children }: { children: React.ReactNode })
   }, [])
 
   useEffect(() => {
+<<<<<<< HEAD
     fetchProfile()
+=======
+    requestAnimationFrame(() => {
+      fetchProfile()
+    })
+>>>>>>> 1a19ced (chore: update service folders from local)
   }, [fetchProfile])
 
   const resetProfile = useCallback(() => {

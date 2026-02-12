@@ -7,6 +7,10 @@ export type Tutor = {
   email: string;
   createdAt: string;
   updatedAt: string;
+<<<<<<< HEAD
+=======
+  photoProfile?: string;
+>>>>>>> 1a19ced (chore: update service folders from local)
 }
 export type TutorDetail = {
   id: string;

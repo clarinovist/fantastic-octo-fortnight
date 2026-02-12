@@ -82,7 +82,13 @@ function CoursesFilterInternal({ className }: { className?: string }) {
 
   // Handle hydration
   useEffect(() => {
+<<<<<<< HEAD
     setIsHydrated(true)
+=======
+    requestAnimationFrame(() => {
+      setIsHydrated(true)
+    })
+>>>>>>> 1a19ced (chore: update service folders from local)
   }, [])
 
   // Helper function to close all dropdowns
@@ -135,6 +141,7 @@ function CoursesFilterInternal({ className }: { className?: string }) {
     const radiusParam = searchParams.get("radius")
     const responseTimeParam = searchParams.get("maxResponseTime")
 
+<<<<<<< HEAD
     if (ratingParams.length > 0) setRating(ratingParams)
     if (classTypeParams.length > 0) setClassType(classTypeParams)
     if (courseLevelParams.length > 0) setCourseLevel(courseLevelParams)
@@ -142,6 +149,17 @@ function CoursesFilterInternal({ className }: { className?: string }) {
     if (freeFirstCourseParam) setFreeFirstCourse(freeFirstCourseParam === "true")
     if (radiusParam) setDistanceRange(Number(radiusParam))
     if (responseTimeParam) setResponseTime(Number(responseTimeParam))
+=======
+    requestAnimationFrame(() => {
+      if (ratingParams.length > 0) setRating(ratingParams)
+      if (classTypeParams.length > 0) setClassType(classTypeParams)
+      if (courseLevelParams.length > 0) setCourseLevel(courseLevelParams)
+      if (maxPriceParam) setMaxPrice(Number(maxPriceParam))
+      if (freeFirstCourseParam) setFreeFirstCourse(freeFirstCourseParam === "true")
+      if (radiusParam) setDistanceRange(Number(radiusParam))
+      if (responseTimeParam) setResponseTime(Number(responseTimeParam))
+    })
+>>>>>>> 1a19ced (chore: update service folders from local)
   }, [searchParams, isHydrated])
 
   // Helper functions to check if filters are active - only after hydration

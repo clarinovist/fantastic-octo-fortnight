@@ -1,6 +1,7 @@
 "use client"
 
 import { AppSidebar } from "@/components/brand/app-sidebar"
+<<<<<<< HEAD
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Toaster } from "@/components/ui/sonner"
 import { useUserProfile } from "@/context/user-profile"
@@ -12,6 +13,14 @@ import { useEffect, useState } from "react"
 import { BackButton } from "./back-button"
 import { Logo } from "./logo"
 import { NotificationContainer } from "./notification/notification-container"
+=======
+import { Toaster } from "@/components/ui/sonner"
+import { cn } from "@/lib/utils"
+import { TOKEN_KEY } from "@/utils/constants/cookies"
+import { useEffect, useState } from "react"
+import { BackButton } from "./back-button"
+import { Logo } from "./logo"
+>>>>>>> 1a19ced (chore: update service folders from local)
 
 export function LayoutCustomer({
   hideLogo,
@@ -54,10 +63,13 @@ export function LayoutCustomer({
 }>) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+<<<<<<< HEAD
   const userContext = useUserProfile()
   const user = userContext?.profile
   const { hasUnread, refetch: refetchUnread } = useUnreadNotifications()
   const isTutor = user?.role === "tutor"
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 
   const toggleMobileSidebar = () => {
     setIsMobileSidebarOpen(!isMobileSidebarOpen)
@@ -67,9 +79,12 @@ export function LayoutCustomer({
     setIsMobileSidebarOpen(false)
   }
 
+<<<<<<< HEAD
   const handleNotificationClick = () => {
     refetchUnread()
   }
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 
   useEffect(() => {
     const checkAuthStatus = () => {
@@ -94,7 +109,11 @@ export function LayoutCustomer({
             backButtonClassName={backButtonClassName}
             backButtonColorMedium={backButtonColorMedium}
             backButtonColorSmall={backButtonColorSmall}
+<<<<<<< HEAD
             isShowPremium={IS_PREMIUM_ENABLED && (!isTutor || !isLoggedIn)}
+=======
+            isShowPremium={!isLoggedIn}
+>>>>>>> 1a19ced (chore: update service folders from local)
           />
         </div>
       )}
@@ -117,7 +136,11 @@ export function LayoutCustomer({
           isShowNotification={isShowNotification}
           isMobileOpen={isMobileSidebarOpen}
           onMobileClose={closeMobileSidebar}
+<<<<<<< HEAD
           isShowPremium={IS_PREMIUM_ENABLED && (!isTutor || !isLoggedIn)}
+=======
+          isShowPremium={!isLoggedIn}
+>>>>>>> 1a19ced (chore: update service folders from local)
         />
       </div>
 
@@ -138,6 +161,7 @@ export function LayoutCustomer({
               <Logo className="block md:hidden" type={logoTypeOnSmallDevice} size="small" />
             )}
             {header}
+<<<<<<< HEAD
             {isShowNotification && user && (
               <Popover>
                 <PopoverTrigger asChild>
@@ -169,6 +193,8 @@ export function LayoutCustomer({
                 </PopoverContent>
               </Popover>
             )}
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 
             <button
               onClick={toggleMobileSidebar}

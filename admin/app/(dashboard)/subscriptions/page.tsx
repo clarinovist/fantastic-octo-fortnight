@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { MainLayout } from "@/components/layout/main-layout";
 import { SubscriptionList } from "@/components/subscription/subscription-list";
 import { getSubscriptionPricess } from "@/services/subscription";
@@ -28,4 +29,17 @@ export default async function SubscriptionsPage({
       </div>
     </MainLayout>
   );
+=======
+import { getSubscriptionPricess } from "@/services/subscription";
+import { SubscriptionSettings } from "@/components/subscription/subscription-settings";
+
+export default async function Page() {
+    const { data: subscriptionPrices } = await getSubscriptionPricess();
+
+    return (
+        <div className="flex-1 w-full max-w-[1440px] mx-auto py-8">
+            <SubscriptionSettings initialData={subscriptionPrices || []} />
+        </div>
+    );
+>>>>>>> 1a19ced (chore: update service folders from local)
 }

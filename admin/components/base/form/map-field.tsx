@@ -148,7 +148,10 @@ export function MapField({
       const data = await response.json();
 
       if (data.success && data.resolvedUrl) {
+<<<<<<< HEAD
         console.log("Resolved URL:", data.resolvedUrl);
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
         return data.resolvedUrl;
       } else {
         console.error("Failed to resolve short link:", data.error);

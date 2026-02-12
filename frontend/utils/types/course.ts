@@ -75,6 +75,7 @@ export interface CourseDetail {
   };
   price: string;
 }
+<<<<<<< HEAD
 export interface CourseSaved {
   id: string;
   title: string;
@@ -128,6 +129,8 @@ export interface CourseCreateResponse {
   createdAt: string;
   updatedAt: string;
 }
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
 export interface CourseBookedDate {
   [dateTime: string]: {
     status: boolean

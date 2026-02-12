@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import type { BaseResponse, MeRequest, MeResponse, TutorDocumentResponse } from "@/utils/types";
+=======
+import type { BaseResponse, MeRequest, MeResponse } from "@/utils/types";
+>>>>>>> 1a19ced (chore: update service folders from local)
 import { fetcherBase } from "./base";
 
 export const getMe = (): Promise<{ data: MeResponse }> => {
@@ -19,6 +23,7 @@ export const updateMeLocation = (data: { latitude: number; longitude: number }):
     body: JSON.stringify(data),
   });
 }
+<<<<<<< HEAD
 export const getTutorDocuments = (): Promise<{ data: TutorDocumentResponse[] }> => {
   return fetcherBase(`/v1/tutors/documents`, {
     next: { tags: ["tutor-documents"] },
@@ -40,3 +45,5 @@ export const publishCourse = (id: string): Promise<{ data: string }> => {
     method: "POST",
   });
 }
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)

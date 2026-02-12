@@ -1,9 +1,15 @@
 "use server"
 
 import { TOKEN_KEY } from "@/utils/constants/cookies";
+<<<<<<< HEAD
 import type { BaseResponse } from "@/utils/types";
 import { cookies } from "next/headers";
 
+=======
+import type { BaseResponse, Metadata } from "@/utils/types";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+>>>>>>> 1a19ced (chore: update service folders from local)
 const baseApiUrl = process.env.NEXT_BASE_API_URL!;
 const defaultInvalidateCache = 0; // seconds
 
@@ -18,7 +24,13 @@ export const fetcher = async <T>(input: RequestInfo, options?: RequestInit): Pro
     }
     : {
       "Content-Type": "application/json",
+<<<<<<< HEAD
       authorization: `Bearer ${cookiesStore.get(TOKEN_KEY)?.value || ""}`,
+=======
+      ...(cookiesStore.get(TOKEN_KEY)?.value
+        ? { authorization: `Bearer ${cookiesStore.get(TOKEN_KEY)?.value}` }
+        : {}),
+>>>>>>> 1a19ced (chore: update service folders from local)
       ...options?.headers,
     };
 
@@ -73,6 +85,7 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
       statusCode: 200,
       success: true
     };
+<<<<<<< HEAD
   } catch (error: any) {
     console.error(`Fetch error ${url}:`, JSON.stringify(error, null, 0));
     return {
@@ -83,6 +96,34 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
       ...(error.metadata ? { metadata: error.metadata } : {}),
       ...(error.error ? { error: error.error } : {}),
       ...(error.code ? { code: error.code } : {})
+=======
+  } catch (error: unknown) {
+    const err = error as { statusCode?: number; message?: string; metadata?: unknown; error?: unknown; code?: number };
+    console.error(`Fetch error ${url}:`, JSON.stringify(err, null, 0));
+    // Check for 401 Unauthorized
+    if (err.statusCode === 401) {
+      const cookiesStore = await cookies();
+      cookiesStore.delete(TOKEN_KEY);
+      // We can't use redirect() here because it throws an error that might be caught by the caller.
+      // Instead, we can return a specific response or let the caller handle it.
+      // However, for a server action/component, we usually want to redirect.
+      // Let's rely on middleware for initial protection, but if an API call fails with 401
+      // (e.g. token expired mid-session), we should probably redirect.
+
+      // Since this is a utility function used in server components/actions, 
+      // utilizing `redirect` from `next/navigation` is valid but throws NEXT_REDIRECT.
+      redirect("/login");
+    }
+
+    return {
+      data: null as unknown as T,
+      statusCode: err.statusCode || 500,
+      success: false,
+      message: err.message || 'An error occurred',
+      ...(err.metadata ? { metadata: err.metadata as Metadata } : {}),
+      ...(err.error ? { error: String(err.error) } : {}),
+      ...(err.code ? { code: err.code } : {})
+>>>>>>> 1a19ced (chore: update service folders from local)
     };
   }
 }

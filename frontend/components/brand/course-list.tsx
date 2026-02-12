@@ -146,6 +146,7 @@ export function CourseList({
     }
   }, [
     pageSize,
+<<<<<<< HEAD
     filters?.courseCategoryId,
     filters?.classType,
     filters?.levelEducationCourse,
@@ -157,6 +158,12 @@ export function CourseList({
     filters?.longitude,
     filters?.radius,
     filters?.maxResponseTime,
+=======
+    filters,
+    sortedClassTypes,
+    sortedLevelEducationCourse,
+    sortedRatings,
+>>>>>>> 1a19ced (chore: update service folders from local)
     debug,
   ])
 
@@ -197,16 +204,27 @@ export function CourseList({
     })
   }, [
     filters?.courseCategoryId,
+<<<<<<< HEAD
     filters?.classType,
     filters?.levelEducationCourse,
     filters?.freeFirstCourse,
     filters?.maxPrice,
     filters?.rating,
+=======
+    filters?.freeFirstCourse,
+    filters?.maxPrice,
+>>>>>>> 1a19ced (chore: update service folders from local)
     filters?.locationId,
     filters?.latitude,
     filters?.longitude,
     filters?.radius,
     filters?.maxResponseTime,
+<<<<<<< HEAD
+=======
+    sortedClassTypes,
+    sortedLevelEducationCourse,
+    sortedRatings,
+>>>>>>> 1a19ced (chore: update service folders from local)
   ])
 
   // --------------------------
@@ -233,7 +251,11 @@ export function CourseList({
           if (container instanceof Window) {
             window.scrollTo(0, pos)
           } else {
+<<<<<<< HEAD
             ;(container as HTMLElement).scrollTop = pos
+=======
+            ; (container as HTMLElement).scrollTop = pos
+>>>>>>> 1a19ced (chore: update service folders from local)
           }
           if (debug) console.log(`[CourseList] Restored scroll ${pos} for key`, scrollSavedKey)
         }
@@ -267,7 +289,11 @@ export function CourseList({
       window.addEventListener("scroll", onScroll, { passive: true })
       scrollListenerRef.current = () => window.removeEventListener("scroll", onScroll)
     } else {
+<<<<<<< HEAD
       ;(container as HTMLElement).addEventListener("scroll", onScroll, { passive: true })
+=======
+      ; (container as HTMLElement).addEventListener("scroll", onScroll, { passive: true })
+>>>>>>> 1a19ced (chore: update service folders from local)
       scrollListenerRef.current = () =>
         (container as HTMLElement).removeEventListener("scroll", onScroll)
     }

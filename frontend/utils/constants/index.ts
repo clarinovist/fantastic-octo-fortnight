@@ -8,8 +8,12 @@ export const COURSE_STATUS = {
   DRAFT: "Draft",
   ACCEPTED: "Accepted",
   REJECTED: "Rejected",
+<<<<<<< HEAD
 }
 
 // Premium feature toggle - configurable via .env
 export const IS_PREMIUM_ENABLED =
   process.env.NEXT_PUBLIC_PREMIUM_SETTING === "enabled"
+=======
+}
+>>>>>>> 1a19ced (chore: update service folders from local)

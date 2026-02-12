@@ -68,8 +68,15 @@ export function DetailCourseSchedule({
   useEffect(() => {
     if (!isInitialized && dateOptions.length > 0) {
       const firstAvailableDate = dateOptions.find(d => d.isAvailable)?.fullDate || null
+<<<<<<< HEAD
       setSelectedDate(firstAvailableDate)
       setIsInitialized(true)
+=======
+      requestAnimationFrame(() => {
+        setSelectedDate(firstAvailableDate)
+        setIsInitialized(true)
+      })
+>>>>>>> 1a19ced (chore: update service folders from local)
     }
   }, [dateOptions, isInitialized])
 
@@ -94,6 +101,7 @@ export function DetailCourseSchedule({
           )
         })
 
+<<<<<<< HEAD
         if (availableSchedules.length > 0) {
           const firstSchedule = availableSchedules[0]
           const time = firstSchedule.startTime.slice(0, 5)
@@ -110,6 +118,30 @@ export function DetailCourseSchedule({
     } else if (!selectedDate) {
       setSelectedTime(null)
       setSelectedTimezone(null)
+=======
+        requestAnimationFrame(() => {
+          if (availableSchedules.length > 0) {
+            const firstSchedule = availableSchedules[0]
+            const time = firstSchedule.startTime.slice(0, 5)
+            setSelectedTime(time)
+            setSelectedTimezone(firstSchedule.timezone)
+          } else {
+            setSelectedTime(null)
+            setSelectedTimezone(null)
+          }
+        })
+      } else {
+        requestAnimationFrame(() => {
+          setSelectedTime(null)
+          setSelectedTimezone(null)
+        })
+      }
+    } else if (!selectedDate) {
+      requestAnimationFrame(() => {
+        setSelectedTime(null)
+        setSelectedTimezone(null)
+      })
+>>>>>>> 1a19ced (chore: update service folders from local)
     }
   }, [selectedDate, currentSchedules, availableDates, selectedTab])
 
@@ -150,13 +182,21 @@ export function DetailCourseSchedule({
           {dateOptions.map(date => (
             <CarouselItem key={date.fullDate} className="basis-1/4 md:basis-1/7">
               <div
+<<<<<<< HEAD
                 className={`flex flex-col items-center p-2 lg:p-3 rounded-lg transition-colors cursor-pointer min-w-[60px] lg:min-w-[80px] ${
                   !date.isAvailable
+=======
+                className={`flex flex-col items-center p-2 lg:p-3 rounded-lg transition-colors cursor-pointer min-w-[60px] lg:min-w-[80px] ${!date.isAvailable
+>>>>>>> 1a19ced (chore: update service folders from local)
                     ? "bg-muted text-muted-foreground cursor-not-allowed"
                     : isSelected(date.fullDate)
                       ? "bg-[#7000FE] text-white"
                       : "hover:bg-[#7000FE80]/50"
+<<<<<<< HEAD
                 }`}
+=======
+                  }`}
+>>>>>>> 1a19ced (chore: update service folders from local)
                 onClick={() => date.isAvailable && onSelect(date.fullDate)}
               >
                 <div className="text-xs">{date.day}</div>
@@ -200,13 +240,21 @@ export function DetailCourseSchedule({
             return (
               <span
                 key={`${s.startTime}-${index}`}
+<<<<<<< HEAD
                 className={`px-3 lg:px-4 py-2 rounded-lg font-bold transition-colors min-w-[60px] lg:min-w-[80px] text-center ${
                   !isAvailable
+=======
+                className={`px-3 lg:px-4 py-2 rounded-lg font-bold transition-colors min-w-[60px] lg:min-w-[80px] text-center ${!isAvailable
+>>>>>>> 1a19ced (chore: update service folders from local)
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : isSelectedTime
                       ? "bg-[#7000FE] text-white border border-[#7000FE] cursor-pointer"
                       : "border border-[#7000FE] text-[#7000FE] hover:bg-[#7000FE80]/50 cursor-pointer"
+<<<<<<< HEAD
                 }`}
+=======
+                  }`}
+>>>>>>> 1a19ced (chore: update service folders from local)
                 onClick={() => {
                   if (isAvailable) {
                     setSelectedTime(start)

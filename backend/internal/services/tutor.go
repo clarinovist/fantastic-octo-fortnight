@@ -43,6 +43,20 @@ func NewTutorService(
 	}
 }
 
+<<<<<<< HEAD
+=======
+func (s *TutorService) GetLocalTutor(ctx context.Context, id uuid.UUID) (model.Tutor, error) {
+	tutor, err := s.tutor.GetByID(ctx, id)
+	if err != nil {
+		return model.Tutor{}, err
+	}
+	if tutor == nil {
+		return model.Tutor{}, shared.MakeError(ErrEntityNotFound, "tutor")
+	}
+	return *tutor, nil
+}
+
+>>>>>>> 1a19ced (chore: update service folders from local)
 func (s *TutorService) GetAdminTutors(ctx context.Context, req dto.GetAdminTutorsRequest) (dto.GetAdminTutorsResponse, error) {
 	var (
 		createdAtFrom time.Time

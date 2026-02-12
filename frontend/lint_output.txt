@@ -1,0 +1,444 @@
+
+> les-private-fe@0.1.0 lint
+> eslint
+
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/account/account-container.tsx
+  15:52  warning  'documents' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/account/course/booking/booking-list.tsx
+   11:32  error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-empty-object-type
+   32:36  warning  '_props' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+  118:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/account/course/booking/booking-list.tsx:118:7
+  116 |   useEffect(() => {
+  117 |     if (bookingId) {
+> 118 |       setBookingDetailLoading(true)
+      |       ^^^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  119 |       const url = `/api/v1/students/booking/${bookingId}`
+  120 |       fetch(url, { next: { revalidate: 0 } })
+  121 |         .then(res => {  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/account/course/review/rating-dialog.tsx
+  31:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/account/course/review/rating-dialog.tsx:31:7
+  29 |   useEffect(() => {
+  30 |     if (isOpen && review) {
+> 31 |       setRating(review.rate || 0)
+     |       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  32 |       setReviewText(review.review || "")
+  33 |       setWillLearnAgain(review.recommendByStudent || "")
+  34 |     } else if (!isOpen) {  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/account/course/review/review-list.tsx
+  12:24  error    The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+  36:28  warning  '_props' is defined but never used                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/auth/role-selection.tsx
+  136:5  warning  React Hook useCallback has a missing dependency: 'isLoading'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  149:6  warning  React Hook useEffect has a missing dependency: 'onSubmit'. Either include it or remove the dependency array     react-hooks/exhaustive-deps
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course-filter.tsx
+   85:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course-filter.tsx:85:5
+  83 |   // Handle hydration
+  84 |   useEffect(() => {
+> 85 |     setIsHydrated(true)
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  86 |   }, [])
+  87 |
+  88 |   // Helper function to close all dropdowns                                                                                                                                                                                                                                            react-hooks/set-state-in-effect
+  138:34  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course-filter.tsx:138:34
+  136 |     const responseTimeParam = searchParams.get("maxResponseTime")
+  137 |
+> 138 |     if (ratingParams.length > 0) setRating(ratingParams)
+      |                                  ^^^^^^^^^ Avoid calling setState() directly within an effect
+  139 |     if (classTypeParams.length > 0) setClassType(classTypeParams)
+  140 |     if (courseLevelParams.length > 0) setCourseLevel(courseLevelParams)
+  141 |     if (maxPriceParam) setMaxPrice(Number(maxPriceParam))  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course-list.tsx
+  147:6  warning  React Hook useMemo has missing dependencies: 'filters', 'sortedClassTypes', 'sortedLevelEducationCourse', and 'sortedRatings'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  198:6  warning  React Hook useMemo has missing dependencies: 'sortedClassTypes', 'sortedLevelEducationCourse', and 'sortedRatings'. Either include them or remove the dependency array             react-hooks/exhaustive-deps
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/booking/blinking-location-dot.tsx
+  25:5  warning  Compilation Skipped: Inline `class` declarations are not supported
+
+Move class declarations outside of components/hooks.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/booking/blinking-location-dot.tsx:25:5
+  23 |     }
+  24 |
+> 25 |     class BlinkingDotOverlay extends google.maps.OverlayView {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |       private position: google.maps.LatLng
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 27 |       private div: HTMLDivElement | null = null
+     …
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 84 |       }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 85 |     }
+     | ^^^^^^ Inline `class` declarations are not supported
+  86 |
+  87 |     const overlay = new BlinkingDotOverlay(new google.maps.LatLng(position.lat, position.lng))
+  88 |     overlay.setMap(map)
+
+  react-hooks/unsupported-syntax
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/booking/booking-course.tsx
+  190:6  warning  React Hook useEffect has a missing dependency: 'studentLocation'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/booking/fullscreen-map-content.tsx
+  33:10  warning  'isGettingGPSLocation' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/booking/hooks/use-map-overlay.tsx
+  11:48  warning  'isFullscreen' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/booking/map-view.tsx
+  29:3   warning  'isFullscreen' is defined but never used                   @typescript-eslint/no-unused-vars
+  33:10  warning  'isGettingGPSLocation' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course-schedule.tsx
+   71:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course-schedule.tsx:71:7
+  69 |     if (!isInitialized && dateOptions.length > 0) {
+  70 |       const firstAvailableDate = dateOptions.find(d => d.isAvailable)?.fullDate || null
+> 71 |       setSelectedDate(firstAvailableDate)
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  72 |       setIsInitialized(true)
+  73 |     }
+  74 |   }, [dateOptions, isInitialized])           react-hooks/set-state-in-effect
+  100:11  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course-schedule.tsx:100:11
+   98 |           const firstSchedule = availableSchedules[0]
+   99 |           const time = firstSchedule.startTime.slice(0, 5)
+> 100 |           setSelectedTime(time)
+      |           ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  101 |           setSelectedTimezone(firstSchedule.timezone)
+  102 |         } else {
+  103 |           setSelectedTime(null)  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx
+  220:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:220:18
+  218 |               <CardContent className="p-6 space-y-4 pt-0">
+  219 |                 <DetailCourseTutor variant="mobile" course={course} />
+> 220 |                 <StatsInfo />
+      |                  ^^^^^^^^^ This component is created during render
+  221 |                 <DetailCoursePricing variant="mobile" course={course} />
+  222 |               </CardContent>
+  223 |             </Card>
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:181:21
+  179 |   )
+  180 |
+> 181 |   const StatsInfo = () => (
+      |                     ^^^^^^^
+> 182 |     <div className="flex items-center justify-center text-sm text-muted-foreground">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 183 |       <span className="text-[#8E8E8E] font-bold">{course.totalStudentEnrollment} murid</span>
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 190 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 191 |   )
+      | ^^^^ The component is created during render here
+  192 |
+  193 |   const ButtonBook = ({ isMobile }: { isMobile?: boolean }) => {
+  194 |     if (user?.profile?.role && user?.profile?.role !== "student") return null                                          react-hooks/static-components
+  233:18  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:233:18
+  231 |                   <DetailCourseTutor variant="desktop" course={course} />
+  232 |                 </div>
+> 233 |                 <StatsInfo />
+      |                  ^^^^^^^^^ This component is created during render
+  234 |                 <DetailCoursePricing variant="desktop" course={course} />
+  235 |                 {isBookable && !course.isBooked && <ButtonBook />}
+  236 |                 <div className="flex justify-center">
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:181:21
+  179 |   )
+  180 |
+> 181 |   const StatsInfo = () => (
+      |                     ^^^^^^^
+> 182 |     <div className="flex items-center justify-center text-sm text-muted-foreground">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 183 |       <span className="text-[#8E8E8E] font-bold">{course.totalStudentEnrollment} murid</span>
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 190 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 191 |   )
+      | ^^^^ The component is created during render here
+  192 |
+  193 |   const ButtonBook = ({ isMobile }: { isMobile?: boolean }) => {
+  194 |     if (user?.profile?.role && user?.profile?.role !== "student") return null  react-hooks/static-components
+  235:53  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:235:53
+  233 |                 <StatsInfo />
+  234 |                 <DetailCoursePricing variant="desktop" course={course} />
+> 235 |                 {isBookable && !course.isBooked && <ButtonBook />}
+      |                                                     ^^^^^^^^^^ This component is created during render
+  236 |                 <div className="flex justify-center">
+  237 |                   <div className="bg-[#EDEDED] rounded-full flex gap-2 py-2 px-4 justify-center">
+  238 |                     {/* Tiktok */}
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:193:22
+  191 |   )
+  192 |
+> 193 |   const ButtonBook = ({ isMobile }: { isMobile?: boolean }) => {
+      |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 194 |     if (user?.profile?.role && user?.profile?.role !== "student") return null
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 195 |     return (
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 208 |     )
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 209 |   }
+      | ^^^^ The component is created during render here
+  210 |
+  211 |   return (
+  212 |     <div className="md:px-4 px-0">                                                                   react-hooks/static-components
+  518:14  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:518:14
+  516 |             {/* Course and Tutor Info */}
+  517 |             <DetailCourseDescription course={course} />
+> 518 |             <TutorAbout />
+      |              ^^^^^^^^^^ This component is created during render
+  519 |             <DetailCourseReview course={course} />
+  520 |             <CourseRecommendation courses={recommendations} />
+  521 |           </div>
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:170:22
+  168 |   }
+  169 |
+> 170 |   const TutorAbout = () => (
+      |                      ^^^^^^^
+> 171 |     <>
+      | ^^^^^^
+> 172 |       {course.tutor.description && (
+      | ^^^^^^
+> 173 |         <div>
+      | ^^^^^^
+> 174 |           <h3 className="text-lg font-bold mb-4">TENTANG TUTOR</h3>
+      | ^^^^^^
+> 175 |           <p className="text-sm leading-relaxed text-pretty">{course.tutor.description}</p>
+      | ^^^^^^
+> 176 |         </div>
+      | ^^^^^^
+> 177 |       )}
+      | ^^^^^^
+> 178 |     </>
+      | ^^^^^^
+> 179 |   )
+      | ^^^^ The component is created during render here
+  180 |
+  181 |   const StatsInfo = () => (
+  182 |     <div className="flex items-center justify-center text-sm text-muted-foreground">                                                                                                                                                                      react-hooks/static-components
+  526:23  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:526:23
+  524 |
+  525 |       {/* Fixed Bottom Button - Mobile only */}
+> 526 |       {isBookable && <ButtonBook isMobile />}
+      |                       ^^^^^^^^^^ This component is created during render
+  527 |     </div>
+  528 |   )
+  529 | }
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/detail/detail-course.tsx:193:22
+  191 |   )
+  192 |
+> 193 |   const ButtonBook = ({ isMobile }: { isMobile?: boolean }) => {
+      |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 194 |     if (user?.profile?.role && user?.profile?.role !== "student") return null
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 195 |     return (
+      …
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 208 |     )
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 209 |   }
+      | ^^^^ The component is created during render here
+  210 |
+  211 |   return (
+  212 |     <div className="md:px-4 px-0">                                                                                                                                                                                                                                                                                                                                                        react-hooks/static-components
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/management/course-management-container.tsx
+  298:15  warning  'oneHourOnlinePrice' is assigned a value but never used                                                          @typescript-eslint/no-unused-vars
+  298:35  warning  'oneHourOfflinePrice' is assigned a value but never used                                                         @typescript-eslint/no-unused-vars
+  366:6   warning  React Hook useEffect has a missing dependency: 'validateStep'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  397:6   warning  React Hook useEffect has a missing dependency: 'validateStep'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/management/management-form.tsx
+   753:37  warning  '_' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   791:37  warning  '_' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   805:33  warning  '_' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   816:33  warning  '_' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  1227:40  warning  '_error' is defined but never used      @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/course/management/preview-action.tsx
+  88:14  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/filters/bottom-sheet.tsx
+  18:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/filters/bottom-sheet.tsx:18:7
+  16 |   useEffect(() => {
+  17 |     if (isOpen) {
+> 18 |       setIsVisible(true)
+     |       ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  19 |       document.body.style.overflow = "hidden"
+  20 |       // Small delay to trigger animation
+  21 |       setTimeout(() => setIsAnimating(true), 10)  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/filters/custom-dropdown.tsx
+  122:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/filters/custom-dropdown.tsx:122:7
+  120 |       }
+  121 |
+> 122 |       setPosition(newPosition)
+      |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  123 |     }
+  124 |   }, [isOpen, align, minWidth, isMobile])
+  125 |  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/components/brand/layout-customer.tsx
+  54:9  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/frontend/components/ui/currency-idr-input.tsx
+  20:24  error  Error: Cannot access variable before it is declared
+
+`formatCurrency` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+/Users/nugroho/Documents/lesprivate/frontend/components/ui/currency-idr-input.tsx:20:24
+  18 | }: CurrencyIdrInputProps) {
+  19 |   const [displayValue, setDisplayValue] = useState(() => {
+> 20 |     return value > 0 ? formatCurrency(value, locale) : ""
+     |                        ^^^^^^^^^^^^^^ `formatCurrency` accessed before it is declared
+  21 |   })
+  22 |   const [isTyping, setIsTyping] = useState(false)
+  23 |   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+/Users/nugroho/Documents/lesprivate/frontend/components/ui/currency-idr-input.tsx:25:3
+  23 |   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  24 |
+> 25 |   function formatCurrency(amount: number, locale: string): string {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |     return new Intl.NumberFormat(locale, {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 27 |       style: "currency",
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 28 |       currency: "IDR",
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 29 |       minimumFractionDigits: 0,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 30 |     }).format(amount)
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 31 |   }
+     | ^^^^ `formatCurrency` is declared here
+  32 |
+  33 |   function parseCurrency(value: string): number {
+  34 |     // Remove all non-digit characters except decimal point  react-hooks/immutability
+
+/Users/nugroho/Documents/lesprivate/frontend/context/user-profile.tsx
+  41:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/frontend/context/user-profile.tsx:41:5
+  39 |
+  40 |   useEffect(() => {
+> 41 |     fetchProfile()
+     |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  42 |   }, [fetchProfile])
+  43 |
+  44 |   const resetProfile = useCallback(() => {  react-hooks/set-state-in-effect
+
+/Users/nugroho/Documents/lesprivate/frontend/services/course.ts
+  1:66  warning  'CourseDetailSaved' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 42 problems (17 errors, 25 warnings)
+

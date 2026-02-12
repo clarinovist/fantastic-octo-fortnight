@@ -1,10 +1,15 @@
 "use server"
 
 import {
+<<<<<<< HEAD
   deleteTutorDocument,
   updateMe,
   updateMeLocation,
   uploadTutorDocument,
+=======
+  updateMe,
+  updateMeLocation,
+>>>>>>> 1a19ced (chore: update service folders from local)
 } from "@/services/account"
 import type { BaseResponse, MeResponse } from "@/utils/types"
 import { updateTag } from "next/cache"
@@ -41,6 +46,7 @@ export async function updateAccountLocationAction(
 
   return response
 }
+<<<<<<< HEAD
 export async function deleteTutorDocumentAction(id: string): Promise<{ data: string }> {
   const resp = await deleteTutorDocument(id)
   updateTag("tutor-documents")
@@ -52,3 +58,5 @@ export async function uploadTutorDocumentAction(data: FormData): Promise<{ data:
   updateTag("tutor-documents")
   return resp
 }
+=======
+>>>>>>> 1a19ced (chore: update service folders from local)
