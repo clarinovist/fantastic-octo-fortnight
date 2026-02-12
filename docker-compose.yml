@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: lesprivate-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data-mysql:/var/lib/mysql
+    environment:
+      TZ: "Asia/Jakarta"
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: lesprivate
+    networks:
+      - lesprivate
+
+  redis:
+    image: redis:6
+    container_name: lesprivate-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data-redis:/data
+    networks:
+      - lesprivate
+
+networks:
+  lesprivate:
+    name: lesprivate
+    driver: bridge
