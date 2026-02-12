@@ -3,8 +3,8 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Install dependencies
-COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps
+COPY package.json ./
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -33,7 +33,7 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
