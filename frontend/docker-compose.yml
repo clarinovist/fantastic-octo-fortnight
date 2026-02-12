@@ -1,0 +1,15 @@
+services:
+  frontend:
+    build: .
+    container_name: lesprivate-frontend
+    restart: always
+    user: root
+    ports:
+      - 7002:3000
+    networks:
+      - lesprivate
+    volumes:
+      - ./.env:/app/.env
+networks:
+  lesprivate:
+    external: true

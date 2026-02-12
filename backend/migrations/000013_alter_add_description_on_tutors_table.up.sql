@@ -1,0 +1,1 @@
+alter table tutors add column description text null after name;

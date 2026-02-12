@@ -1,0 +1,15 @@
+services:
+  backend:
+    container_name: lesprivate-backend
+    build: .
+    restart: always
+    volumes:
+      - ./.env:/app/.env
+      - ./migrations:/app/migrations
+    ports:
+      - 8082:9090
+    networks:
+      - lesprivate
+networks:
+  lesprivate:
+    external: true

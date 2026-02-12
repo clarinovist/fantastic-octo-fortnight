@@ -1,0 +1,6 @@
+replace null.String string
+replace null.Int int
+replace null.Bool bool
+replace null.Float float64
+replace decimal.NullDecimal float64
+replace json.RawMessage object

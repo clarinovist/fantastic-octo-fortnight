@@ -1,0 +1,21 @@
+create table subscriptions (
+    id char(36) primary key,
+    reference_id varchar(255) not null,
+    student_id char(36) references students (id),
+    `interval` varchar(255) not null,
+    interval_count int not null,
+    start_date timestamp not null,
+    end_date timestamp not null,
+    currency char(3) not null,
+    amount decimal(12, 2) not null,
+    status varchar(255) not null,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now(),
+    deleted_at timestamp null,
+    created_by char(36) not null,
+    updated_by char(36) not null,
+    deleted_by char(36) null,
+    index idx_student_id (student_id),
+    index idx_reference_id (reference_id),
+    index idx_status (status)
+);

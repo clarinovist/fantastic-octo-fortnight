@@ -1,0 +1,1 @@
+ALTER TABLE `payments` drop column `reference_id`;

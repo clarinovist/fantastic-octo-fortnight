@@ -1,0 +1,1 @@
+ALTER TABLE `payments` ADD COLUMN `reference_id` VARCHAR(255) NOT NULL default '' after id;

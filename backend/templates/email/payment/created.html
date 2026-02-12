@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menunggu Pembayaran User Premium</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+
+        .premium-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .premium-badge.expired {
+            background: linear-gradient(45deg, #9ca3af, #6b7280);
+        }
+
+        .price-box {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8f9ff 100%);
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .price-amount {
+            font-size: 26px;
+            font-weight: bold;
+            color: #8b5cf6;
+            margin: 10px 0;
+        }
+
+        .price-period {
+            font-size: 16px;
+            color: #718096;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            color: #4a5568;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #2d3748;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        /* BOOKING DETAIL BOX - CARD STYLE */
+        .booking-detail-box {
+            background: white;
+            border-radius: 12px;
+            padding: 0;
+            margin: 30px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .booking-detail-box h3 {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            font-size: 18px;
+            padding: 15px 20px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .booking-content {
+            padding: 25px;
+        }
+
+        .detail-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #8b5cf6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .section-type {
+            font-size: 14px;
+            font-weight: bold;
+            color: #8b5cf6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 25px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .section-content.large {
+            font-size: 18px;
+            font-weight: bold;
+            color: #8b5cf6;
+        }
+
+        .section-content.xlarge {
+            font-size: 25px;
+            font-weight: bold;
+            color: #8b5cf6;
+            align-items: center;
+
+        }
+
+        .time-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .type-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+            color: white;
+            padding: 14px 26px;
+            border-radius: 22px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .notes-box {
+            background: #f7fafc;
+            border-left: 3px solid #8b5cf6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .notes-box strong {
+            color: #2d3748;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            color: white;
+            padding: 15px 35px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(139, 92, 246, 0.4);
+        }
+
+        .cta-button.secondary {
+            background: linear-gradient(45deg, #10b981, #059669);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .cta-button.danger {
+            background: linear-gradient(45deg, #ef4444, #dc2626);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: #f7fafc;
+            border-left: 4px solid #8b5cf6;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .success-box {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+
+        .success-box h3 {
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .warning-box {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box h3 {
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .status-accepted {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .social-links {
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #8b5cf6;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #8b5cf6, transparent);
+            margin: 30px 0;
+        }
+
+        .template-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .template-selector select {
+            padding: 10px;
+            border: 2px solid #8b5cf6;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .email-template {
+            display: none;
+        }
+
+        .email-template.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .header, .content, .footer {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .welcome-text {
+                font-size: 16px;
+            }
+
+            .cta-button {
+                padding: 12px 25px;
+                font-size: 15px;
+                width: 100%;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .detail-label {
+                min-width: 100%;
+                margin-bottom: 5px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .template-selector {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <img src="https://raw.githubusercontent.com/lesprivate/assets/refs/heads/main/lesprivate-logo.png" alt="Logo Lesprivate" class="logo">
+            <h1><h1>Segera selesaikan pembayaran Anda!</h1></h1>
+        </div>
+
+        <div class="content">
+            <div class="welcome-text">
+                Halo {{ .student_name  }},
+            </div>
+
+            <div class="message">
+                Terima kasih telah memilih <strong>Lesprivate Premium</strong>! Invoice pembayaran Anda telah dibuat dan menunggu untuk diselesaikan.
+            </div>
+
+            <!-- BOOKING DETAIL BOX -->
+                <div class="booking-detail-box">
+                    <h3>📋 Detail Pembelian</h3>
+
+                     <div class="booking-content">
+                        <div class="detail-section">
+                            <div class="section-title">Paket Premium</div>
+                            <div class="section-content large">{{ .package_name }}</div>
+                        </div>
+
+                        <div class="detail-section">
+                            <div class="section-title">Invoice ID</div>
+                            <div class="section-content large">{{ .invoice_number }}</div>
+                        </div>
+
+                        <div class="detail-section">
+                            <div class="section-title">Tanggal Pembuatan</div>
+                            <div class="section-content large">{{ .created_date }}</div>
+                        </div>
+                    </div>
+            <div class="price-box">
+                    <div style="font-size: 16px; color: #718096; margin-bottom: 10px;">Total Pembayaran</div>
+                    <div class="price-amount">{{ .price }}</div>
+                    <div class="price-period">{{ .period }}</div>
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="{{ .payment_url }}" class="cta-button">
+                        💰 BAYAR SEKARANG
+                    </a>
+                </div>
+
+                <div class="info-box">
+                    <strong>⏰ Penting!</strong><br>
+                    Silakan selesaikan pembayaran sebelum batas waktu berakhir. Jika pembayaran tidak diselesaikan, invoice ini akan dibatalkan secara otomatis.
+                </div>
+
+
+            <div class="message" style="font-size: 14px; color: #718096;">
+                    Jika tombol di atas tidak berfungsi, salin dan tempel tautan ini ke browser Anda:<br><br>
+                    <code style="background: #f1f5f9; padding: 8px; border-radius: 4px; font-size: 12px; word-break: break-all;">{{ .payment_url }}</code>
+                </div>
+        </div>
+
+        <div class="footer">
+            <p>Need help? Contact our support team at <a href="mailto:support@lesprivate.com" style="color: #8b5cf6;">support@lesprivate.com</a></p>
+            <p>&copy; 2025 Lesprivate. All rights reserved.</p>
+
+            <div class="social-links">
+                <a href="#">Privacy Policy</a> |
+                <a href="#">Terms of Service</a> |
+                <a href="#">Help Center</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

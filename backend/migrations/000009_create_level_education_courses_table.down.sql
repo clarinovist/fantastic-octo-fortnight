@@ -1,0 +1,1 @@
+drop table level_education_courses;

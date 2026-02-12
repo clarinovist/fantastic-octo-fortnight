@@ -1,0 +1,1 @@
+alter table tutors drop column online_channel;

@@ -1,0 +1,20 @@
+CREATE TABLE payments (
+    id CHAR(36) PRIMARY KEY,
+    student_id CHAR(36) NOT NULL,
+    invoice_number VARCHAR(255) NOT NULL,
+    `interval` VARCHAR(50) NOT NULL,
+    interval_count INT NOT NULL,
+    start_date TIMESTAMP NOT NULL,
+    end_date TIMESTAMP NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    paid_at TIMESTAMP NULL,
+    url VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    deleted_at TIMESTAMP,
+    created_by CHAR(36) NOT NULL,
+    updated_by CHAR(36) NOT NULL,
+    deleted_by CHAR(36),
+    FOREIGN KEY (student_id) REFERENCES students(id)
+);

@@ -1,0 +1,14 @@
+CREATE TABLE users (
+  id CHAR(36) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  verified_at TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL,
+  created_by CHAR(36) NULL,
+  updated_by CHAR(36) NULL,
+  deleted_by CHAR(36) NULL,
+  INDEX idx_email (email)
+);

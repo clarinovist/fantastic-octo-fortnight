@@ -1,0 +1,1 @@
+alter table courses add column title varchar(255) null after tutor_id;

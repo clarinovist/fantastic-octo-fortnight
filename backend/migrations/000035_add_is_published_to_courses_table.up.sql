@@ -1,0 +1,1 @@
+ALTER TABLE courses ADD COLUMN is_published BOOLEAN NOT NULL DEFAULT FALSE AFTER status_notes;

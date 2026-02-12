@@ -1,0 +1,1 @@
+alter table courses add column rate decimal(15,2) default 0;

@@ -1,0 +1,22 @@
+create table notifications (
+    id char(36) primary key not null,
+    user_id char(36) not null references users (id),
+    `type` varchar(255) not null,
+    title varchar(255) not null,
+    message text not null,
+    link varchar(255) null,
+    is_read boolean not null default false,
+    is_dismissed boolean not null default false,
+    created_at timestamp not null default now(),
+    updated_at timestamp not null default now() on update now(),
+    deleted_at timestamp null,
+    created_by char(36) not null,
+    updated_by char(36) not null,
+    deleted_by char(36) null,
+    index idx_notifications_user_id (user_id),
+    index idx_notifications_type (type),
+    index idx_notifications_is_read (is_read),
+    index idx_notifications_is_dismissed (is_dismissed),
+    index idx_notifications_created_at (created_at),
+    index idx_notifications_deleted_at (deleted_at)
+);

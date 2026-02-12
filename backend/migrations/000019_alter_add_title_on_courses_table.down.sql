@@ -1,0 +1,1 @@
+alter table courses drop column title;

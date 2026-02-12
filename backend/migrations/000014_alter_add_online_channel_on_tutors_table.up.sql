@@ -1,0 +1,1 @@
+alter table tutors add column online_channel text null after class_type;

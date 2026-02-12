@@ -1,0 +1,2 @@
+ALTER TABLE students ADD COLUMN latitude DECIMAL(8, 6) NULL;
+ALTER TABLE students ADD COLUMN longitude DECIMAL(9, 6) NULL;
