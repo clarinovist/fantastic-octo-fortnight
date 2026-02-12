@@ -1,6 +1,6 @@
 ARG GO_VERSION=1.24
 # Builder
-FROM golang:${GO_VERSION}-alpine as builder
+FROM golang:${GO_VERSION}-alpine AS builder
 
 RUN apk update && \
     apk --update add git make build-base
@@ -21,9 +21,9 @@ RUN GOFLAGS="-buildvcs=false" go build -o goBinary .
 FROM alpine:latest
 
 RUN apk update && apk --update --no-cache add tzdata && \
-        apk --no-cache add ca-certificates \
-        ttf-dejavu ttf-droid ttf-freefont ttf-liberation \
-        libxrender libgcc libstdc++
+    apk --no-cache add ca-certificates \
+    ttf-dejavu ttf-droid ttf-freefont ttf-liberation \
+    libxrender libgcc libstdc++
 
 ENV TZ=Asia/Jakarta
 
@@ -39,4 +39,4 @@ COPY --from=ghcr.io/surnet/alpine-wkhtmltopdf:3.17.0-0.12.6-full /bin/wkhtmltoim
 COPY --from=builder /app/goBinary /app
 COPY --from=builder /app/templates /app/templates
 
-CMD /app/goBinary
+CMD ["/app/goBinary"]

@@ -25,7 +25,7 @@ import (
 // @Param page query int false "Page number" default(1)
 // @Param pageSize query int false "Page size" default(10)
 // @Param status query string false "Filter by status (pending, approved, rejected)"
-// @Success 200 {object} base.Base{data=[]dto.AdminWithdrawalResponse,metadata=base.Metadata}
+// @Success 200 {object} base.Base{data=[]dto.AdminWithdrawalResponse,metadata=model.Metadata}
 // @Failure 400 {object} base.Base
 // @Failure 401 {object} base.Base
 // @Failure 403 {object} base.Base
