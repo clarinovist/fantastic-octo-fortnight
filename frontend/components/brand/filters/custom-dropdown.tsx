@@ -119,9 +119,6 @@ export function CustomDropdown({
         }
       }
 
-<<<<<<< HEAD
-      setPosition(newPosition)
-=======
       requestAnimationFrame(() => {
         setPosition(prev => {
           const isSame =
@@ -131,7 +128,6 @@ export function CustomDropdown({
           return isSame ? prev : newPosition;
         })
       })
->>>>>>> 1a19ced (chore: update service folders from local)
     }
   }, [isOpen, align, minWidth, isMobile])
 

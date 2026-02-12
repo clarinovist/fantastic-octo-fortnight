@@ -254,11 +254,7 @@ func (s *StudentBookingService) Create(ctx context.Context, request dto.CreateSt
 		NotesTutor:        request.Notes,
 		IsFreeFirstCourse: isFreeFirstCourse,
 		Status:            model.BookingStatusPending,
-<<<<<<< HEAD
-		ExpiredAt:         time.Now().Add(s.config.Booking.ExpiredDurtion),
-=======
 		ExpiredAt:         time.Now().Add(s.config.Booking.ExpiredDuration),
->>>>>>> 1a19ced (chore: update service folders from local)
 		CreatedAt:         time.Now(),
 		CreatedBy:         userID,
 		UpdatedAt:         time.Now(),

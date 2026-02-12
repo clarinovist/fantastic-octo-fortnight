@@ -19,11 +19,6 @@ export async function GET(request: Request) {
 
     // Get the Location header that contains the redirect URL
     const location = response.headers.get("location")
-<<<<<<< HEAD
-    console.log("Location header:", location)
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
     if (location) {
       return NextResponse.json({ success: true, resolvedUrl: location })
     }

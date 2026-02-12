@@ -20,8 +20,6 @@ type DeclineTutorBookingRequest struct {
 	ID    uuid.UUID   `json:"-"`
 	Notes null.String `json:"notes"`
 }
-<<<<<<< HEAD
-=======
 
 type CreateTutorBookingRequest struct {
 	StudentID       uuid.UUID   `json:"student_id"`
@@ -41,4 +39,3 @@ type TutorBookingStats struct {
 	Completed int `json:"completed"`
 	Total     int `json:"total"`
 }
->>>>>>> 1a19ced (chore: update service folders from local)

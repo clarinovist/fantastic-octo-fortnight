@@ -1,15 +1,9 @@
 "use server"
 
 import { TOKEN_KEY } from "@/utils/constants/cookies";
-<<<<<<< HEAD
-import type { BaseResponse } from "@/utils/types";
-import { cookies } from "next/headers";
-
-=======
 import type { BaseResponse, Metadata } from "@/utils/types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
->>>>>>> 1a19ced (chore: update service folders from local)
 const baseApiUrl = process.env.NEXT_BASE_API_URL!;
 const defaultInvalidateCache = 0; // seconds
 
@@ -24,13 +18,9 @@ export const fetcher = async <T>(input: RequestInfo, options?: RequestInit): Pro
     }
     : {
       "Content-Type": "application/json",
-<<<<<<< HEAD
-      authorization: `Bearer ${cookiesStore.get(TOKEN_KEY)?.value || ""}`,
-=======
       ...(cookiesStore.get(TOKEN_KEY)?.value
         ? { authorization: `Bearer ${cookiesStore.get(TOKEN_KEY)?.value}` }
         : {}),
->>>>>>> 1a19ced (chore: update service folders from local)
       ...options?.headers,
     };
 
@@ -85,18 +75,6 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
       statusCode: 200,
       success: true
     };
-<<<<<<< HEAD
-  } catch (error: any) {
-    console.error(`Fetch error ${url}:`, JSON.stringify(error, null, 0));
-    return {
-      data: null as unknown as T,
-      statusCode: error.statusCode || 500,
-      success: false,
-      message: error.message || 'An error occurred',
-      ...(error.metadata ? { metadata: error.metadata } : {}),
-      ...(error.error ? { error: error.error } : {}),
-      ...(error.code ? { code: error.code } : {})
-=======
   } catch (error: unknown) {
     const err = error as { statusCode?: number; message?: string; metadata?: unknown; error?: unknown; code?: number };
     console.error(`Fetch error ${url}:`, JSON.stringify(err, null, 0));
@@ -123,7 +101,6 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
       ...(err.metadata ? { metadata: err.metadata as Metadata } : {}),
       ...(err.error ? { error: String(err.error) } : {}),
       ...(err.code ? { code: err.code } : {})
->>>>>>> 1a19ced (chore: update service folders from local)
     };
   }
 }

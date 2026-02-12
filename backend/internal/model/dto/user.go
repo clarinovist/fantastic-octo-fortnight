@@ -264,8 +264,6 @@ func (r *ResetPasswordRequest) Validate() error {
 type ResetPasswordResponse struct {
 	Message string `json:"message"`
 }
-<<<<<<< HEAD
-=======
 
 type ChangePasswordRequest struct {
 	OldPassword string `json:"oldPassword" form:"oldPassword"`
@@ -287,4 +285,3 @@ func (r *ChangePasswordRequest) Validate() error {
 	}
 	return nil
 }
->>>>>>> 1a19ced (chore: update service folders from local)

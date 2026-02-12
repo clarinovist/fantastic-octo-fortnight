@@ -681,8 +681,6 @@ func (s *UserService) prepareRoleSpecificRecord(user *model.User, roleName strin
 		return nil, nil
 	}
 }
-<<<<<<< HEAD
-=======
 
 // ChangePassword changes the user password
 func (s *UserService) ChangePassword(ctx context.Context, userID uuid.UUID, req dto.ChangePasswordRequest) error {
@@ -725,4 +723,3 @@ func (s *UserService) ChangePassword(ctx context.Context, userID uuid.UUID, req 
 
 	return nil
 }
->>>>>>> 1a19ced (chore: update service folders from local)

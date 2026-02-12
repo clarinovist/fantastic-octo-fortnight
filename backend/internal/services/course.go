@@ -154,28 +154,17 @@ ReturnResponse:
 	// Deduplicate courses by tutor ID - keep only the first course per tutor
 	seenTutors := make(map[uuid.UUID]bool)
 	uniqueCourses := []model.Course{}
-<<<<<<< HEAD
-
-=======
 	
->>>>>>> 1a19ced (chore: update service folders from local)
 	for _, course := range courses {
 		if !seenTutors[course.TutorID] {
 			seenTutors[course.TutorID] = true
 			uniqueCourses = append(uniqueCourses, course)
 		}
 	}
-<<<<<<< HEAD
-
-	// Update metadata to reflect the actual count after deduplication
-	metadata.Total = int64(len(uniqueCourses))
-
-=======
 	
 	// Update metadata to reflect the actual count after deduplication
 	metadata.Total = int64(len(uniqueCourses))
 	
->>>>>>> 1a19ced (chore: update service folders from local)
 	return uniqueCourses, metadata, nil
 }
 
@@ -205,13 +194,6 @@ func (s *CourseService) GetLocationByLatLong(ctx context.Context, latitude, long
 	}
 
 	for _, component := range resp[0].AddressComponents {
-<<<<<<< HEAD
-		if len(component.Types) == 0 {
-			continue
-		}
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 		if component.Types[0] == "locality" {
 			location.FullName = component.LongName
 			break

@@ -9,12 +9,6 @@ import { toast } from "sonner"
 import RatingDialog from "./rating-dialog"
 import { ReviewItem } from "./review-item"
 
-<<<<<<< HEAD
-type ReviewListProps = {
-  isTutor: boolean
-}
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 
 const PAGE_SIZE = 10
 
@@ -30,21 +24,6 @@ const fetcher = async (url: string): Promise<{ data: BookingReview[] }> => {
 // Key function for SWR Infinite
 const getKey = (
   pageIndex: number,
-<<<<<<< HEAD
-  previousPageData: { data: BookingReview[] } | null,
-  isTutor: boolean
-) => {
-  if (previousPageData && !previousPageData.data.length) return null
-  const page = pageIndex + 1
-  const baseUrl = isTutor ? "/api/v1/tutors/reviews" : "/api/v1/students/reviews"
-  return `${baseUrl}?page=${page}&pageSize=${PAGE_SIZE}`
-}
-
-export function ReviewList({ isTutor }: ReviewListProps) {
-  const { data, error, size, setSize, isValidating, isLoading, mutate } = useSWRInfinite<{
-    data: BookingReview[]
-  }>((pageIndex, previousPageData) => getKey(pageIndex, previousPageData, isTutor), fetcher, {
-=======
   previousPageData: { data: BookingReview[] } | null
 ) => {
   if (previousPageData && !previousPageData.data.length) return null
@@ -57,7 +36,6 @@ export function ReviewList() {
   const { data, error, size, setSize, isValidating, isLoading, mutate } = useSWRInfinite<{
     data: BookingReview[]
   }>((pageIndex, previousPageData) => getKey(pageIndex, previousPageData), fetcher, {
->>>>>>> 1a19ced (chore: update service folders from local)
     dedupingInterval: 0,
     revalidateFirstPage: true,
     revalidateOnFocus: true,
@@ -114,13 +92,7 @@ export function ReviewList() {
     if (!selectedReview) return
 
     try {
-<<<<<<< HEAD
-      const endpoint = isTutor
-        ? `/api/v1/tutors/reviews/${selectedReview?.id}`
-        : `/api/v1/students/reviews/${selectedReview?.id}`
-=======
       const endpoint = `/api/v1/students/reviews/${selectedReview?.id}`
->>>>>>> 1a19ced (chore: update service folders from local)
       const response = await fetch(endpoint, {
         method: "PUT",
         headers: {
@@ -206,11 +178,7 @@ export function ReviewList() {
         <RatingDialog
           review={selectedReview}
           isOpen={ratingDialogOpen}
-<<<<<<< HEAD
-          isTutor={isTutor}
-=======
           isTutor={false}
->>>>>>> 1a19ced (chore: update service folders from local)
           onClose={handleRatingDialogClose}
           onSubmit={handleRatingSubmit}
         />

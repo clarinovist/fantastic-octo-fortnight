@@ -87,14 +87,9 @@ export default function TableToolbar<T>({
 
   // Cleanup timers on unmount
   useEffect(() => {
-<<<<<<< HEAD
-    return () => {
-      Object.values(debounceTimersRef.current).forEach(clearTimeout);
-=======
     const timers = debounceTimersRef.current;
     return () => {
       Object.values(timers).forEach(clearTimeout);
->>>>>>> 1a19ced (chore: update service folders from local)
     };
   }, []);
 

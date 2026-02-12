@@ -8,12 +8,6 @@ import { useEffect, useRef, useState } from "react"
 import useSWRInfinite from "swr/infinite"
 import { BookingHistoryItem } from "./booking-item"
 
-<<<<<<< HEAD
-type BookingHistoryListProps = {
-  isTutor?: boolean
-}
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 
 const PAGE_SIZE = 10
 
@@ -27,18 +21,6 @@ const fetcher = async (url: string): Promise<{ data: any[] }> => {
 }
 
 // Key function for SWR Infinite
-<<<<<<< HEAD
-const getKey = (pageIndex: number, previousPageData: { data: any[] } | null, isTutor?: boolean) => {
-  if (previousPageData && !previousPageData.data.length) return null
-  const page = pageIndex + 1
-  const baseUrl = isTutor ? "/api/v1/tutors/booking" : "/api/v1/students/booking"
-  return `${baseUrl}?page=${page}&pageSize=${PAGE_SIZE}`
-}
-
-export function BookingHistoryList({ isTutor }: BookingHistoryListProps) {
-  const { data, error, size, setSize, isValidating, isLoading } = useSWRInfinite<{ data: any[] }>(
-    (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, isTutor),
-=======
 const getKey = (pageIndex: number, previousPageData: { data: any[] } | null) => {
   if (previousPageData && !previousPageData.data.length) return null
   const page = pageIndex + 1
@@ -49,7 +31,6 @@ const getKey = (pageIndex: number, previousPageData: { data: any[] } | null) => 
 export function BookingHistoryList() {
   const { data, error, size, setSize, isValidating, isLoading } = useSWRInfinite<{ data: any[] }>(
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData),
->>>>>>> 1a19ced (chore: update service folders from local)
     fetcher,
     {
       dedupingInterval: 0,
@@ -71,20 +52,6 @@ export function BookingHistoryList() {
   // Flatten all bookings from all pages
   const bookings: Booking[] = data
     ? data.flatMap(page =>
-<<<<<<< HEAD
-        page.data.map((booking: any) => ({
-          id: booking.id,
-          bookingDate: booking.bookingDate || booking.date,
-          bookingTime: booking.bookingTime || booking.time,
-          timezone: booking.timezone || "UTC",
-          courseTitle: booking.courseTitle || "Course",
-          courseDescription:
-            booking.courseDescription || booking.message || "No description available",
-          status: booking.status,
-          expiredAt: booking.expiredAt || booking.extra || "",
-        }))
-      )
-=======
       page.data.map((booking: any) => ({
         id: booking.id,
         bookingDate: booking.bookingDate || booking.date,
@@ -97,7 +64,6 @@ export function BookingHistoryList() {
         expiredAt: booking.expiredAt || booking.extra || "",
       }))
     )
->>>>>>> 1a19ced (chore: update service folders from local)
     : []
 
   const isEmpty = data?.[0]?.data?.length === 0
@@ -128,11 +94,7 @@ export function BookingHistoryList() {
   // Handler for clicking detail button
   const handleDetailClick = (id: string) => {
     setBookingDetailLoading(true)
-<<<<<<< HEAD
-    const url = isTutor ? `/api/v1/tutors/booking/${id}` : `/api/v1/students/booking/${id}`
-=======
     const url = `/api/v1/students/booking/${id}`
->>>>>>> 1a19ced (chore: update service folders from local)
     fetch(url, { next: { revalidate: 0 } })
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch booking detail")
@@ -152,16 +114,9 @@ export function BookingHistoryList() {
   // Fetch booking detail if bookingId exists
   useEffect(() => {
     if (bookingId) {
-<<<<<<< HEAD
-      setBookingDetailLoading(true)
-      const url = isTutor
-        ? `/api/v1/tutors/booking/${bookingId}`
-        : `/api/v1/students/booking/${bookingId}`
-=======
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setBookingDetailLoading(true)
       const url = `/api/v1/students/booking/${bookingId}`
->>>>>>> 1a19ced (chore: update service folders from local)
       fetch(url, { next: { revalidate: 0 } })
         .then(res => {
           if (!res.ok) throw new Error("Failed to fetch booking detail")
@@ -177,11 +132,7 @@ export function BookingHistoryList() {
         })
         .finally(() => setBookingDetailLoading(false))
     }
-<<<<<<< HEAD
-  }, [bookingId, isTutor])
-=======
   }, [bookingId])
->>>>>>> 1a19ced (chore: update service folders from local)
 
   if (isLoading) {
     return (
@@ -220,11 +171,7 @@ export function BookingHistoryList() {
             <BookingHistoryItem
               key={booking.id}
               booking={booking}
-<<<<<<< HEAD
-              isReportable={!isTutor}
-=======
               isReportable={true}
->>>>>>> 1a19ced (chore: update service folders from local)
               onDetail={() => handleDetailClick(booking.id)}
             />
           ))
@@ -245,13 +192,7 @@ export function BookingHistoryList() {
           open={detailDialogOpen}
           onOpenChange={setDetailDialogOpen}
           loading={bookingDetailLoading}
-<<<<<<< HEAD
-          isReportable={!isTutor}
-          isAcceptable={isTutor && bookingDetail?.status === "pending"}
-          isRejectable={isTutor && bookingDetail?.status === "pending"}
-=======
           isReportable={true}
->>>>>>> 1a19ced (chore: update service folders from local)
         />
       )}
     </div>

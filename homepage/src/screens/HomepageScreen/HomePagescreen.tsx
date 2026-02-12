@@ -64,13 +64,7 @@ export const HomepageScreen = (): JSX.Element => {
       {/* Navigation */}
       <div className="w-full bg-[#7000fe] shadow-[0px_4px_24px_#0000004c] px-2 sm:px-4 md:px-8 lg:px-16 py-2 sm:py-3">
         <div className="flex items-center justify-between gap-1 sm:gap-2">
-<<<<<<< HEAD
-          <a href="https://app.lesprivate.id" target="_blank" rel="noopener noreferrer">
-            <img className="h-8 sm:h-10 md:h-14 flex-shrink-0 cursor-pointer hover:opacity-80 transition-opacity" alt="Lesprivat logo" src="/images/cdn/lesprivat-logo-svg-1.svg" />
-          </a>
-=======
           <img className="h-8 sm:h-10 md:h-14 flex-shrink-0" alt="Lesprivat logo" src="/images/cdn/lesprivat-logo-svg-1.svg" />
->>>>>>> 1a19ced (chore: update service folders from local)
           
           <div className="hidden lg:flex items-center gap-8 flex-1 justify-center">
             <button 

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 "use server"
 
->>>>>>> 1a19ced (chore: update service folders from local)
 import type { BaseResponse, Tutor, TutorCourse, TutorDetail, TutorDocument } from "@/utils/types";
 import { fetcherBase } from "./base";
 
@@ -102,11 +99,7 @@ export async function changeDocumentStatus(tutorId: string, documentId: string, 
   });
 }
 
-<<<<<<< HEAD
-export const uploadTutorDocument = (url: string, tutorId: string): Promise<BaseResponse<string>> => {
-=======
 export async function uploadTutorDocument(url: string, tutorId: string): Promise<BaseResponse<string>> {
->>>>>>> 1a19ced (chore: update service folders from local)
   return fetcherBase(`/v1/admin/tutors/${tutorId}/documents`, {
     method: "POST",
     body: JSON.stringify({ url }),

@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-import type { BaseResponse, ClassType, Course, CourseDetail, CoursePayload, CourseStatus } from "@/utils/types";
-=======
 "use server"
 
 import type { BaseResponse, ClassType, Course, CourseDetail, CoursePayload, CourseStatus, CourseSchedule, CourseCategory } from "@/utils/types";
->>>>>>> 1a19ced (chore: update service folders from local)
 import { fetcherBase } from "./base";
 
 type CoursesParams = {
@@ -65,13 +61,8 @@ export type CreateCoursePayload = {
     offline: { durationInHour: number; price: number }[];
     online: { durationInHour: number; price: number }[];
   };
-<<<<<<< HEAD
-  courseSchedulesOffline: Record<string, { startTime: string; timezone: string }[]>;
-  courseSchedulesOnline: Record<string, { startTime: string; timezone: string }[]>;
-=======
   courseSchedulesOffline: CourseSchedule;
   courseSchedulesOnline: CourseSchedule;
->>>>>>> 1a19ced (chore: update service folders from local)
   description?: string;
   isFreeFirstCourse?: boolean;
   levelEducationCourses?: string[];
@@ -94,10 +85,7 @@ export async function deleteCourse(courseId: string): Promise<BaseResponse<strin
     method: "DELETE",
   });
 }
-<<<<<<< HEAD
-=======
 
 export async function getCategories(): Promise<BaseResponse<CourseCategory[]>> {
   return fetcherBase<CourseCategory[]>("/v1/course-categories");
 }
->>>>>>> 1a19ced (chore: update service folders from local)

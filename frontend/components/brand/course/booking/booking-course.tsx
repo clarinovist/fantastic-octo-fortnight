@@ -35,13 +35,6 @@ interface BookingPayload {
   notes: string
 }
 
-<<<<<<< HEAD
-// Minimum days in advance required for booking (H days)
-// Configurable via NEXT_PUBLIC_MINIMUM_BOOKING_DAYS environment variable
-const MINIMUM_BOOKING_DAYS = parseInt(process.env.NEXT_PUBLIC_MINIMUM_BOOKING_DAYS || "1", 10)
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 // Helper function to generate dates array with booking consideration
 function generateDatesWithBookings(
   course: CourseDetail,
@@ -72,13 +65,6 @@ function generateDatesWithBookings(
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-<<<<<<< HEAD
-  // Calculate minimum booking date (today + H days)
-  const minBookingDate = new Date(today)
-  minBookingDate.setDate(minBookingDate.getDate() + MINIMUM_BOOKING_DAYS)
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
   // Get schedules based on selected tab or tutor's classType
   const currentSchedules = (() => {
     if (course.tutor.classType === "all") {
@@ -100,14 +86,8 @@ function generateDatesWithBookings(
     const day = String(current.getDate()).padStart(2, "0")
     const fullDate = `${year}-${month}-${day}`
 
-<<<<<<< HEAD
-    // Check if date is in the past or within minimum booking days
-    const isPastDate = current.getTime() < today.getTime()
-    const isWithinMinimumDays = current.getTime() < minBookingDate.getTime()
-=======
     // Check if date is in the past
     const isPastDate = current.getTime() < today.getTime()
->>>>>>> 1a19ced (chore: update service folders from local)
 
     // Check if there are available time slots for this date
     let hasAvailableSlots = false
@@ -136,11 +116,7 @@ function generateDatesWithBookings(
       date: String(current.getDate()), // e.g. "20"
       month: monthFmt.format(current), // e.g. "Agu"
       shortMonth: monthFmt.format(current), // e.g. "Agu"
-<<<<<<< HEAD
-      isAvailable: !isPastDate && !isWithinMinimumDays && hasAvailableSlots,
-=======
       isAvailable: !isPastDate && hasAvailableSlots,
->>>>>>> 1a19ced (chore: update service folders from local)
       fullDate: fullDate, // e.g. "2024-09-08"
     })
   }
@@ -211,11 +187,7 @@ export function BookingCourse(props: BookingCourseProps) {
         address: user.profile.location?.fullName,
       })
     }
-<<<<<<< HEAD
-  }, [user?.profile?.latitude, user?.profile?.longitude, user?.profile?.location?.fullName])
-=======
   }, [user?.profile?.latitude, user?.profile?.longitude, user?.profile?.location?.fullName, studentLocation])
->>>>>>> 1a19ced (chore: update service folders from local)
 
   const currentSchedules = useMemo(() => {
     if (detail.tutor.classType === "all") {
@@ -414,21 +386,12 @@ export function BookingCourse(props: BookingCourseProps) {
         {dateOptions.map(date => (
           <div
             key={date.fullDate}
-<<<<<<< HEAD
-            className={`flex flex-col items-center p-2 m-1 lg:p-3 rounded-lg transition-colors min-w-[50px] lg:min-w-[80px] ${
-              !date.isAvailable
-=======
             className={`flex flex-col items-center p-2 m-1 lg:p-3 rounded-lg transition-colors min-w-[50px] lg:min-w-[80px] ${!date.isAvailable
->>>>>>> 1a19ced (chore: update service folders from local)
                 ? "bg-muted text-muted-foreground cursor-not-allowed"
                 : isSelected(date.fullDate)
                   ? "bg-[#7000FE] text-white"
                   : "hover:bg-[#7000FE80]/50 cursor-pointer"
-<<<<<<< HEAD
-            }`}
-=======
               }`}
->>>>>>> 1a19ced (chore: update service folders from local)
             onClick={() => date.isAvailable && onSelect(date.fullDate)}
           >
             <div className="text-xs">{date.day}</div>
@@ -470,21 +433,12 @@ export function BookingCourse(props: BookingCourseProps) {
             return (
               <span
                 key={`${s.startTime}-${index}`}
-<<<<<<< HEAD
-                className={`px-3 lg:px-4 py-2 rounded-lg font-bold transition-colors min-w-[60px] lg:min-w-[80px] text-center ${
-                  !isAvailable
-=======
                 className={`px-3 lg:px-4 py-2 rounded-lg font-bold transition-colors min-w-[60px] lg:min-w-[80px] text-center ${!isAvailable
->>>>>>> 1a19ced (chore: update service folders from local)
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : isSelectedTime
                       ? "bg-[#7000FE] text-white border border-[#7000FE] cursor-pointer"
                       : "border border-[#7000FE] text-[#7000FE] hover:bg-[#7000FE80]/50 cursor-pointer"
-<<<<<<< HEAD
-                }`}
-=======
                   }`}
->>>>>>> 1a19ced (chore: update service folders from local)
                 onClick={() => {
                   if (isAvailable) {
                     setSelectedTime(start)
@@ -538,17 +492,6 @@ export function BookingCourse(props: BookingCourseProps) {
             tercepat
           </p>
         </div>
-<<<<<<< HEAD
-        {MINIMUM_BOOKING_DAYS > 0 && (
-          <div className="flex gap-4 max-w-md text-sm">
-            <Icon name="info" fill="#0066CC" />
-            <p>
-              Pemesanan harus dilakukan minimal {MINIMUM_BOOKING_DAYS} hari sebelumnya
-            </p>
-          </div>
-        )}
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
       </div>
       <div className="space-y-4">
         <h3 className="font-bold text-xl">Booking</h3>

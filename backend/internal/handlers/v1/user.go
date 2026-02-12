@@ -7,10 +7,7 @@ import (
 	"github.com/lesprivate/backend/internal/model/dto"
 	"github.com/lesprivate/backend/shared/base"
 	"github.com/lesprivate/backend/shared/logger"
-<<<<<<< HEAD
-=======
 	"github.com/lesprivate/backend/transport/http/middleware"
->>>>>>> 1a19ced (chore: update service folders from local)
 	"github.com/lesprivate/backend/transport/http/response"
 )
 
@@ -363,8 +360,6 @@ func (a *Api) ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, result, base.SetMessage(result.Message))
 }
-<<<<<<< HEAD
-=======
 
 // ChangePassword
 // @Summary Change user password
@@ -414,4 +409,3 @@ func (a *Api) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, nil, base.SetMessage("Password changed successfully"))
 }
->>>>>>> 1a19ced (chore: update service folders from local)

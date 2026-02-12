@@ -30,11 +30,7 @@ export function FullscreenMapContent({
   const [studentAddress, setStudentAddress] = useState("")
   const [isAutocompleteOpen, setIsAutocompleteOpen] = useState(false)
   const [currentGPSLocation, setCurrentGPSLocation] = useState<{ lat: number; lng: number } | null>(null)
-<<<<<<< HEAD
-  const [isGettingGPSLocation, setIsGettingGPSLocation] = useState(false)
-=======
   const [, setIsGettingGPSLocation] = useState(false)
->>>>>>> 1a19ced (chore: update service folders from local)
 
   const { searchInputRef } = useMapAutocomplete({
     setStudentLocation,
@@ -62,11 +58,7 @@ export function FullscreenMapContent({
         // Check if permissions API is available
         if ('permissions' in navigator) {
           const permission = await navigator.permissions.query({ name: 'geolocation' })
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> 1a19ced (chore: update service folders from local)
           if (permission.state === 'granted') {
             // Permission already granted, get location for indicator only
             setIsGettingGPSLocation(true)

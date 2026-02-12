@@ -15,11 +15,7 @@ import {
 import type { SubscriptionItem } from "@/utils/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
-<<<<<<< HEAD
-import { SubscriptionForm } from "./subscription-form";
-=======
 import { SubscriptionForm, type SubscriptionSubmitPayload } from "./subscription-form";
->>>>>>> 1a19ced (chore: update service folders from local)
 
 type SubscriptionListProps = {
   subscriptions: SubscriptionItem[];
@@ -98,11 +94,7 @@ export function SubscriptionList({
     });
   };
 
-<<<<<<< HEAD
-  const handleFormSubmit = async (subscriptionId: string, payload: any) => {
-=======
   const handleFormSubmit = async (subscriptionId: string, payload: SubscriptionSubmitPayload) => {
->>>>>>> 1a19ced (chore: update service folders from local)
     const result = await updateSubscriptionPricesAction(
       subscriptionId,
       payload

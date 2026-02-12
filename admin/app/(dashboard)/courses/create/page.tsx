@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import { ManagementForm } from "@/components/course/management-form";
-import { MainLayout } from "@/components/layout/main-layout";
-
-export default function CourseCreatePage() {
-  return (
-    <MainLayout title="Create New Course">
-      <div className="@container/main p-4">
-        <ManagementForm />
-=======
 import { MainLayout } from "@/components/layout/main-layout";
 import { CourseWizard } from "@/components/course/course-wizard";
 // import type { Tutor, CourseCategory } from "@/utils/types";
@@ -30,7 +20,6 @@ export default async function CourseCreatePage() {
           tutors={tutors}
           categories={categories}
         />
->>>>>>> 1a19ced (chore: update service folders from local)
       </div>
     </MainLayout>
   );

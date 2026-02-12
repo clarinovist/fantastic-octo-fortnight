@@ -1,10 +1,7 @@
 package admin
 
 import (
-<<<<<<< HEAD
-=======
 	"encoding/json"
->>>>>>> 1a19ced (chore: update service folders from local)
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -12,10 +9,7 @@ import (
 	"github.com/lesprivate/backend/internal/model/dto"
 	"github.com/lesprivate/backend/internal/services"
 	"github.com/lesprivate/backend/shared/base"
-<<<<<<< HEAD
-=======
 	"github.com/lesprivate/backend/shared/logger"
->>>>>>> 1a19ced (chore: update service folders from local)
 	"github.com/lesprivate/backend/transport/http/response"
 )
 
@@ -162,8 +156,6 @@ func (a *Api) SendReminderToTutor(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, nil, base.SetMessage("Reminder email sent successfully"))
 }
-<<<<<<< HEAD
-=======
 
 // CreateBooking
 // @Summary Create a booking as admin
@@ -272,4 +264,3 @@ func (a *Api) UpdateBooking(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, resp)
 }
->>>>>>> 1a19ced (chore: update service folders from local)

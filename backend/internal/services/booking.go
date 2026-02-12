@@ -15,20 +15,14 @@ import (
 	"github.com/lesprivate/backend/internal/repositories"
 	"github.com/lesprivate/backend/shared"
 	"github.com/lesprivate/backend/shared/logger"
-<<<<<<< HEAD
-=======
 	"github.com/shopspring/decimal"
->>>>>>> 1a19ced (chore: update service folders from local)
 )
 
 type BookingService struct {
 	config              *config.Config
 	booking             *repositories.BookingRepository
-<<<<<<< HEAD
-=======
 	student             *repositories.StudentRepository
 	course              *repositories.CourseRepository
->>>>>>> 1a19ced (chore: update service folders from local)
 	notification        *repositories.NotificationRepository
 	review              *repositories.ReviewRepository
 	notificationService *NotificationService
@@ -38,11 +32,8 @@ type BookingService struct {
 func NewBookingService(
 	config *config.Config,
 	booking *repositories.BookingRepository,
-<<<<<<< HEAD
-=======
 	student *repositories.StudentRepository,
 	course *repositories.CourseRepository,
->>>>>>> 1a19ced (chore: update service folders from local)
 	notification *repositories.NotificationRepository,
 	review *repositories.ReviewRepository,
 	notificationService *NotificationService,
@@ -51,11 +42,8 @@ func NewBookingService(
 	return &BookingService{
 		config:              config,
 		booking:             booking,
-<<<<<<< HEAD
-=======
 		student:             student,
 		course:              course,
->>>>>>> 1a19ced (chore: update service folders from local)
 		notification:        notification,
 		review:              review,
 		notificationService: notificationService,
@@ -468,8 +456,6 @@ func (s *BookingService) ReminderTutor(ctx context.Context, id uuid.UUID) error 
 
 	return nil
 }
-<<<<<<< HEAD
-=======
 
 func (s *BookingService) CreateBookingForAdmin(ctx context.Context, req dto.AdminCreateBookingRequest) (*model.Booking, error) {
 	// Validate student exists
@@ -608,4 +594,3 @@ func (s *BookingService) UpdateBookingForAdmin(ctx context.Context, id uuid.UUID
 	logger.InfoCtx(ctx).Str("booking_id", id.String()).Msg("[UpdateBookingForAdmin] Booking updated successfully by admin")
 	return updatedBooking, nil
 }
->>>>>>> 1a19ced (chore: update service folders from local)

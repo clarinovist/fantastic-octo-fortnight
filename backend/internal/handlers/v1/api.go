@@ -7,10 +7,7 @@ import (
 
 	"github.com/lesprivate/backend/config"
 	"github.com/lesprivate/backend/internal/handlers/v1/admin"
-<<<<<<< HEAD
-=======
 	"github.com/lesprivate/backend/internal/handlers/v1/mentor"
->>>>>>> 1a19ced (chore: update service folders from local)
 	"github.com/lesprivate/backend/internal/repositories"
 	"github.com/lesprivate/backend/internal/services"
 	"github.com/lesprivate/backend/shared"
@@ -44,10 +41,7 @@ type Api struct {
 	webhook             *services.WebhookService
 	jwt                 *jwt.JWT
 	admin               *admin.Api
-<<<<<<< HEAD
-=======
 	mentor              *mentor.MentorHandler
->>>>>>> 1a19ced (chore: update service folders from local)
 	courseRepo          *repositories.CourseRepository
 	userRepo            *repositories.UserRepository
 	roleRepo            *repositories.RoleRepository
@@ -77,10 +71,7 @@ func NewApi(
 	userRepo *repositories.UserRepository,
 	roleRepo *repositories.RoleRepository,
 	adminAPI *admin.Api,
-<<<<<<< HEAD
-=======
 	mentorHandler *mentor.MentorHandler,
->>>>>>> 1a19ced (chore: update service folders from local)
 	jwt *jwt.JWT,
 ) *Api {
 	return &Api{
@@ -105,10 +96,7 @@ func NewApi(
 		webhook:             webhook,
 		jwt:                 jwt,
 		admin:               adminAPI,
-<<<<<<< HEAD
-=======
 		mentor:              mentorHandler,
->>>>>>> 1a19ced (chore: update service folders from local)
 		courseRepo:          courseRepo,
 		userRepo:            userRepo,
 		roleRepo:            roleRepo,
@@ -243,8 +231,6 @@ func (a *Api) Router(r chi.Router) {
 		r.Get("/me", a.GetProfile)
 		r.Put("/profile", a.UpdateProfile)
 		r.Put("/profile/location", a.UpdateProfileLocation)
-<<<<<<< HEAD
-=======
 		r.Put("/profile/location", a.UpdateProfileLocation)
 		r.Put("/profile/password", a.ChangePassword)
 	})
@@ -253,6 +239,5 @@ func (a *Api) Router(r chi.Router) {
 	r.Route("/mentor", func(r chi.Router) {
 		r.Use(middleware.JWTAuth(a.jwt))
 		a.mentor.Router(r)
->>>>>>> 1a19ced (chore: update service folders from local)
 	})
 }

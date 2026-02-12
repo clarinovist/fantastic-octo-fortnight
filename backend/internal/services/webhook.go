@@ -19,14 +19,6 @@ import (
 type WebhookXenditFunc func(ctx context.Context, request dto.WebhookXenditRequest) error
 
 type WebhookService struct {
-<<<<<<< HEAD
-	subscription *repositories.SubscriptionRepository
-	payment      *repositories.PaymentRepository
-	student      *repositories.StudentRepository
-	notification *NotificationService
-	xendit       map[string]WebhookXenditFunc
-	config       *config.Config
-=======
 	subscription  *repositories.SubscriptionRepository
 	payment       *repositories.PaymentRepository
 	student       *repositories.StudentRepository
@@ -34,7 +26,6 @@ type WebhookService struct {
 	mentorBalance *MentorBalanceService
 	xendit        map[string]WebhookXenditFunc
 	config        *config.Config
->>>>>>> 1a19ced (chore: update service folders from local)
 }
 
 func NewWebhookService(
@@ -43,16 +34,6 @@ func NewWebhookService(
 	student *repositories.StudentRepository,
 	notification *NotificationService,
 	config *config.Config,
-<<<<<<< HEAD
-) *WebhookService {
-	s := &WebhookService{
-		subscription: subscription,
-		payment:      payment,
-		student:      student,
-		notification: notification,
-		config:       config,
-		xendit:       make(map[string]WebhookXenditFunc),
-=======
 	mentorBalance *MentorBalanceService,
 ) *WebhookService {
 	s := &WebhookService{
@@ -63,7 +44,6 @@ func NewWebhookService(
 		config:        config,
 		mentorBalance: mentorBalance,
 		xendit:        make(map[string]WebhookXenditFunc),
->>>>>>> 1a19ced (chore: update service folders from local)
 	}
 
 	s.xendit[dto.WebhookXenditEventTypeRecurringCycleSucceeded] = s.handleWebhookXenditRecurringCycleSucceeded
@@ -199,8 +179,6 @@ func (s *WebhookService) handleWebhookXenditPaymentSessionCompleted(ctx context.
 		}
 	}()
 
-<<<<<<< HEAD
-=======
 	// Credit mentor balance if payment is for a booking
 	if payment.TutorID != uuid.Nil {
 		go func() {
@@ -215,7 +193,6 @@ func (s *WebhookService) handleWebhookXenditPaymentSessionCompleted(ctx context.
 		}()
 	}
 
->>>>>>> 1a19ced (chore: update service folders from local)
 	return nil
 }
 

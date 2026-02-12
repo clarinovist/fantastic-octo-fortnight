@@ -524,11 +524,7 @@ func (s *NotificationService) CreateReviewBooking(ctx context.Context, bookings 
 			UserID:       booking.Tutor.UserID,
 			Type:         model.NotificationTypeInfo,
 			Title:        "Review Booking",
-<<<<<<< HEAD
-			Message:      fmt.Sprintf("Sesi les selesai! Yuk, beri ulasan untuk [nama siswa] agar pengalaman mengajar makin baik!", booking.Student.User.Name),
-=======
 			Message:      fmt.Sprintf("Sesi les selesai! Yuk, beri ulasan untuk %s agar pengalaman mengajar makin baik!", booking.Student.User.Name),
->>>>>>> 1a19ced (chore: update service folders from local)
 			Link:         s.config.Frontend.BaseURL + s.config.Frontend.Account,
 			IsRead:       false,
 			IsDismissed:  false,

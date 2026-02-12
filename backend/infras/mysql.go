@@ -99,13 +99,10 @@ func NewMySQL(c *config.Config) *MySQL {
 	return m
 }
 
-<<<<<<< HEAD
-=======
 func ProvideGORM(m *MySQL) *gorm.DB {
 	return m.Write
 }
 
->>>>>>> 1a19ced (chore: update service folders from local)
 func (m *MySQL) RunMigration(c *config.Config) {
 	db, err := m.Write.DB()
 	if err != nil {

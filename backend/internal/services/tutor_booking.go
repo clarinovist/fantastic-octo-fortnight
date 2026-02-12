@@ -12,20 +12,14 @@ import (
 	"github.com/lesprivate/backend/shared"
 	"github.com/lesprivate/backend/shared/logger"
 	"github.com/lesprivate/backend/transport/http/middleware"
-<<<<<<< HEAD
-=======
 	"github.com/shopspring/decimal"
->>>>>>> 1a19ced (chore: update service folders from local)
 )
 
 type TutorBookingService struct {
 	booking       *repositories.BookingRepository
 	course        *repositories.CourseRepository
 	tutor         *repositories.TutorRepository
-<<<<<<< HEAD
-=======
 	student       *repositories.StudentRepository
->>>>>>> 1a19ced (chore: update service folders from local)
 	notification  *NotificationService
 	courseService *CourseService
 	config        *config.Config
@@ -41,10 +35,7 @@ func NewTutorBookingService(
 	config *config.Config,
 ) *TutorBookingService {
 	return &TutorBookingService{
-<<<<<<< HEAD
-=======
 		student:       student,
->>>>>>> 1a19ced (chore: update service folders from local)
 		booking:       booking,
 		course:        course,
 		tutor:         tutor,
@@ -80,8 +71,6 @@ func (s *TutorBookingService) List(ctx context.Context, request dto.ListTutorBoo
 	return bookings, metadata, nil
 }
 
-<<<<<<< HEAD
-=======
 // ListByStudentID returns all bookings for a specific student under this tutor
 func (s *TutorBookingService) ListByStudentID(ctx context.Context, userID uuid.UUID, studentID uuid.UUID) ([]model.Booking, model.Metadata, error) {
 	tutor, err := s.tutor.GetByUserID(ctx, userID)
@@ -114,7 +103,6 @@ func (s *TutorBookingService) ListByStudentID(ctx context.Context, userID uuid.U
 	return bookings, metadata, nil
 }
 
->>>>>>> 1a19ced (chore: update service folders from local)
 func (s *TutorBookingService) GetByID(ctx context.Context, id uuid.UUID) (*model.Booking, error) {
 	tutor, err := s.tutor.GetByUserID(ctx, middleware.GetUserID(ctx))
 	if err != nil {
@@ -268,8 +256,6 @@ func (s *TutorBookingService) sendEmailWhenUpdatStatusBooking(ctx context.Contex
 
 	return nil
 }
-<<<<<<< HEAD
-=======
 func (s *TutorBookingService) Create(ctx context.Context, request dto.CreateTutorBookingRequest) (model.Booking, error) {
 	tutor, err := s.tutor.GetByUserID(ctx, middleware.GetUserID(ctx))
 	if err != nil {
@@ -390,4 +376,3 @@ func (s *TutorBookingService) GetStats(ctx context.Context, userID uuid.UUID) (*
 		Total:     int(total),
 	}, nil
 }
->>>>>>> 1a19ced (chore: update service folders from local)

@@ -29,11 +29,7 @@ type Config struct {
 		URL  string `mapstructure:"URL"`
 	} `mapstructure:"APP"`
 	Booking struct {
-<<<<<<< HEAD
-		ExpiredDurtion                    time.Duration `mapstructure:"EXPIRED_DURATION"`
-=======
 		ExpiredDuration                   time.Duration `mapstructure:"EXPIRED_DURATION"`
->>>>>>> 1a19ced (chore: update service folders from local)
 		MaxBookingPerDay                  int           `mapstructure:"MAX_BOOKING_PER_DAY"`
 		MaxBookingPerCategory             int           `mapstructure:"MAX_BOOKING_PER_CATEGORY"`
 		MaxBookingFreeFirstCourse         int           `mapstructure:"MAX_BOOKING_FREE_FIRST_COURSE"`

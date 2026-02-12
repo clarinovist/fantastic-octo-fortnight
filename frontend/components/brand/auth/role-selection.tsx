@@ -121,16 +121,12 @@ export function RoleSection() {
         const response = await roleNameAction(formData)
 
         if (response.success) {
-<<<<<<< HEAD
-          router.replace("/")
-=======
           if (values.roleName === "tutor") {
             const mentorUrl = process.env.NEXT_PUBLIC_MENTOR_URL || "/";
             window.location.href = mentorUrl;
           } else {
             router.replace("/");
           }
->>>>>>> 1a19ced (chore: update service folders from local)
         } else {
           setSubmitError(response.message || "Login failed. Please try again.")
         }
@@ -142,11 +138,7 @@ export function RoleSection() {
         lastSubmittedRole.current = values.roleName
       }
     },
-<<<<<<< HEAD
-    [router]
-=======
     [router, isLoading]
->>>>>>> 1a19ced (chore: update service folders from local)
   )
 
   // Auto-submit when role is selected
@@ -159,11 +151,7 @@ export function RoleSection() {
     ) {
       onSubmit({ roleName: watchedRoleName })
     }
-<<<<<<< HEAD
-  }, [watchedRoleName, isLoading])
-=======
   }, [watchedRoleName, isLoading, onSubmit])
->>>>>>> 1a19ced (chore: update service folders from local)
 
   return (
     <Card className="w-full p-4 mx-4 bg-white border-0 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.15)] rounded-3xl">
@@ -216,21 +204,12 @@ export function RoleSection() {
                             >
                               <div
                                 className={`relative flex items-center justify-between p-4 rounded-full border-2 transition-all duration-200
-<<<<<<< HEAD
-                                ${
-                                  field.value === "tutor"
-=======
                                 ${field.value === "tutor"
->>>>>>> 1a19ced (chore: update service folders from local)
                                     ? "border-main bg-main"
                                     : errors.roleName
                                       ? "border-red-500"
                                       : "border-main/50 bg-white hover:border-main/50"
-<<<<<<< HEAD
-                                }
-=======
                                   }
->>>>>>> 1a19ced (chore: update service folders from local)
                                 ${isLoading ? "opacity-50" : ""}
                           `}
                               >
@@ -283,22 +262,12 @@ export function RoleSection() {
                               <div
                                 className={`
                             relative flex items-center justify-between p-4 rounded-full border-2 transition-all duration-200
-<<<<<<< HEAD
-                            ${
-                              field.value === "student"
-                                ? "border-main bg-main"
-                                : errors.roleName
-                                  ? "border-red-500"
-                                  : "border-main/50 bg-white hover:border-main/50"
-                            }
-=======
                             ${field.value === "student"
                                     ? "border-main bg-main"
                                     : errors.roleName
                                       ? "border-red-500"
                                       : "border-main/50 bg-white hover:border-main/50"
                                   }
->>>>>>> 1a19ced (chore: update service folders from local)
                             ${isLoading ? "opacity-50" : ""}
                           `}
                               >

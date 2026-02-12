@@ -25,10 +25,7 @@ const (
 const (
 	ErrInternalServer                   = "internal server error"
 	ErrUnauthorized                     = "unauthorized"
-<<<<<<< HEAD
-=======
 	ErrForbidden                        = "forbidden"
->>>>>>> 1a19ced (chore: update service folders from local)
 	ErrEntityNotFound                   = "not found"
 	ErrBadRequest                       = "bad request"
 	ErrMaxBookingPerDay                 = "max booking per day"
@@ -43,10 +40,7 @@ var (
 	errorMapMessage = map[string]string{
 		ErrInternalServer:                   "Something went wrong",
 		ErrUnauthorized:                     "Unauthorized",
-<<<<<<< HEAD
-=======
 		ErrForbidden:                        "Forbidden",
->>>>>>> 1a19ced (chore: update service folders from local)
 		ErrEntityNotFound:                   "'%s' not found",
 		ErrBadRequest:                       "Bad request: %s",
 		ErrMaxBookingPerDay:                 "You have reached the maximum number of bookings per day",
@@ -60,10 +54,7 @@ var (
 	errorMapHttpCode = map[string]int{
 		ErrInternalServer:                   http.StatusInternalServerError,
 		ErrUnauthorized:                     http.StatusUnauthorized,
-<<<<<<< HEAD
-=======
 		ErrForbidden:                        http.StatusForbidden,
->>>>>>> 1a19ced (chore: update service folders from local)
 		ErrEntityNotFound:                   http.StatusNotFound,
 		ErrBadRequest:                       http.StatusBadRequest,
 		ErrMaxBookingPerDay:                 http.StatusBadRequest,

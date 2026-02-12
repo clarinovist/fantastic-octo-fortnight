@@ -3,19 +3,11 @@
 import { logoutAction } from "@/actions/auth"
 import { Button } from "@/components/ui/button"
 import { useUserProfile } from "@/context/user-profile"
-<<<<<<< HEAD
-import { useUnreadNotifications } from "@/hooks/use-unread-notifications"
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 import { TOKEN_KEY } from "@/utils/constants/cookies"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { BackButton } from "./back-button"
-<<<<<<< HEAD
-import { NotificationContainer } from "./notification/notification-container"
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 
 interface AppSidebarProps {
   className?: string
@@ -46,14 +38,8 @@ const MenuPremium = ({
         <Button
           variant="ghost"
           size="sm"
-<<<<<<< HEAD
-          className={`w-full flex ${
-            isExpanded ? "flex-row" : "flex-col"
-          } items-center gap-2 h-auto py-3 px-4 ${type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
-=======
           className={`w-full flex ${isExpanded ? "flex-row" : "flex-col"
             } items-center gap-2 h-auto py-3 px-4 ${type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
->>>>>>> 1a19ced (chore: update service folders from local)
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -95,11 +81,6 @@ export function AppSidebar(props: AppSidebarProps) {
   const user = useUserProfile()
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-<<<<<<< HEAD
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false)
-  const { hasUnread, refetch: refetchUnread } = useUnreadNotifications()
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
   const [isMobile, setIsMobile] = useState(false)
 
   // Check if user is logged in by checking for token in cookies
@@ -148,17 +129,6 @@ export function AppSidebar(props: AppSidebarProps) {
     }
   }
 
-<<<<<<< HEAD
-  const handleNotificationClick = () => {
-    setIsNotificationOpen(true)
-    refetchUnread() // Refresh unread count when opening notifications
-  }
-
-  const handleNotificationClose = () => {
-    setIsNotificationOpen(false)
-  }
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 
   const handleLogout = async () => {
     user?.resetProfile()
@@ -183,33 +153,6 @@ export function AppSidebar(props: AppSidebarProps) {
         {/* Close Button for Mobile */}
         <div className="xl:hidden block w-full px-6 pb-6">
           <div className="flex justify-between items-center">
-<<<<<<< HEAD
-            {props.isShowNotification && (
-              <button
-                onClick={handleNotificationClick}
-                className="xl:hidden p-2 rounded-full transition-colors duration-200 relative"
-                aria-label="Show notifications"
-              >
-                <svg
-                  className="size-7"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="23"
-                  height="27"
-                  viewBox="0 0 23 27"
-                  fill="none"
-                >
-                  <path
-                    d="M22.5165 18.6415C22.4171 18.5209 22.3196 18.4004 22.2238 18.2841C20.9072 16.6803 20.1107 15.7124 20.1107 11.1725C20.1107 8.82201 19.5523 6.89344 18.4518 5.44701C17.6403 4.37846 16.5433 3.56786 15.0975 2.96879C15.0788 2.95837 15.0622 2.9447 15.0484 2.92842C14.5283 1.17462 13.1052 0 11.5001 0C9.89509 0 8.47257 1.17462 7.95252 2.92661C7.93866 2.94232 7.92227 2.95556 7.90404 2.96578C4.52996 4.3646 2.8902 7.04833 2.8902 11.1706C2.8902 15.7124 2.09485 16.6803 0.777058 18.2823C0.681306 18.3986 0.583758 18.5167 0.484414 18.6396C0.227798 18.9513 0.0652103 19.3305 0.0158932 19.7323C-0.0334239 20.1341 0.0325937 20.5417 0.206133 20.9069C0.575379 21.6904 1.36235 22.1768 2.26062 22.1768H20.7463C21.6403 22.1768 22.4219 21.691 22.7924 20.9111C22.9667 20.5458 23.0333 20.1379 22.9844 19.7356C22.9355 19.3333 22.7731 18.9536 22.5165 18.6415ZM11.5001 27C12.3649 26.9993 13.2134 26.7629 13.9556 26.3159C14.6978 25.8688 15.3059 25.2279 15.7157 24.4609C15.735 24.4242 15.7445 24.383 15.7433 24.3414C15.7422 24.2999 15.7304 24.2593 15.709 24.2237C15.6877 24.1881 15.6576 24.1587 15.6216 24.1382C15.5857 24.1178 15.5451 24.1071 15.5038 24.1071H7.49769C7.45635 24.107 7.41568 24.1176 7.37964 24.138C7.34359 24.1584 7.31341 24.1878 7.29202 24.2235C7.27062 24.2591 7.25876 24.2997 7.25757 24.3413C7.25638 24.3829 7.26591 24.4241 7.28524 24.4609C7.6949 25.2278 8.303 25.8687 9.04506 26.3157C9.78711 26.7627 10.6355 26.9992 11.5001 27Z"
-                    fill="white"
-                  />
-                </svg>
-                {hasUnread && (
-                  <div className="absolute top-1 right-1 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white"></div>
-                )}
-              </button>
-            )}
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
             <button
               onClick={handleMobileClose}
               className="w-8 h-8 ml-auto bg-transparent rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-200"
@@ -249,14 +192,8 @@ export function AppSidebar(props: AppSidebarProps) {
               <Link href="/">
                 <Button
                   variant="ghost"
-<<<<<<< HEAD
-                  className={`w-full flex ${
-                    isExpanded ? "flex-row" : "flex-col"
-                  } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
-=======
                   className={`w-full flex ${isExpanded ? "flex-row" : "flex-col"
                     } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
->>>>>>> 1a19ced (chore: update service folders from local)
                 >
                   <svg
                     className="size-8"
@@ -283,14 +220,8 @@ export function AppSidebar(props: AppSidebarProps) {
               <Link href="/account">
                 <Button
                   variant="ghost"
-<<<<<<< HEAD
-                  className={`w-full flex ${
-                    isExpanded ? "flex-row" : "flex-col"
-                  } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
-=======
                   className={`w-full flex ${isExpanded ? "flex-row" : "flex-col"
                     } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
->>>>>>> 1a19ced (chore: update service folders from local)
                 >
                   <svg
                     className="size-8"
@@ -325,14 +256,8 @@ export function AppSidebar(props: AppSidebarProps) {
             <Link href="/login">
               <Button
                 variant="ghost"
-<<<<<<< HEAD
-                className={`w-full flex ${
-                  isExpanded ? "flex-row" : "flex-col"
-                } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
-=======
                 className={`w-full flex ${isExpanded ? "flex-row" : "flex-col"
                   } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
->>>>>>> 1a19ced (chore: update service folders from local)
               >
                 <svg
                   className="size-8"
@@ -362,14 +287,8 @@ export function AppSidebar(props: AppSidebarProps) {
               <Button
                 variant="ghost"
                 size="sm"
-<<<<<<< HEAD
-                className={`w-full flex ${
-                  isExpanded ? "flex-row" : "flex-col"
-                } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
-=======
                 className={`w-full flex ${isExpanded ? "flex-row" : "flex-col"
                   } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
->>>>>>> 1a19ced (chore: update service folders from local)
               >
                 <svg
                   className="size-8"
@@ -408,14 +327,8 @@ export function AppSidebar(props: AppSidebarProps) {
             <Button
               onClick={handleLogout}
               variant="ghost"
-<<<<<<< HEAD
-              className={`w-full flex ${
-                isExpanded ? "flex-row" : "flex-col"
-              } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
-=======
               className={`w-full flex ${isExpanded ? "flex-row" : "flex-col"
                 } items-center gap-2 h-auto py-3 px-4 ${props.type === "main" ? "xl:text-main text-white" : "text-white hover:text-white hover:bg-main-lighten"}`}
->>>>>>> 1a19ced (chore: update service folders from local)
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -444,14 +357,8 @@ export function AppSidebar(props: AppSidebarProps) {
             className="cursor-pointer w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-shadow duration-200"
           >
             <svg
-<<<<<<< HEAD
-              className={`transition-transform duration-300 size-3 ${
-                isExpanded ? "rotate-0" : "rotate-180"
-              }`}
-=======
               className={`transition-transform duration-300 size-3 ${isExpanded ? "rotate-0" : "rotate-180"
                 }`}
->>>>>>> 1a19ced (chore: update service folders from local)
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="none"
@@ -465,58 +372,6 @@ export function AppSidebar(props: AppSidebarProps) {
         </div>
       </div>
 
-<<<<<<< HEAD
-      {/* Notification Panel */}
-      {isNotificationOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
-            onClick={handleNotificationClose}
-          />
-
-          {/* Notification Panel */}
-          <div
-            className={`fixed top-0 right-0 h-full w-full bg-white z-50 transform transition-transform duration-300 ease-in-out ${
-              isNotificationOpen ? "-translate-x-0" : "translate-x-full"
-            }`}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-6">
-              <h2 className="text-xl font-semibold text-gray-900">Notification</h2>
-              <button
-                onClick={handleNotificationClose}
-                className="w-8 h-8 bg-transparent rounded-full flex items-center justify-center hover:bg-gray-100 transition-all duration-200"
-                aria-label="Close notifications"
-              >
-                <svg
-                  className="w-5 h-5 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Notification List */}
-            {isLoggedIn && (
-              <div className="flex-1 overflow-y-auto">
-                <NotificationContainer className="max-w-none mx-0 bg-transparent rounded-none p-0" />
-              </div>
-            )}
-          </div>
-        </>
-      )}
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
     </>
   )
 }

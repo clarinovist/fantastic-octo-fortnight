@@ -8,18 +8,6 @@ interface CurrencyIdrInputProps
   locale?: string
 }
 
-<<<<<<< HEAD
-export function CurrencyIdrInput({
-  value,
-  onChange,
-  locale = "id-ID",
-  placeholder = "0",
-  className = "",
-  ...props
-}: CurrencyIdrInputProps) {
-  const [displayValue, setDisplayValue] = useState(() => {
-    return value > 0 ? formatCurrency(value, locale) : ""
-=======
 function formatCurrency(amount: number, locale: string): string {
   return new Intl.NumberFormat(locale, {
     style: 'currency',
@@ -44,28 +32,10 @@ export function CurrencyIdrInput({
 }: CurrencyIdrInputProps) {
   const [displayValue, setDisplayValue] = useState(() => {
     return value > 0 ? formatCurrency(value, locale) : ''
->>>>>>> 1a19ced (chore: update service folders from local)
   })
   const [isTyping, setIsTyping] = useState(false)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-<<<<<<< HEAD
-  function formatCurrency(amount: number, locale: string): string {
-    return new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(amount)
-  }
-
-  function parseCurrency(value: string): number {
-    // Remove all non-digit characters except decimal point
-    const numericValue = value.replace(/[^\d]/g, "")
-    return numericValue ? parseInt(numericValue, 10) : 0
-  }
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value
     setIsTyping(true)

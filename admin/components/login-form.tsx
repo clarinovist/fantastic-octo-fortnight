@@ -1,14 +1,5 @@
 "use client";
 
-<<<<<<< HEAD
-import { GalleryVerticalEnd } from "lucide-react";
-import { useActionState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-=======
 import { Eye, EyeOff } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -16,7 +7,6 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
->>>>>>> 1a19ced (chore: update service folders from local)
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { loginAction } from "@/actions/auth";
@@ -24,16 +14,10 @@ import { loginAction } from "@/actions/auth";
 export function LoginForm({
   className,
   ...props
-<<<<<<< HEAD
-}: React.ComponentProps<"div">) {
-  const router = useRouter();
-  const [state, formAction, isPending] = useActionState(loginAction, null);
-=======
 }: React.ComponentProps<"form">) {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(loginAction, null);
   const [showPassword, setShowPassword] = useState(false);
->>>>>>> 1a19ced (chore: update service folders from local)
 
   useEffect(() => {
     if (state?.success) {
@@ -45,53 +29,6 @@ export function LoginForm({
   }, [state, router]);
 
   return (
-<<<<<<< HEAD
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form action={formAction}>
-        <FieldGroup>
-          <div className="flex flex-col items-center gap-2 text-center">
-            <a
-              href="#"
-              className="flex flex-col items-center gap-2 font-medium"
-            >
-              <div className="flex size-8 items-center justify-center rounded-md">
-                <GalleryVerticalEnd className="size-6" />
-              </div>
-              <span className="sr-only">Les Private.</span>
-            </a>
-            <h1 className="text-xl font-bold">Welcome to Les Private.</h1>
-          </div>
-          <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-              disabled={isPending}
-            />
-          </Field>
-          <Field>
-            <FieldLabel htmlFor="password">Password</FieldLabel>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              required
-              disabled={isPending}
-            />
-          </Field>
-          <Field>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Logging in..." : "Login"}
-            </Button>
-          </Field>
-        </FieldGroup>
-      </form>
-    </div>
-=======
     <form action={formAction} className={cn("flex flex-col gap-5", className)} {...props}>
       <div className="space-y-2">
         <label
@@ -224,6 +161,5 @@ export function LoginForm({
         Continue with Google
       </Button>
     </form>
->>>>>>> 1a19ced (chore: update service folders from local)
   );
 }

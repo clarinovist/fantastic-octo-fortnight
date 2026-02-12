@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 "use server"
 
->>>>>>> 1a19ced (chore: update service folders from local)
 import type { BaseResponse, Booking, BookingDetail, BookingStatus } from "@/utils/types";
 import { fetcherBase } from "./base";
 
@@ -49,8 +46,6 @@ export async function tutorBookingReminder(bookingId: string): Promise<BaseRespo
     next: { tags: ['booking'] },
   });
 }
-<<<<<<< HEAD
-=======
 
 export type BookingPayload = {
   studentId: string;
@@ -80,4 +75,3 @@ export async function updateBooking(id: string, data: Partial<BookingPayload>): 
     next: { tags: ['booking', 'bookings'] },
   });
 }
->>>>>>> 1a19ced (chore: update service folders from local)

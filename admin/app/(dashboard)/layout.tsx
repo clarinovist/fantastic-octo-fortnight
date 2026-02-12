@@ -1,43 +1,24 @@
 import { AppSidebar } from "@/components/app-sidebar";
-<<<<<<< HEAD
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { GoogleMapsProvider } from "@/contexts/google-maps";
-
-export default function DashboardLayout({
-=======
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { GoogleMapsProvider } from "@/contexts/google-maps";
 import { Bell, ChevronRight, Moon, Search } from "lucide-react";
 import { getBookings } from "@/services/booking";
 
 export default async function DashboardLayout({
->>>>>>> 1a19ced (chore: update service folders from local)
   children,
 }: {
   children: React.ReactNode;
 }) {
-<<<<<<< HEAD
-=======
   const { metadata: bookingsMetadata } = await getBookings({
     page: 1,
     pageSize: 1,
   });
 
->>>>>>> 1a19ced (chore: update service folders from local)
   return (
     <GoogleMapsProvider>
       <SidebarProvider
         style={
           {
-<<<<<<< HEAD
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="inset" />
-        <SidebarInset>{children}</SidebarInset>
-=======
             "--sidebar-width": "18rem", // 72 * 0.25rem = 18rem
             "--header-height": "4rem",
           } as React.CSSProperties
@@ -88,7 +69,6 @@ export default async function DashboardLayout({
             {children}
           </main>
         </SidebarInset>
->>>>>>> 1a19ced (chore: update service folders from local)
       </SidebarProvider>
     </GoogleMapsProvider>
   );

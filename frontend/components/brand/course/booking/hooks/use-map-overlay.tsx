@@ -8,11 +8,7 @@ interface UseMapOverlayProps {
   isFullscreen: boolean
 }
 
-<<<<<<< HEAD
-export function useMapOverlay({ tutorLocation, isFullscreen }: UseMapOverlayProps) {
-=======
 export function useMapOverlay({ tutorLocation }: UseMapOverlayProps) {
->>>>>>> 1a19ced (chore: update service folders from local)
   const isLoaded = useApiIsLoaded()
   const map = useMap()
   const tutorAreaOverlayRef = useRef<google.maps.Circle | null>(null)

@@ -26,19 +26,11 @@ export function MapView({
   getCurrentLocation,
   isGettingLocation,
   onFullscreenToggle,
-<<<<<<< HEAD
-  isFullscreen,
-}: MapViewProps) {
-  const isLoaded = useApiIsLoaded()
-  const [currentGPSLocation, setCurrentGPSLocation] = useState<{ lat: number; lng: number } | null>(null)
-  const [isGettingGPSLocation, setIsGettingGPSLocation] = useState(false)
-=======
 
 }: MapViewProps) {
   const isLoaded = useApiIsLoaded()
   const [currentGPSLocation, setCurrentGPSLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [, setIsGettingGPSLocation] = useState(false)
->>>>>>> 1a19ced (chore: update service folders from local)
 
   // Helper function to check if coordinates are valid
   const isValidCoordinate = useCallback((lat: number, lng: number) => {
@@ -56,11 +48,7 @@ export function MapView({
         // Check if permissions API is available
         if ('permissions' in navigator) {
           const permission = await navigator.permissions.query({ name: 'geolocation' })
-<<<<<<< HEAD
-          
-=======
 
->>>>>>> 1a19ced (chore: update service folders from local)
           if (permission.state === 'granted') {
             // Permission already granted, get location for indicator only
             setIsGettingGPSLocation(true)

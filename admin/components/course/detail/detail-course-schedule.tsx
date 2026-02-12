@@ -87,11 +87,7 @@ export function DetailCourseSchedule({
       manualSelection.tab === selectedTab
     ) {
       const isStillAvailable = availableSchedules.some(
-<<<<<<< HEAD
-        (s: any) => s.startTime.slice(0, 5) === manualSelection.time
-=======
         (s: { startTime: string }) => s.startTime.slice(0, 5) === manualSelection.time
->>>>>>> 1a19ced (chore: update service folders from local)
       )
       if (isStillAvailable) {
         return manualSelection.time
@@ -115,11 +111,7 @@ export function DetailCourseSchedule({
     const schedules = currentSchedules[dayKey] || []
 
     const matchingSchedule = schedules.find(
-<<<<<<< HEAD
-      (s: any) => s.startTime.slice(0, 5) === selectedTime
-=======
       (s: { startTime: string }) => s.startTime.slice(0, 5) === selectedTime
->>>>>>> 1a19ced (chore: update service folders from local)
     )
 
     return matchingSchedule?.timezone || null
@@ -175,21 +167,12 @@ export function DetailCourseSchedule({
           {dateOptions.map(date => (
             <CarouselItem key={date.fullDate} className="basis-1/4 md:basis-1/7">
               <div
-<<<<<<< HEAD
-                className={`flex flex-col items-center p-2 lg:p-3 rounded-lg transition-colors cursor-pointer min-w-[60px] lg:min-w-[80px] ${
-                  !date.isAvailable
-=======
                 className={`flex flex-col items-center p-2 lg:p-3 rounded-lg transition-colors cursor-pointer min-w-[60px] lg:min-w-[80px] ${!date.isAvailable
->>>>>>> 1a19ced (chore: update service folders from local)
                     ? "bg-muted text-muted-foreground cursor-not-allowed"
                     : isSelected(date.fullDate)
                       ? "bg-[#7000FE] text-white"
                       : "hover:bg-[#7000FE80]/50"
-<<<<<<< HEAD
-                }`}
-=======
                   }`}
->>>>>>> 1a19ced (chore: update service folders from local)
                 onClick={() => date.isAvailable && onSelect(date.fullDate)}
               >
                 <div className="text-xs">{date.day}</div>
@@ -218,29 +201,17 @@ export function DetailCourseSchedule({
           }
 
           // All schedules from course data are available
-<<<<<<< HEAD
-          return schedules.map((s: any, index: number) => {
-=======
           return schedules.map((s: { startTime: string }, index: number) => {
->>>>>>> 1a19ced (chore: update service folders from local)
             const start = s.startTime.slice(0, 5)
             const isSelectedTime = selectedTime === start
 
             return (
               <span
                 key={`${s.startTime}-${index}`}
-<<<<<<< HEAD
-                className={`px-3 lg:px-4 py-2 rounded-lg font-bold transition-colors min-w-[60px] lg:min-w-[80px] text-center cursor-pointer ${
-                  isSelectedTime
-                    ? "bg-[#7000FE] text-white border border-[#7000FE]"
-                    : "border border-[#7000FE] text-[#7000FE] hover:bg-[#7000FE80]/50"
-                }`}
-=======
                 className={`px-3 lg:px-4 py-2 rounded-lg font-bold transition-colors min-w-[60px] lg:min-w-[80px] text-center cursor-pointer ${isSelectedTime
                     ? "bg-[#7000FE] text-white border border-[#7000FE]"
                     : "border border-[#7000FE] text-[#7000FE] hover:bg-[#7000FE80]/50"
                   }`}
->>>>>>> 1a19ced (chore: update service folders from local)
                 onClick={() => handleTimeSelect(start)}
               >
                 <div className="text-base">{start}</div>

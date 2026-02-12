@@ -1,10 +1,7 @@
 package dto
 
 import (
-<<<<<<< HEAD
-=======
 	"fmt"
->>>>>>> 1a19ced (chore: update service folders from local)
 	"time"
 
 	"strings"
@@ -276,8 +273,6 @@ func NewAdminBookingDetail(booking *model.Booking) AdminBookingDetail {
 		UpdatedAt:     booking.UpdatedAt,
 	}
 }
-<<<<<<< HEAD
-=======
 
 type AdminCreateBookingRequest struct {
 	StudentID    uuid.UUID `json:"studentId" validate:"required"`
@@ -348,4 +343,3 @@ func (r *AdminUpdateBookingRequest) Validate() error {
 
 	return nil
 }
->>>>>>> 1a19ced (chore: update service folders from local)

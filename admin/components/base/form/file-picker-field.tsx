@@ -96,11 +96,7 @@ export function FilePickerField({
 
       onChange(data);
       onUploadComplete?.(data);
-<<<<<<< HEAD
-    } catch (err) {
-=======
     } catch {
->>>>>>> 1a19ced (chore: update service folders from local)
       setError("Failed to upload file. Please try again.");
       setPreview(null);
       onChange(null);

@@ -23,13 +23,6 @@ type DetailCourseProps = {
   }
 }
 
-<<<<<<< HEAD
-// Minimum days in advance required for booking (H days)
-// Configurable via NEXT_PUBLIC_MINIMUM_BOOKING_DAYS environment variable
-const MINIMUM_BOOKING_DAYS = parseInt(process.env.NEXT_PUBLIC_MINIMUM_BOOKING_DAYS || "1", 10)
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
 // Helper function to generate dates array
 function generateDates(
   course: CourseDetail,
@@ -59,13 +52,6 @@ function generateDates(
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-<<<<<<< HEAD
-  // Calculate minimum booking date (today + H days)
-  const minBookingDate = new Date(today)
-  minBookingDate.setDate(minBookingDate.getDate() + MINIMUM_BOOKING_DAYS)
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
   // Get schedules based on selected tab or tutor's classType
   const currentSchedules = (() => {
     if (course.tutor.classType === "all") {
@@ -87,14 +73,8 @@ function generateDates(
     const day = String(current.getDate()).padStart(2, "0")
     const fullDate = `${year}-${month}-${day}`
 
-<<<<<<< HEAD
-    // Check if date is in the past or within minimum booking days
-    const isPastDate = current.getTime() < today.getTime()
-    const isWithinMinimumDays = current.getTime() < minBookingDate.getTime()
-=======
     // Check if date is in the past
     const isPastDate = current.getTime() < today.getTime()
->>>>>>> 1a19ced (chore: update service folders from local)
 
     // Check if any time slots are available for this date
     let hasAvailableSlots = false
@@ -122,19 +102,13 @@ function generateDates(
       day: dayFmt.format(current), // e.g. "Senin"
       date: String(current.getDate()), // e.g. "20"
       month: monthFmt.format(current), // e.g. "Agustus"
-<<<<<<< HEAD
-      isAvailable: !isPastDate && !isWithinMinimumDays && hasAvailableSlots,
-=======
       isAvailable: !isPastDate && hasAvailableSlots,
->>>>>>> 1a19ced (chore: update service folders from local)
       fullDate: fullDate, // e.g. "2024-09-08"
     })
   }
   return out
 }
 
-<<<<<<< HEAD
-=======
 function TutorAbout({ course }: { course: CourseDetail }) {
   return (
     <>
@@ -180,7 +154,6 @@ function ButtonBook({ isMobile, user, bookingUrl }: { isMobile?: boolean; user: 
   )
 }
 
->>>>>>> 1a19ced (chore: update service folders from local)
 export function DetailCourse({
   isBookable,
   course,
@@ -239,50 +212,6 @@ export function DetailCourse({
     return `${baseUrl}?${params.toString()}`
   }
 
-<<<<<<< HEAD
-  const TutorAbout = () => (
-    <>
-      {course.tutor.description && (
-        <div>
-          <h3 className="text-lg font-bold mb-4">TENTANG TUTOR</h3>
-          <p className="text-sm leading-relaxed text-pretty">{course.tutor.description}</p>
-        </div>
-      )}
-    </>
-  )
-
-  const StatsInfo = () => (
-    <div className="flex items-center justify-center text-sm text-muted-foreground">
-      <span className="text-[#8E8E8E] font-bold">{course.totalStudentEnrollment} murid</span>
-      <div className="h-5 border-l border-muted-foreground mx-3" aria-hidden="true" />
-      <div className="flex items-center gap-1">
-        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-        <span>{course.tutor.rating}</span>
-        <span className="text-muted-foreground">({course.tutor.totalRating} ulasan)</span>
-      </div>
-    </div>
-  )
-
-  const ButtonBook = ({ isMobile }: { isMobile?: boolean }) => {
-    if (user?.profile?.role && user?.profile?.role !== "student") return null
-    return (
-      <div
-        className={`${isMobile ? "fixed z-10 bg-white rounded-full bottom-4 left-4 right-4 p-4 lg:hidden shadow-[0px_-4px_8px_0px_rgba(0,0,0,0.25)]" : "flex justify-center"}`}
-      >
-        <Link href={getBookingUrl()}>
-          <Button
-            size={`${isMobile ? "lg" : "sm"}`}
-            className={`${isMobile ? "w-full bg-[#7000FE] hover:bg-[#7000FE]/90 text-white font-extrabold text-[24px] rounded-full" : "w-48 font-extrabold bg-[#7000FE] hover:bg-[#7000FE]/90 text-white"}`}
-          >
-            BOOK!
-          </Button>
-        </Link>
-      </div>
-    )
-  }
-
-=======
->>>>>>> 1a19ced (chore: update service folders from local)
   return (
     <div className="md:px-4 px-0">
       <div className="xl:pr-8 pt-8 pb-28 lg:py-8">
@@ -292,11 +221,7 @@ export function DetailCourse({
             <Card className="overflow-hidden pt-0 shadow-[0px_8px_12px_0px_#00000026]">
               <CardContent className="p-6 space-y-4 pt-0">
                 <DetailCourseTutor variant="mobile" course={course} />
-<<<<<<< HEAD
-                <StatsInfo />
-=======
                 <StatsInfo course={course} />
->>>>>>> 1a19ced (chore: update service folders from local)
                 <DetailCoursePricing variant="mobile" course={course} />
               </CardContent>
             </Card>
@@ -309,15 +234,9 @@ export function DetailCourse({
                 <div className="flex flex-col items-center gap-3">
                   <DetailCourseTutor variant="desktop" course={course} />
                 </div>
-<<<<<<< HEAD
-                <StatsInfo />
-                <DetailCoursePricing variant="desktop" course={course} />
-                {isBookable && !course.isBooked && <ButtonBook />}
-=======
                 <StatsInfo course={course} />
                 <DetailCoursePricing variant="desktop" course={course} />
                 {isBookable && !course.isBooked && <ButtonBook user={user} bookingUrl={getBookingUrl()} />}
->>>>>>> 1a19ced (chore: update service folders from local)
                 <div className="flex justify-center">
                   <div className="bg-[#EDEDED] rounded-full flex gap-2 py-2 px-4 justify-center">
                     {/* Tiktok */}
@@ -600,11 +519,7 @@ export function DetailCourse({
 
             {/* Course and Tutor Info */}
             <DetailCourseDescription course={course} />
-<<<<<<< HEAD
-            <TutorAbout />
-=======
             <TutorAbout course={course} />
->>>>>>> 1a19ced (chore: update service folders from local)
             <DetailCourseReview course={course} />
             <CourseRecommendation courses={recommendations} />
           </div>
@@ -612,11 +527,7 @@ export function DetailCourse({
       </div>
 
       {/* Fixed Bottom Button - Mobile only */}
-<<<<<<< HEAD
-      {isBookable && <ButtonBook isMobile />}
-=======
       {isBookable && <ButtonBook isMobile user={user} bookingUrl={getBookingUrl()} />}
->>>>>>> 1a19ced (chore: update service folders from local)
     </div>
   )
 }

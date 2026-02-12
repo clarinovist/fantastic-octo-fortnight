@@ -11,18 +11,11 @@ import {
   PhoneField,
   RadioField,
 } from "@/components/base/form";
-<<<<<<< HEAD
-import { Button } from "@/components/ui/button";
-import { GENDER_OPTIONS } from "@/utils/constants";
-import { FileResponse } from "@/utils/types/file";
-import { zodResolver } from "@hookform/resolvers/zod";
-=======
 import { TextareaField } from "@/components/base/form/textarea-field";
 import { GENDER_OPTIONS } from "@/utils/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronRight, MapPin, Share2, ShieldCheck, User, Star } from "lucide-react";
 import Link from "next/link";
->>>>>>> 1a19ced (chore: update service folders from local)
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -43,15 +36,9 @@ const createStudentFormSchema = (isEditMode: boolean) =>
     password: isEditMode
       ? z.string().optional()
       : z
-<<<<<<< HEAD
-          .string()
-          .min(1, "Password is required")
-          .min(8, "Password must be at least 8 characters"),
-=======
         .string()
         .min(1, "Password is required")
         .min(8, "Password must be at least 8 characters"),
->>>>>>> 1a19ced (chore: update service folders from local)
     phoneNumber: z.string().min(1, "Phone number is required"),
     gender: z.enum(
       GENDER_OPTIONS.map((option) => option.value),
@@ -62,10 +49,7 @@ const createStudentFormSchema = (isEditMode: boolean) =>
     dateOfBirth: z.date({
       message: "Date of birth is required",
     }),
-<<<<<<< HEAD
-=======
     address: z.string().optional(),
->>>>>>> 1a19ced (chore: update service folders from local)
     premiumUntil: z.date().nullable().optional(),
     profilePhoto: z
       .object({
@@ -159,10 +143,7 @@ export function StudentForm({
           ? initialData.dateOfBirth
           : new Date(initialData.dateOfBirth as unknown as string)
         : undefined,
-<<<<<<< HEAD
-=======
       address: initialData?.address || "",
->>>>>>> 1a19ced (chore: update service folders from local)
       premiumUntil: initialData?.premiumUntil
         ? initialData.premiumUntil instanceof Date
           ? initialData.premiumUntil
@@ -174,11 +155,7 @@ export function StudentForm({
     },
   });
 
-<<<<<<< HEAD
-  const premiumUntilValue = form.watch("premiumUntil");
-=======
   const passwordValue = form.watch("password") || "";
->>>>>>> 1a19ced (chore: update service folders from local)
 
   // Transform the form data to match backend API structure
   const handleFormSubmit = async (data: StudentFormValues) => {
@@ -195,11 +172,7 @@ export function StudentForm({
         email: data.email,
         phoneNumber: data.phoneNumber,
         gender: data.gender,
-<<<<<<< HEAD
-        password: data.password,
-=======
         password: data.password || undefined,
->>>>>>> 1a19ced (chore: update service folders from local)
         dateOfBirth: data.dateOfBirth
           ? formatDateToString(data.dateOfBirth)
           : "",
@@ -228,11 +201,7 @@ export function StudentForm({
       } else {
         toast.error(
           result.error ||
-<<<<<<< HEAD
-            `Failed to ${isEditMode ? "update" : "create"} student`
-=======
           `Failed to ${isEditMode ? "update" : "create"} student`
->>>>>>> 1a19ced (chore: update service folders from local)
         );
       }
     } catch (error) {
@@ -244,122 +213,6 @@ export function StudentForm({
   };
 
   return (
-<<<<<<< HEAD
-    <BaseForm form={form} onSubmit={handleFormSubmit} className="space-y-6">
-      <InputField
-        name="name"
-        label="Full Name"
-        placeholder="Enter student name"
-        required
-      />
-
-      <EmailField
-        name="email"
-        label="Email Address"
-        placeholder="student@example.com"
-        required
-      />
-
-      <InputField
-        name="password"
-        label="Password"
-        placeholder="Enter password"
-        description="leave blank if not changing"
-        required
-      />
-
-      <PhoneField
-        name="phoneNumber"
-        label="Phone Number"
-        placeholder="+1 (555) 000-0000"
-        required
-      />
-
-      <RadioField
-        name="gender"
-        label="Gender"
-        options={GENDER_OPTIONS}
-        required
-        orientation="horizontal"
-      />
-
-      <DatePickerField
-        name="dateOfBirth"
-        label="Date of Birth"
-        placeholder="Select date of birth"
-        required
-        maxDate={new Date()}
-      />
-
-      <div className="space-y-2">
-        <DatePickerField
-          name="premiumUntil"
-          label="Premium Until"
-          placeholder="Select premium expiry date"
-          description="Optional: Set when the premium access expires"
-          minDate={new Date()}
-        />
-        {premiumUntilValue && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              form.setValue("premiumUntil", null);
-            }}
-            className="w-full sm:w-auto"
-          >
-            Clear Premium Date
-          </Button>
-        )}
-      </div>
-
-      <FilePickerField
-        name="profilePhoto"
-        label="Profile Photo"
-        description="Upload a profile photo (Max 5MB)"
-        accept="image/*"
-        maxSize={5 * 1024 * 1024}
-        onUploadComplete={(file: FileResponse) => {
-          console.log("File uploaded:", file);
-        }}
-      />
-
-      <MapField
-        name="location"
-        label="Student Location"
-        description="Select the student's location on the map or enter coordinates"
-        defaultCenter={{ lat: -6.2088, lng: 106.8456 }}
-        defaultZoom={13}
-      />
-
-      <DynamicSocialMediaField
-        name="socialMediaLinks"
-        label="Social Media Links"
-        description="Add links to social media profiles"
-        platformPlaceholder="Platform name (e.g., Instagram)"
-        urlPlaceholder="Profile URL"
-      />
-
-      <div className="flex justify-end gap-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => form.reset()}
-          disabled={isLoading}
-        >
-          Reset
-        </Button>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading
-            ? "Saving..."
-            : isEditMode
-            ? "Update Student"
-            : "Save Student"}
-        </Button>
-      </div>
-    </BaseForm>
-=======
     <div className="flex flex-col gap-6 w-full max-w-[800px] mx-auto pb-24">
       {/* Breadcrumb */}
       <div className="flex flex-wrap gap-2 items-center mb-2">
@@ -580,6 +433,5 @@ export function StudentForm({
         </div>
       </BaseForm>
     </div>
->>>>>>> 1a19ced (chore: update service folders from local)
   );
 }

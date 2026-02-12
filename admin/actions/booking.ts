@@ -28,8 +28,6 @@ export async function tutorBookingReminderAction(bookingId: string) {
     }
   }
 }
-<<<<<<< HEAD
-=======
 
 import { createBooking, updateBooking, type BookingPayload } from "@/services/booking"
 
@@ -59,4 +57,3 @@ export async function updateBookingAction(id: string, data: Partial<BookingPaylo
     }
   }
 }
->>>>>>> 1a19ced (chore: update service folders from local)

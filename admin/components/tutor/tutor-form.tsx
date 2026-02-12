@@ -11,13 +11,6 @@ import {
   PhoneField,
   RadioField,
   SelectField,
-<<<<<<< HEAD
-} from "@/components/base/form";
-import { Button } from "@/components/ui/button";
-import { GENDER_OPTIONS } from "@/utils/constants";
-import { FileResponse } from "@/utils/types/file";
-import { zodResolver } from "@hookform/resolvers/zod";
-=======
   TextareaField,
 } from "@/components/base/form";
 import { Button } from "@/components/ui/button";
@@ -33,7 +26,6 @@ import {
   Check
 } from "lucide-react";
 import Link from "next/link";
->>>>>>> 1a19ced (chore: update service folders from local)
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,15 +52,9 @@ const createTutorFormSchema = (isEditMode: boolean) =>
     password: isEditMode
       ? z.string().optional()
       : z
-<<<<<<< HEAD
-          .string()
-          .min(1, "Password is required")
-          .min(8, "Password must be at least 8 characters"),
-=======
         .string()
         .min(1, "Password is required")
         .min(8, "Password must be at least 8 characters"),
->>>>>>> 1a19ced (chore: update service folders from local)
     phoneNumber: z.string().min(1, "Phone number is required"),
     gender: z.enum(
       GENDER_OPTIONS.map((option) => option.value),
@@ -80,12 +66,9 @@ const createTutorFormSchema = (isEditMode: boolean) =>
       message: "Date of birth is required",
     }),
     levelPoint: z.string().min(1, "Level is required"),
-<<<<<<< HEAD
-=======
     // Bio & Subjects included in Schema for UI, but might not be sent to backend yet
     bio: z.string().optional(),
     subjects: z.array(z.string()).optional(),
->>>>>>> 1a19ced (chore: update service folders from local)
     profilePhoto: z
       .object({
         url: z.string(),
@@ -139,11 +122,8 @@ export type TutorSubmitPayload = {
   photoProfile: string;
   levelPoint: number;
   socialMediaLinks: Record<string, string>;
-<<<<<<< HEAD
-=======
   // bio?: string; // Not yet supported by backend
   // subjects?: string[]; // Not yet supported by backend
->>>>>>> 1a19ced (chore: update service folders from local)
 };
 
 interface TutorFormProps {
@@ -167,14 +147,10 @@ export function TutorForm({
   // Determine initial level point value for select
   const getInitialLevelPoint = () => {
     if (initialData?.levelPoint !== undefined) {
-<<<<<<< HEAD
-      return initialData.levelPoint <= 24 ? "0" : "25";
-=======
       // Logic to map numeric points back to select value if needed, 
       // or just assume standard endpoints 0/25 for creation default.
       // For edit, we might need smarter mapping if points are e.g. 30.
       return initialData.levelPoint >= 25 ? "25" : "0";
->>>>>>> 1a19ced (chore: update service folders from local)
     }
     return "";
   };
@@ -192,11 +168,8 @@ export function TutorForm({
       profilePhoto: initialData?.profilePhoto || undefined,
       location: initialData?.location || undefined,
       socialMediaLinks: initialData?.socialMediaLinks || [],
-<<<<<<< HEAD
-=======
       bio: "", // Placeholder
       subjects: [], // Placeholder
->>>>>>> 1a19ced (chore: update service folders from local)
     },
   });
 
@@ -218,19 +191,11 @@ export function TutorForm({
         password: data.password,
         dateOfBirth: data.dateOfBirth
           ? `${data.dateOfBirth.getFullYear()}-${String(
-<<<<<<< HEAD
-              data.dateOfBirth.getMonth() + 1
-            ).padStart(2, "0")}-${String(data.dateOfBirth.getDate()).padStart(
-              2,
-              "0"
-            )}`
-=======
             data.dateOfBirth.getMonth() + 1
           ).padStart(2, "0")}-${String(data.dateOfBirth.getDate()).padStart(
             2,
             "0"
           )}`
->>>>>>> 1a19ced (chore: update service folders from local)
           : "",
         latitude: data.location?.lat || 0,
         longitude: data.location?.lng || 0,
@@ -240,11 +205,8 @@ export function TutorForm({
           acc[link.platform] = link.url;
           return acc;
         }, {} as Record<string, string>),
-<<<<<<< HEAD
-=======
         // Note: 'bio' and 'subjects' are collected but discarded here 
         // because the backend CreateTutorPayload does not support them.
->>>>>>> 1a19ced (chore: update service folders from local)
       };
 
       const result = await action(transformedData);
@@ -255,11 +217,7 @@ export function TutorForm({
             ? "Tutor updated successfully!"
             : "Tutor created successfully!"
         );
-<<<<<<< HEAD
-        router.push("/tutors");
-=======
         router.push("/tutors"); // Ensure correct path
->>>>>>> 1a19ced (chore: update service folders from local)
         router.refresh();
       } else {
         toast.error(
@@ -275,103 +233,6 @@ export function TutorForm({
   };
 
   return (
-<<<<<<< HEAD
-    <BaseForm form={form} onSubmit={handleFormSubmit} className="space-y-6">
-      <InputField
-        name="name"
-        label="Full Name"
-        placeholder="Enter tutor name"
-        required
-      />
-
-      <EmailField
-        name="email"
-        label="Email Address"
-        placeholder="tutor@example.com"
-        required
-      />
-
-      <InputField
-        name="password"
-        label="Password"
-        placeholder="Enter password"
-        description="leave blank if not changing"
-        required
-      />
-
-      <PhoneField
-        name="phoneNumber"
-        label="Phone Number"
-        placeholder="+1 (555) 000-0000"
-        required
-      />
-
-      <RadioField
-        name="gender"
-        label="Gender"
-        options={GENDER_OPTIONS}
-        required
-        orientation="horizontal"
-      />
-
-      <DatePickerField
-        name="dateOfBirth"
-        label="Date of Birth"
-        placeholder="Select date of birth"
-        required
-        maxDate={new Date()}
-      />
-
-      <SelectField
-        name="levelPoint"
-        label="Tutor Level"
-        placeholder="Select tutor level"
-        options={TUTOR_LEVEL_OPTIONS}
-        required
-      />
-
-      <FilePickerField
-        name="profilePhoto"
-        label="Profile Photo"
-        description="Upload a profile photo (Max 5MB)"
-        accept="image/*"
-        maxSize={5 * 1024 * 1024}
-        onUploadComplete={(file: FileResponse) => {
-          console.log("File uploaded:", file);
-        }}
-      />
-
-      <MapField
-        name="location"
-        label="Tutor Location"
-        description="Select the tutor's location on the map or enter coordinates"
-        defaultCenter={{ lat: -6.2088, lng: 106.8456 }}
-        defaultZoom={13}
-      />
-
-      <DynamicSocialMediaField
-        name="socialMediaLinks"
-        label="Social Media Links"
-        description="Add links to social media profiles"
-        platformPlaceholder="Platform name (e.g., Instagram)"
-        urlPlaceholder="Profile URL"
-      />
-
-      <div className="flex justify-end gap-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => form.reset()}
-          disabled={isLoading}
-        >
-          Reset
-        </Button>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : isEditMode ? "Update Tutor" : "Save Tutor"}
-        </Button>
-      </div>
-    </BaseForm>
-=======
     <div className="flex flex-col gap-6 w-full max-w-[1200px] mx-auto pb-24">
 
       {/* Breadcrumb - matching HTML style (optional if Layout already has it) */}
@@ -594,6 +455,5 @@ export function TutorForm({
         </div>
       </BaseForm>
     </div>
->>>>>>> 1a19ced (chore: update service folders from local)
   );
 }

@@ -1,10 +1,6 @@
 "use server"
 
-<<<<<<< HEAD
-import { login } from "@/services/auth"
-=======
 import { forgotPassword, login, resetPassword } from "@/services/auth"
->>>>>>> 1a19ced (chore: update service folders from local)
 import { ID_TOKEN, TOKEN_KEY } from "@/utils/constants/cookies"
 import type { BaseResponse, LoginResponse } from "@/utils/types"
 import { cookies } from "next/headers"
@@ -63,9 +59,6 @@ export async function logoutAction() {
   const cookiesStore = await cookies()
   cookiesStore.delete(TOKEN_KEY)
   cookiesStore.delete(ID_TOKEN)
-<<<<<<< HEAD
-}
-=======
   redirect("/login")
 }
 
@@ -89,4 +82,3 @@ export async function resetPasswordAction(token: string, newPassword: string) {
   }
 }
 
->>>>>>> 1a19ced (chore: update service folders from local)
