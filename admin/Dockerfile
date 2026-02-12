@@ -9,8 +9,6 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY . .
 
-<<<<<<< HEAD
-=======
 # Build args
 ARG NEXT_BASE_API_URL
 ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
@@ -28,8 +26,6 @@ ENV NEXTAUTH_URL=$NEXTAUTH_URL
 ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 ENV NEXT_GOOGLE_AUTH_CLIENT_ID=$NEXT_GOOGLE_AUTH_CLIENT_ID
 ENV NEXT_GOOGLE_AUTH_CLIENT_SECRET=$NEXT_GOOGLE_AUTH_CLIENT_SECRET
-
->>>>>>> 1a19ced (chore: update service folders from local)
 # Build application
 RUN npm run build
 

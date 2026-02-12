@@ -9,7 +9,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN GOFLAGS="-buildvcs=false" go generate ./...
+ENV PATH=/go/bin:$PATH
+
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.6
+RUN go install github.com/google/wire/cmd/wire@v0.7.0
+RUN swag init
+RUN wire
 RUN GOFLAGS="-buildvcs=false" go build -o goBinary .
 
 # Distribution
