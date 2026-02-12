@@ -40,3 +40,7 @@ export const getBookedDate = ({ id, startDate, endDate }: { id: string, startDat
   console.log('Fetching booked dates with query:', query);
   return fetcherBase(`/v1/courses/${id}/booking?${query}`);
 }
+
+export const getCourseSavedById = (id: string): Promise<{ data: any }> => {
+  return fetcherBase(`/v1/tutors/courses/${id}`);
+}

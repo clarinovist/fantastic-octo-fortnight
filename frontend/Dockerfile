@@ -1,5 +1,6 @@
+ARG GO_VERSION=20
 # Build stage
-FROM node:20-alpine AS builder
+FROM node:${GO_VERSION}-alpine AS builder
 WORKDIR /app
 
 # Install dependencies
@@ -16,10 +17,10 @@ ARG NEXT_GOOGLE_AUTH_CLIENT_ID
 ARG NEXT_GOOGLE_AUTH_CLIENT_SECRET
 
 # Set ENVs availability for build time
-ENV NEXT_BASE_API_URL=$NEXT_BASE_API_URL
-ENV NEXT_GOOGLE_KEY=$NEXT_GOOGLE_KEY
-ENV NEXT_GOOGLE_AUTH_CLIENT_ID=$NEXT_GOOGLE_AUTH_CLIENT_ID
-ENV NEXT_GOOGLE_AUTH_CLIENT_SECRET=$NEXT_GOOGLE_AUTH_CLIENT_SECRET
+ENV NEXT_BASE_API_URL=${NEXT_BASE_API_URL}
+ENV NEXT_GOOGLE_KEY=${NEXT_GOOGLE_KEY}
+ENV NEXT_GOOGLE_AUTH_CLIENT_ID=${NEXT_GOOGLE_AUTH_CLIENT_ID}
+ENV NEXT_GOOGLE_AUTH_CLIENT_SECRET=${NEXT_GOOGLE_AUTH_CLIENT_SECRET}
 # Build application
 RUN npm run build
 
@@ -30,8 +31,8 @@ WORKDIR /app
 ENV NODE_ENV production
 
 # Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 # Copy necessary files from builder
 COPY --from=builder /app/public ./public
