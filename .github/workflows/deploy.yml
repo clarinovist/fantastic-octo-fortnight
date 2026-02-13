@@ -22,7 +22,7 @@ jobs:
           script: |
             echo "🚀 Starting deployment..."
 
-            cd ~/lesprivate
+            cd ~/fantastic-octo-fortnight
             
             # Sync codebase
             echo "⬇️ Updating codebase..."
