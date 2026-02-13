@@ -17,7 +17,8 @@ import { StepBasicInfo } from "@/components/course/wizard-steps/step-basic-info"
 import { StepPricing } from "@/components/course/wizard-steps/step-pricing";
 import { StepSchedule } from "@/components/course/wizard-steps/step-schedule";
 import { StepReview } from "@/components/course/wizard-steps/step-review";
-import type { Tutor, CourseCategory, CourseDetail, ClassType, CourseSchedule, CoursePayload } from "@/utils/types";
+import type { Tutor, CourseCategory, CourseDetail, CourseSchedule, CoursePayload } from "@/utils/types";
+
 
 export const courseWizardSchema = z.object({
     // Step 1: Basic Info
@@ -142,7 +143,6 @@ const STEPS = [
 ];
 
 type ScheduleSlot = { startTime: string; timezone: string };
-type TransformedScheduleSlot = { startTime: string; timezone: string; classType: "online" | "offline" | "all" };
 
 export function CourseWizard({ tutors, categories, initialData, isEditMode = false }: CourseWizardProps) {
     const router = useRouter();
@@ -185,25 +185,6 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
         return days[day] || "1";
     };
 
-    const transformSchedules = (
-        schedules: Record<string, ScheduleSlot[]> | undefined,
-        classType: "online" | "offline" | "all"
-    ) => {
-        if (!schedules) return {};
-        const transformed: Record<string, TransformedScheduleSlot[]> = {};
-        Object.entries(schedules).forEach(([dayName, timeSlots]) => {
-            const validTimeSlots = timeSlots.filter(slot => slot.startTime && slot.startTime.trim() !== "");
-            if (validTimeSlots.length > 0) {
-                const dayIndex = getDayIndex(dayName);
-                transformed[dayIndex] = validTimeSlots.map(slot => ({
-                    startTime: slot.startTime.includes(":") && slot.startTime.split(":").length === 2 ? `${slot.startTime}:00` : slot.startTime,
-                    timezone: slot.timezone,
-                    classType: classType,
-                }));
-            }
-        });
-        return transformed;
-    };
 
     const nextStep = async () => {
         // Validate current step fields before moving

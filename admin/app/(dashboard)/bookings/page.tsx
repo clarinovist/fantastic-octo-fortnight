@@ -1,13 +1,12 @@
 import {
   Calendar,
-  ChevronDown,
-  Download,
   Filter,
   Layout,
   List,
   MoreVertical,
   Plus,
-  ArrowRight
+  Download,
+  ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
@@ -45,21 +44,21 @@ export default async function Page({
           {/* View Toggle */}
           <div className="flex items-center bg-muted p-1 rounded-lg border border-border">
             <Link
-              href={`?view=list&page=${page}&q=${q}`}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "list"
+              href={`? view = list & page=${page}& q=${q} `}
+              className={`flex items - center gap - 2 px - 3 py - 1.5 rounded - md text - sm font - medium transition - all ${view === "list"
                 ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
-                }`}
+                } `}
             >
               <List className="size-4" />
               <span>List</span>
             </Link>
             <Link
-              href={`?view=kanban&page=${page}&q=${q}`}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "kanban"
+              href={`? view = kanban & page=${page}& q=${q} `}
+              className={`flex items - center gap - 2 px - 3 py - 1.5 rounded - md text - sm font - medium transition - all ${view === "kanban"
                 ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
-                }`}
+                } `}
             >
               <Layout className="size-4" />
               <span>Kanban</span>

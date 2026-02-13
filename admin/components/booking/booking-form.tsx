@@ -49,8 +49,7 @@ type BookingFormValues = z.infer<typeof bookingSchema>;
 
 interface BookingFormProps {
     initialData?: Partial<BookingFormValues> & { duration?: string };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    action: (data: BookingFormValues & { duration: string }) => Promise<{ success: boolean; error?: string; data?: any }>;
+    action: (data: BookingFormValues & { duration: string }) => Promise<{ success: boolean; error?: string; data?: unknown }>;
 }
 
 export function BookingForm({ initialData, action }: BookingFormProps) {
@@ -68,11 +67,11 @@ export function BookingForm({ initialData, action }: BookingFormProps) {
         defaultValues: {
             studentId: initialData?.studentId || "",
             tutorId: initialData?.tutorId || "",
-            courseId: (initialData as any)?.courseId || "",
+            courseId: initialData?.courseId || "",
             bookingDate: initialData?.bookingDate || new Date().toISOString().split("T")[0],
             bookingTime: initialData?.bookingTime || "14:00",
-            classType: (initialData as any)?.classType || "online",
-            timezone: (initialData as any)?.timezone || "Asia/Jakarta",
+            classType: initialData?.classType || "online",
+            timezone: initialData?.timezone || "Asia/Jakarta",
             status: (initialData?.status as BookingFormValues["status"]) || "pending",
             notesTutor: initialData?.notesTutor || "",
             notesStudent: initialData?.notesStudent || "",

@@ -1,6 +1,6 @@
 "use client";
 
-import { changeRoleTutorAction, deleteTutorAction, changeTutorStatusAction } from "@/actions/tutor";
+import { deleteTutorAction, changeTutorStatusAction } from "@/actions/tutor";
 import { ConfirmDialog } from "@/components/base/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,23 +13,18 @@ import {
 import type { Tutor } from "@/utils/types";
 import {
     MoreVertical,
-    Plus,
     Search,
     CheckCircle,
     XCircle,
     SquarePen,
     Trash2,
     User,
-    ExternalLink,
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
-    useCallback,
     useEffect,
     useRef,
     useState,
-    useTransition,
 } from "react";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/helpers/formatter";
@@ -49,7 +44,6 @@ export function TutorTable({
 }: TutorTableProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [isPending, startTransition] = useTransition();
     const [isActionPending, setIsActionPending] = useState(false);
     const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -106,7 +100,7 @@ export function TutorTable({
             } else {
                 toast.error(result.error || "Failed to update status");
             }
-        } catch (error) {
+        } catch {
             toast.error("An unexpected error occurred");
         } finally {
             setIsActionPending(false);
@@ -124,7 +118,7 @@ export function TutorTable({
             } else {
                 toast.error(result.error || "Failed to delete tutor");
             }
-        } catch (error) {
+        } catch {
             toast.error("An unexpected error occurred");
         } finally {
             setIsActionPending(false);
@@ -279,7 +273,7 @@ export function TutorTable({
                         <Button
                             variant="outline"
                             size="sm"
-                            disabled={currentPage <= 1 || isPending}
+                            disabled={currentPage <= 1 || isActionPending}
                             onClick={() => {
                                 const params = new URLSearchParams(searchParams.toString());
                                 params.set("page", (currentPage - 1).toString());
@@ -291,7 +285,7 @@ export function TutorTable({
                         <Button
                             variant="outline"
                             size="sm"
-                            disabled={currentPage * pageSize >= totalData || isPending}
+                            disabled={currentPage * pageSize >= totalData || isActionPending}
                             onClick={() => {
                                 const params = new URLSearchParams(searchParams.toString());
                                 params.set("page", (currentPage + 1).toString());

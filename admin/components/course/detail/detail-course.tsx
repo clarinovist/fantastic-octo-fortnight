@@ -13,7 +13,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import type { CourseDetail } from "@/utils/types";
-import { Star, MapPin, Monitor } from "lucide-react";
+import { Star, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { DetailCourseAction } from "./detail-course-action";

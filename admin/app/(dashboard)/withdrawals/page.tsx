@@ -7,7 +7,6 @@ import {
     Calendar,
     User,
 } from "lucide-react";
-import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
 import { Pagination } from "@/components/shared/pagination";
 import { StatusBadge } from "@/components/shared/status-badge";

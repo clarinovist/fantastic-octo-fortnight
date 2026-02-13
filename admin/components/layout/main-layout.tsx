@@ -1,13 +1,4 @@
 import { SiteHeader } from "@/components/site-header";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import Link from "next/link";
 import React from "react";
 
 type MainLayoutProps = {
