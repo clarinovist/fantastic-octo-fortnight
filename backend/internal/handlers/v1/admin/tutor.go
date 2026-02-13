@@ -192,6 +192,58 @@ func (a *Api) UpdateTutor(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, http.StatusOK, "success")
 }
 
+// UpdateTutorStatus
+// @Summary update tutor status
+// @Description update tutor status to active or inactive
+// @Tags admin-tutor
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Tutor ID"
+// @Param request body dto.UpdateTutorStatusRequest true "update tutor status request"
+// @Success 200 {object} base.Base{data=string}
+// @Failure 400 {object} base.Base
+// @Failure 401 {object} base.Base
+// @Failure 403 {object} base.Base
+// @Failure 404 {object} base.Base
+// @Failure 500 {object} base.Base
+// @Router /v1/admin/tutors/{id}/status [put]
+func (a *Api) UpdateTutorStatus(w http.ResponseWriter, r *http.Request) {
+	var (
+		req   dto.UpdateTutorStatusRequest
+		idStr = chi.URLParam(r, "id")
+		ctx   = r.Context()
+	)
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding ID format")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid ID format"))
+		return
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding body")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"))
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error validating request")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid Request"), base.SetError(err.Error()))
+		return
+	}
+
+	req.ID = id
+	err = a.tutor.UpdateTutorStatus(ctx, req)
+	if err != nil {
+		response.Failure(w, base.CustomError(services.Error(err)))
+		return
+	}
+
+	response.Success(w, http.StatusOK, "success")
+}
+
 // DeleteTutor
 // @Summary delete tutor
 // @Description delete tutor

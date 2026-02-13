@@ -87,6 +87,13 @@ export async function changeRoleTutor(id: string): Promise<BaseResponse<Tutor>> 
   })
 }
 
+export async function changeTutorStatus(id: string, status: 'active' | 'inactive'): Promise<BaseResponse<Tutor>> {
+  return fetcherBase<Tutor>(`/v1/admin/tutors/${id}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  })
+}
+
 export async function getTutotrDocuments(tutorId: string): Promise<BaseResponse<TutorDocument[]>> {
   return fetcherBase<TutorDocument[]>(`/v1/admin/tutors/${tutorId}/documents`, {
     next: { tags: ['tutor-documents'] },

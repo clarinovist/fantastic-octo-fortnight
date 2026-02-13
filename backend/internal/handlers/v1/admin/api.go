@@ -97,6 +97,7 @@ func (a *Api) Router(r chi.Router) {
 		r.Put("/{id}", a.UpdateTutor)
 		r.Delete("/", a.DeleteTutor)
 		r.Post("/{id}/change-role", a.ChangeRoleTutor)
+		r.Put("/{id}/status", a.UpdateTutorStatus)
 
 		r.Route("/{tutorId}/documents", func(r chi.Router) {
 			r.Post("/", a.CreateTutorDocument)

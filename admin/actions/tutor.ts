@@ -1,7 +1,7 @@
 "use server"
 
 import type { TutorSubmitPayload } from "@/components/tutor/tutor-form"
-import { changeDocumentStatus, changeRoleTutor, createTutor, deleteTutorReview, deleteTutors, updateTutor, updateTutorReview, uploadTutorDocument } from "@/services/tutor"
+import { changeDocumentStatus, changeRoleTutor, changeTutorStatus, createTutor, deleteTutorReview, deleteTutors, updateTutor, updateTutorReview, uploadTutorDocument } from "@/services/tutor"
 import { updateTag } from "next/cache"
 
 export async function createTutorAction(payload: TutorSubmitPayload) {
@@ -52,6 +52,19 @@ export async function changeRoleTutorAction(id: string) {
     return {
       success: false,
       error: result.message || "Failed to change tutor role"
+    }
+  }
+}
+
+export async function changeTutorStatusAction(id: string, status: 'active' | 'inactive') {
+  const result = await changeTutorStatus(id, status)
+  if (result.success) {
+    updateTag("tutors")
+    return { success: true, data: result }
+  } else {
+    return {
+      success: false,
+      error: result.message || "Failed to change tutor status"
     }
   }
 }

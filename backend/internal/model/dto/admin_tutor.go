@@ -120,6 +120,18 @@ func (r *UpdateAdminTutorRequest) Validate() error {
 	return nil
 }
 
+type UpdateTutorStatusRequest struct {
+	ID     uuid.UUID `json:"-"`
+	Status string    `json:"status"`
+}
+
+func (r *UpdateTutorStatusRequest) Validate() error {
+	if r.Status != model.TutorStatusActive && r.Status != model.TutorStatusInactive {
+		return errors.New("status must be 'active' or 'inactive'")
+	}
+	return nil
+}
+
 type DeleteAdminTutorRequest struct {
 	IDs []uuid.UUID `json:"ids"`
 }

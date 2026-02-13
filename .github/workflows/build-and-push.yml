@@ -14,7 +14,59 @@ env:
   IMAGE_PREFIX: ghcr.io/${{ github.repository }}
 
 jobs:
+  # ─────────────────────────────────────────────
+  # Detect which services changed
+  # ─────────────────────────────────────────────
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      admin: ${{ steps.filter.outputs.admin }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      mentor: ${{ steps.filter.outputs.mentor }}
+      homepage: ${{ steps.filter.outputs.homepage }}
+      any_changed: ${{ steps.check.outputs.any_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            admin:
+              - 'admin/**'
+            frontend:
+              - 'frontend/**'
+            mentor:
+              - 'mentor/**'
+            homepage:
+              - 'homepage/**'
+
+      # For workflow_dispatch, build everything
+      - name: Check if any service changed
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "any_changed=true" >> $GITHUB_OUTPUT
+          elif [ "${{ steps.filter.outputs.backend }}" = "true" ] || \
+               [ "${{ steps.filter.outputs.admin }}" = "true" ] || \
+               [ "${{ steps.filter.outputs.frontend }}" = "true" ] || \
+               [ "${{ steps.filter.outputs.mentor }}" = "true" ] || \
+               [ "${{ steps.filter.outputs.homepage }}" = "true" ]; then
+            echo "any_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "any_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+  # ─────────────────────────────────────────────
+  # Build & push changed services
+  # ─────────────────────────────────────────────
   build:
+    needs: changes
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -24,31 +76,52 @@ jobs:
             context: backend
             dockerfile: backend/Dockerfile
             nextauth_secret: ""
+            changed: ${{ needs.changes.outputs.backend }}
           - name: admin
             context: admin
             dockerfile: admin/Dockerfile
             nextauth_secret: NEXTAUTH_URL_ADMIN
+            changed: ${{ needs.changes.outputs.admin }}
           - name: frontend
             context: frontend
             dockerfile: frontend/Dockerfile
             nextauth_secret: ""
+            changed: ${{ needs.changes.outputs.frontend }}
           - name: mentor
             context: mentor
             dockerfile: mentor/Dockerfile
             nextauth_secret: NEXTAUTH_URL_MENTOR
+            changed: ${{ needs.changes.outputs.mentor }}
           - name: homepage
             context: homepage
             dockerfile: homepage/Dockerfile
             nextauth_secret: ""
+            changed: ${{ needs.changes.outputs.homepage }}
+
+    # Skip if service hasn't changed (unless workflow_dispatch)
+    if: always()
 
     steps:
+      - name: Skip check
+        id: should_run
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ matrix.changed }}" = "true" ]; then
+            echo "run=true" >> $GITHUB_OUTPUT
+          else
+            echo "run=false" >> $GITHUB_OUTPUT
+            echo "⏭️ Skipping ${{ matrix.name }} — no changes detected"
+          fi
+
       - name: Checkout
+        if: steps.should_run.outputs.run == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
+        if: steps.should_run.outputs.run == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to GHCR
+        if: steps.should_run.outputs.run == 'true'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -56,6 +129,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker metadata
+        if: steps.should_run.outputs.run == 'true'
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -65,6 +139,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push
+        if: steps.should_run.outputs.run == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.context }}
@@ -72,6 +147,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
           build-args: |
             NEXT_BASE_API_URL=${{ secrets.NEXT_BASE_API_URL }}
             NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}

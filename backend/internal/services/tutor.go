@@ -378,6 +378,34 @@ func (s *TutorService) UpdateAdminTutor(ctx context.Context, req dto.UpdateAdmin
 	return nil
 }
 
+func (s *TutorService) UpdateTutorStatus(ctx context.Context, req dto.UpdateTutorStatusRequest) error {
+	tutor, err := s.tutor.GetByID(ctx, req.ID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateTutorStatus] Failed to get tutor")
+		return err
+	}
+
+	if tutor == nil {
+		logger.ErrorCtx(ctx).Msg("[UpdateTutorStatus] Tutor not found")
+		return shared.MakeError(ErrEntityNotFound, "tutor")
+	}
+
+	tutor.Status = null.StringFrom(req.Status)
+	tutor.UpdatedAt = time.Now()
+	tutor.UpdatedBy = uuid.NullUUID{
+		UUID:  middleware.GetUserID(ctx),
+		Valid: true,
+	}
+
+	err = s.tutor.Update(ctx, tutor)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateTutorStatus] Failed to update tutor status")
+		return err
+	}
+
+	return nil
+}
+
 func (s *TutorService) DeleteAdminTutor(ctx context.Context, req dto.DeleteAdminTutorRequest) error {
 	tutors, _, err := s.tutor.Get(ctx, model.TutorFilter{
 		IDs:           req.IDs,

@@ -1,6 +1,6 @@
 "use client";
 
-import { changeRoleTutorAction, deleteTutorAction } from "@/actions/tutor";
+import { changeRoleTutorAction, changeTutorStatusAction, deleteTutorAction } from "@/actions/tutor";
 import { ConfirmDialog } from "@/components/base/confirm-dialog";
 import type {
   BulkAction,
@@ -30,6 +30,8 @@ import {
   Mail,
   MessageSquare,
   Plus,
+  ShieldCheck,
+  ShieldX,
   SortAsc,
   SquarePen,
   Trash2,
@@ -72,6 +74,13 @@ type ChangeRoleConfirmState = {
   tutorName: string;
 };
 
+type StatusConfirmState = {
+  isOpen: boolean;
+  tutorId: string;
+  tutorName: string;
+  newStatus: "active" | "inactive";
+};
+
 const SORT_OPTIONS = [
   { label: "By Date Join", value: "created_at", icon: Calendar },
   { label: "By Nama", value: "name", icon: User },
@@ -96,6 +105,7 @@ export function TutorList({
   const [isPending, startTransition] = useTransition();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isChangingRole, setIsChangingRole] = useState(false);
+  const [isChangingStatus, setIsChangingStatus] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
     isOpen: false,
     tutorIds: [],
@@ -111,6 +121,12 @@ export function TutorList({
       tutorId: "",
       tutorName: "",
     });
+  const [statusConfirm, setStatusConfirm] = useState<StatusConfirmState>({
+    isOpen: false,
+    tutorId: "",
+    tutorName: "",
+    newStatus: "active",
+  });
 
   // Get current sort state from URL
   const currentSortBy = searchParams.get("sort") || "";
@@ -201,6 +217,41 @@ export function TutorList({
     }
   };
 
+  const handleStatusChange = (tutor: Tutor): void => {
+    const newStatus = tutor.status === "active" ? "inactive" : "active";
+    setStatusConfirm({
+      isOpen: true,
+      tutorId: tutor.id,
+      tutorName: tutor.name,
+      newStatus,
+    });
+  };
+
+  const executeStatusChange = async (): Promise<void> => {
+    const { tutorId, tutorName, newStatus } = statusConfirm;
+
+    setIsChangingStatus(true);
+    try {
+      const result = await changeTutorStatusAction(tutorId, newStatus);
+      if (result.success) {
+        toast.success(
+          newStatus === "active"
+            ? `${tutorName} has been verified (active)`
+            : `${tutorName} has been deactivated`
+        );
+        router.refresh();
+      } else {
+        toast.error(result.error || "Failed to change tutor status");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+      console.error("Status change error:", error);
+    } finally {
+      setIsChangingStatus(false);
+      setStatusConfirm({ isOpen: false, tutorId: "", tutorName: "", newStatus: "active" });
+    }
+  };
+
   const handleSort = (sortBy: string): void => {
     startTransition(() => {
       const params = new URLSearchParams(searchParams.toString());
@@ -246,11 +297,10 @@ export function TutorList({
         const status = String(value ?? "");
         return (
           <span
-            className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${
-              status === "active"
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}
+            className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${status === "active"
+              ? "bg-green-100 text-green-800"
+              : "bg-red-100 text-red-800"
+              }`}
           >
             {status}
           </span>
@@ -264,6 +314,20 @@ export function TutorList({
       label: "Details",
       variant: "outline",
       href: (row) => `/tutors/${row.id}`,
+    },
+    {
+      label: "Verify",
+      icon: <ShieldCheck className="w-4 h-4" />,
+      variant: "default",
+      onClick: (row) => handleStatusChange(row),
+      show: (row) => row.status !== "active",
+    },
+    {
+      label: "Deactivate",
+      icon: <ShieldX className="w-4 h-4" />,
+      variant: "outline",
+      onClick: (row) => handleStatusChange(row),
+      show: (row) => row.status === "active",
     },
     {
       label: "Change Role",
@@ -446,7 +510,7 @@ export function TutorList({
         pageSizeOptions={[5, 10, 25, 50, 100]}
         searchTerm={localSearchTerm}
         onSearchChange={handleSearchChange}
-        isLoading={isPending || isDeleting || isChangingRole}
+        isLoading={isPending || isDeleting || isChangingRole || isChangingStatus}
       />
 
       <ConfirmDialog
@@ -481,6 +545,29 @@ export function TutorList({
         cancelLabel="Cancel"
         variant="default"
         onConfirm={executeChangeRole}
+      />
+
+      <ConfirmDialog
+        open={statusConfirm.isOpen}
+        onOpenChange={(open) =>
+          setStatusConfirm({ isOpen: open, tutorId: "", tutorName: "", newStatus: "active" })
+        }
+        title={
+          statusConfirm.newStatus === "active"
+            ? "Verify Tutor"
+            : "Deactivate Tutor"
+        }
+        description={
+          statusConfirm.newStatus === "active"
+            ? `Are you sure you want to verify and activate ${statusConfirm.tutorName}?`
+            : `Are you sure you want to deactivate ${statusConfirm.tutorName}?`
+        }
+        confirmLabel={
+          statusConfirm.newStatus === "active" ? "Verify" : "Deactivate"
+        }
+        cancelLabel="Cancel"
+        variant={statusConfirm.newStatus === "active" ? "default" : "destructive"}
+        onConfirm={executeStatusChange}
       />
 
       <TutorMessageDialog
