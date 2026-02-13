@@ -166,8 +166,21 @@ func (s *UserService) Login(ctx context.Context, req dto.LoginRequest) (dto.Logi
 	}
 
 	if !user.VerifiedAt.Valid {
-		logger.WarnCtx(ctx).Str("email", req.Email).Msg("user not verified during login")
-		return dto.LoginResponse{}, Error(shared.MakeError(ErrBadRequest, "user not verified"))
+		// Check if it's a tutor with Active status
+		tutor, _ := s.tutor.GetByUserID(ctx, user.ID)
+		if tutor != nil && tutor.Status.String == model.TutorStatusActive {
+			// Auto-verify since Admin already activated this tutor
+			verifiedAt := time.Now()
+			_ = s.user.UpdateVerifiedAt(ctx, user.ID, verifiedAt)
+			user.VerifiedAt = null.TimeFrom(verifiedAt)
+			logger.InfoCtx(ctx).
+				Str("userID", user.ID.String()).
+				Str("email", user.Email).
+				Msg("tutor auto-verified during login due to active status")
+		} else {
+			logger.WarnCtx(ctx).Str("email", req.Email).Msg("user not verified during login")
+			return dto.LoginResponse{}, Error(shared.MakeError(ErrBadRequest, "user not verified"))
+		}
 	}
 
 	// Generate JWT token pair (access and refresh tokens)
