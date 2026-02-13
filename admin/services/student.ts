@@ -88,6 +88,20 @@ export async function changeRoleStudent(id: string): Promise<BaseResponse<Studen
   })
 }
 
+export async function updateStudentStatus(id: string, status: "active" | "inactive"): Promise<BaseResponse<null>> {
+  return fetcherBase<null>(`/v1/admin/students/${id}/status`, {
+    method: "PUT",
+    body: JSON.stringify({ status }),
+  })
+}
+
+export async function updateStudentPremium(id: string, premiumUntil: string): Promise<BaseResponse<null>> {
+  return fetcherBase<null>(`/v1/admin/students/${id}/premium`, {
+    method: "PUT",
+    body: JSON.stringify({ premiumUntil }),
+  })
+}
+
 export async function updateStudentReview(reviewId: string, review: string, rate: number, recommendByStudent: "yes" | "no" | null): Promise<BaseResponse<null>> {
   return fetcherBase<null>(`/v1/admin/student-reviews/${reviewId}`, {
     method: "PUT",

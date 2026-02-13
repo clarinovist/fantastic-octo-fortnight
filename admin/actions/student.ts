@@ -1,7 +1,7 @@
 "use server"
 
 import type { StudentSubmitPayload } from "@/components/student/student-form"
-import { changeRoleStudent, createStudent, deleteStudentReview, deleteStudents, updateStudent, updateStudentReview } from "@/services/student"
+import { changeRoleStudent, createStudent, deleteStudentReview, deleteStudents, updateStudent, updateStudentPremium, updateStudentReview, updateStudentStatus } from "@/services/student"
 import { updateTag } from "next/cache"
 
 export async function createStudentAction(payload: StudentSubmitPayload) {
@@ -52,6 +52,32 @@ export async function changeRoleStudentAction(id: string) {
     return {
       success: false,
       error: result.message || "Failed to change student role"
+    }
+  }
+}
+
+export async function changeStudentStatusAction(id: string, status: "active" | "inactive") {
+  const result = await updateStudentStatus(id, status)
+  if (result.success) {
+    updateTag("students")
+    return { success: true, data: result }
+  } else {
+    return {
+      success: false,
+      error: result.message || "Failed to change student status"
+    }
+  }
+}
+
+export async function updateStudentPremiumAction(id: string, premiumUntil: string) {
+  const result = await updateStudentPremium(id, premiumUntil)
+  if (result.success) {
+    updateTag("students")
+    return { success: true, data: result }
+  } else {
+    return {
+      success: false,
+      error: result.message || "Failed to update student premium"
     }
   }
 }

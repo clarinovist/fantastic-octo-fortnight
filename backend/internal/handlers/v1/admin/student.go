@@ -272,3 +272,101 @@ func (a *Api) ChangeRoleStudent(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, "success")
 }
+
+// UpdateStudentStatus
+// @Summary update student status
+// @Description update student status to active or inactive
+// @Tags admin-student
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Student ID"
+// @Param request body dto.UpdateStudentStatusRequest true "update student status request"
+// @Success 200 {object} base.Base{data=string}
+// @Failure 400 {object} base.Base
+// @Failure 401 {object} base.Base
+// @Failure 403 {object} base.Base
+// @Failure 404 {object} base.Base
+// @Failure 500 {object} base.Base
+// @Router /v1/admin/students/{id}/status [put]
+func (a *Api) UpdateStudentStatus(w http.ResponseWriter, r *http.Request) {
+	var (
+		req   dto.UpdateStudentStatusRequest
+		idStr = chi.URLParam(r, "id")
+		ctx   = r.Context()
+	)
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding ID format")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid ID format"))
+		return
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding body")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"))
+		return
+	}
+
+	if err := req.Validate(); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error validating request")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid Request"), base.SetError(err.Error()))
+		return
+	}
+
+	req.ID = id
+	err = a.student.UpdateStudentStatus(ctx, req)
+	if err != nil {
+		response.Failure(w, base.CustomError(services.Error(err)))
+		return
+	}
+
+	response.Success(w, http.StatusOK, "success")
+}
+
+// UpdateStudentPremium
+// @Summary update student premium
+// @Description set or remove premium status for a student
+// @Tags admin-student
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Student ID"
+// @Param request body dto.UpdateStudentPremiumRequest true "update student premium request"
+// @Success 200 {object} base.Base{data=string}
+// @Failure 400 {object} base.Base
+// @Failure 401 {object} base.Base
+// @Failure 403 {object} base.Base
+// @Failure 404 {object} base.Base
+// @Failure 500 {object} base.Base
+// @Router /v1/admin/students/{id}/premium [put]
+func (a *Api) UpdateStudentPremium(w http.ResponseWriter, r *http.Request) {
+	var (
+		req   dto.UpdateStudentPremiumRequest
+		idStr = chi.URLParam(r, "id")
+		ctx   = r.Context()
+	)
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding ID format")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid ID format"))
+		return
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding body")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"))
+		return
+	}
+
+	req.ID = id
+	err = a.student.UpdateStudentPremium(ctx, req)
+	if err != nil {
+		response.Failure(w, base.CustomError(services.Error(err)))
+		return
+	}
+
+	response.Success(w, http.StatusOK, "success")
+}

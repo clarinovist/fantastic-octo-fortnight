@@ -27,6 +27,7 @@ type AdminStudent struct {
 	Name                string    `json:"name"`
 	PhoneNumber         string    `json:"phoneNumber"`
 	Email               string    `json:"email"`
+	Status              string    `json:"status"`
 	PremiumSubscription string    `json:"premiumSubscription"`
 	CreatedAt           time.Time `json:"createdAt"`
 	UpdatedAt           time.Time `json:"updatedAt"`
@@ -138,4 +139,21 @@ func (r *DeleteAdminStudentRequest) Validate() error {
 	}
 
 	return nil
+}
+
+type UpdateStudentStatusRequest struct {
+	ID     uuid.UUID `json:"-"`
+	Status string    `json:"status"`
+}
+
+func (r *UpdateStudentStatusRequest) Validate() error {
+	if r.Status != model.StudentStatusActive && r.Status != model.StudentStatusInactive {
+		return errors.New("status must be 'active' or 'inactive'")
+	}
+	return nil
+}
+
+type UpdateStudentPremiumRequest struct {
+	ID           uuid.UUID `json:"-"`
+	PremiumUntil string    `json:"premiumUntil"` // ISO date string, empty to remove
 }

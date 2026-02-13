@@ -83,12 +83,17 @@ func (s *StudentService) GetAdminStudents(ctx context.Context, req dto.GetAdminS
 		if student.PremiumUntil.Valid && student.PremiumUntil.Time.After(time.Now()) {
 			premium = "Active"
 		}
+		status := model.StudentStatusActive
+		if student.Status.Valid {
+			status = student.Status.String
+		}
 		resp.Data[i] = dto.AdminStudent{
 			ID:                  student.ID,
 			UserID:              student.UserID,
 			Name:                student.User.Name,
 			PhoneNumber:         student.User.PhoneNumber,
 			Email:               student.User.Email,
+			Status:              status,
 			PremiumSubscription: premium,
 			CreatedAt:           student.CreatedAt,
 			UpdatedAt:           student.UpdatedAt,
@@ -264,6 +269,7 @@ func (s *StudentService) CreateAdminStudent(ctx context.Context, req dto.CreateA
 		SocialMediaLink: socialMediaLinks,
 		Latitude:        req.Latitude,
 		Longitude:       req.Longitude,
+		Status:          null.StringFrom(model.StudentStatusActive),
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		CreatedBy: uuid.NullUUID{
@@ -483,6 +489,75 @@ func (s *StudentService) ChangeRoleAdminStudent(ctx context.Context, id uuid.UUI
 	err = s.user.ChangeRole(ctx, student, &tutor, userRole)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("[ChangeRoleAdminStudent] Failed to change role student to tutor")
+		return err
+	}
+
+	return nil
+}
+
+func (s *StudentService) UpdateStudentStatus(ctx context.Context, req dto.UpdateStudentStatusRequest) error {
+	student, err := s.student.GetByID(ctx, req.ID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateStudentStatus] Failed to get student")
+		return err
+	}
+
+	if student == nil {
+		logger.ErrorCtx(ctx).Msg("[UpdateStudentStatus] Student not found")
+		return shared.MakeError(ErrEntityNotFound, "student")
+	}
+
+	student.Status = null.StringFrom(req.Status)
+	student.UpdatedAt = time.Now()
+	student.UpdatedBy = uuid.NullUUID{
+		UUID:  middleware.GetUserID(ctx),
+		Valid: true,
+	}
+
+	err = s.student.Update(ctx, student)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateStudentStatus] Failed to update student status")
+		return err
+	}
+
+	return nil
+}
+
+func (s *StudentService) UpdateStudentPremium(ctx context.Context, req dto.UpdateStudentPremiumRequest) error {
+	student, err := s.student.GetByID(ctx, req.ID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateStudentPremium] Failed to get student")
+		return err
+	}
+
+	if student == nil {
+		logger.ErrorCtx(ctx).Msg("[UpdateStudentPremium] Student not found")
+		return shared.MakeError(ErrEntityNotFound, "student")
+	}
+
+	if req.PremiumUntil == "" {
+		// Remove premium
+		student.PremiumUntil = null.Time{}
+	} else {
+		// Set premium
+		t, err := time.Parse(time.DateOnly, req.PremiumUntil)
+		if err != nil {
+			logger.ErrorCtx(ctx).Err(err).Msg("[UpdateStudentPremium] Failed to parse premium until")
+			return err
+		}
+		t = time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 0, time.Local)
+		student.PremiumUntil = null.TimeFrom(t)
+	}
+
+	student.UpdatedAt = time.Now()
+	student.UpdatedBy = uuid.NullUUID{
+		UUID:  middleware.GetUserID(ctx),
+		Valid: true,
+	}
+
+	err = s.student.Update(ctx, student)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateStudentPremium] Failed to update student premium")
 		return err
 	}
 

@@ -9,6 +9,11 @@ import (
 	"gorm.io/gorm"
 )
 
+const (
+	StudentStatusActive   = "active"
+	StudentStatusInactive = "inactive"
+)
+
 type Student struct {
 	ID              uuid.UUID           `gorm:"type:char(36);primary_key" json:"id"`
 	UserID          uuid.UUID           `gorm:"type:char(36);not null" json:"user_id"`
@@ -28,6 +33,7 @@ type Student struct {
 	UpdatedBy       uuid.NullUUID       `gorm:"type:char(36)" json:"updated_by"`
 	DeletedBy       uuid.NullUUID       `gorm:"type:char(36)" json:"deleted_by"`
 	PremiumUntil    null.Time           `json:"premium_until"`
+	Status          null.String         `gorm:"type:enum('active','inactive');default:'active'" json:"status"`
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.

@@ -3,6 +3,7 @@ export type Student = {
   name: string;
   email: string;
   userId: string;
+  status: 'active' | 'inactive' | string;
   premiumSubscription: 'Non Active' | 'Active' | string;
   createdAt: string;
   updatedAt: string;

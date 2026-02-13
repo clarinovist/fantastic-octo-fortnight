@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteStudentAction, changeRoleStudentAction } from "@/actions/student";
+import { deleteStudentAction, changeRoleStudentAction, changeStudentStatusAction, updateStudentPremiumAction } from "@/actions/student";
 import { ConfirmDialog } from "@/components/base/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,15 +12,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Student } from "@/utils/types";
 import {
+    CheckCircle,
     ChevronLeft,
     ChevronRight,
+    Crown,
+    CrownIcon,
     MoreVertical,
     SquarePen,
     Trash2,
     User,
     UserCog,
+    XCircle,
 } from "lucide-react";
-import { StatusBadge } from "@/components/shared/status-badge";
 import { formatDate } from "@/utils/helpers/formatter";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, useCallback, useEffect, useRef } from "react";
@@ -45,6 +48,20 @@ type ChangeRoleConfirmState = {
     studentName: string;
 };
 
+type StatusConfirmState = {
+    isOpen: boolean;
+    studentId: string;
+    studentName: string;
+    newStatus: "active" | "inactive";
+};
+
+type PremiumConfirmState = {
+    isOpen: boolean;
+    studentId: string;
+    studentName: string;
+    action: "set" | "remove";
+};
+
 export function StudentTable({
     students,
     totalData,
@@ -54,19 +71,21 @@ export function StudentTable({
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [isChangingRole, setIsChangingRole] = useState(false);
 
     const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmState>({
-        isOpen: false,
-        studentId: "",
-        studentName: "",
+        isOpen: false, studentId: "", studentName: "",
     });
 
     const [changeRoleConfirm, setChangeRoleConfirm] = useState<ChangeRoleConfirmState>({
-        isOpen: false,
-        studentId: "",
-        studentName: "",
+        isOpen: false, studentId: "", studentName: "",
+    });
+
+    const [statusConfirm, setStatusConfirm] = useState<StatusConfirmState>({
+        isOpen: false, studentId: "", studentName: "", newStatus: "active",
+    });
+
+    const [premiumConfirm, setPremiumConfirm] = useState<PremiumConfirmState>({
+        isOpen: false, studentId: "", studentName: "", action: "set",
     });
 
     // Search
@@ -107,7 +126,6 @@ export function StudentTable({
 
     // Delete
     const handleDelete = async () => {
-        setIsDeleting(true);
         try {
             const result = await deleteStudentAction([deleteConfirm.studentId]);
             if (result.success) {
@@ -119,14 +137,12 @@ export function StudentTable({
         } catch {
             toast.error("An unexpected error occurred");
         } finally {
-            setIsDeleting(false);
             setDeleteConfirm({ isOpen: false, studentId: "", studentName: "" });
         }
     };
 
     // Change Role
     const handleChangeRole = async () => {
-        setIsChangingRole(true);
         try {
             const result = await changeRoleStudentAction(changeRoleConfirm.studentId);
             if (result.success) {
@@ -138,8 +154,48 @@ export function StudentTable({
         } catch {
             toast.error("An unexpected error occurred");
         } finally {
-            setIsChangingRole(false);
             setChangeRoleConfirm({ isOpen: false, studentId: "", studentName: "" });
+        }
+    };
+
+    // Status Change
+    const handleStatusChange = async () => {
+        try {
+            const result = await changeStudentStatusAction(statusConfirm.studentId, statusConfirm.newStatus);
+            if (result.success) {
+                toast.success(`Student "${statusConfirm.studentName}" is now ${statusConfirm.newStatus}`);
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to change status");
+            }
+        } catch {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setStatusConfirm({ isOpen: false, studentId: "", studentName: "", newStatus: "active" });
+        }
+    };
+
+    // Premium Toggle
+    const handlePremiumToggle = async () => {
+        try {
+            // Set premium for 1 year from now, or remove
+            const premiumUntil = premiumConfirm.action === "set"
+                ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
+                : "";
+            const result = await updateStudentPremiumAction(premiumConfirm.studentId, premiumUntil);
+            if (result.success) {
+                const msg = premiumConfirm.action === "set"
+                    ? `Premium activated for "${premiumConfirm.studentName}" (1 year)`
+                    : `Premium removed for "${premiumConfirm.studentName}"`;
+                toast.success(msg);
+                router.refresh();
+            } else {
+                toast.error(result.error || "Failed to update premium");
+            }
+        } catch {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setPremiumConfirm({ isOpen: false, studentId: "", studentName: "", action: "set" });
         }
     };
 
@@ -185,6 +241,9 @@ export function StudentTable({
                                     Student
                                 </th>
                                 <th className="p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th className="p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                     Premium
                                 </th>
                                 <th className="p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -221,7 +280,22 @@ export function StudentTable({
                                             </div>
                                         </td>
                                         <td className="p-4">
-                                            <StatusBadge status={student.premiumSubscription || "Inactive"} />
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${student.status === 'active'
+                                                ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+                                                : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700/30 dark:text-slate-400 dark:border-slate-700/50'
+                                                }`}>
+                                                <span className={`h-1.5 w-1.5 rounded-full ${student.status === 'active' ? 'bg-emerald-500' : 'bg-slate-400'}`}></span>
+                                                {student.status === 'active' ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${student.premiumSubscription === 'Active'
+                                                ? 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
+                                                : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700/30 dark:text-slate-400 dark:border-slate-700/50'
+                                                }`}>
+                                                <Crown className={`size-3 ${student.premiumSubscription === 'Active' ? 'text-amber-500' : 'text-slate-400'}`} />
+                                                {student.premiumSubscription === 'Active' ? 'Premium' : 'Free'}
+                                            </span>
                                         </td>
                                         <td className="p-4">
                                             <span className="text-sm text-muted-foreground">
@@ -242,6 +316,41 @@ export function StudentTable({
                                                     <DropdownMenuItem onClick={() => router.push(`/students/form?id=${student.id}`)}>
                                                         <SquarePen className="mr-2 size-4" /> Edit
                                                     </DropdownMenuItem>
+
+                                                    <DropdownMenuSeparator />
+
+                                                    {/* Status Toggle */}
+                                                    {student.status !== 'active' ? (
+                                                        <DropdownMenuItem
+                                                            className="text-emerald-600 focus:text-emerald-600"
+                                                            onClick={() => setStatusConfirm({ isOpen: true, studentId: student.id, studentName: student.name, newStatus: "active" })}
+                                                        >
+                                                            <CheckCircle className="mr-2 size-4" /> Activate
+                                                        </DropdownMenuItem>
+                                                    ) : (
+                                                        <DropdownMenuItem
+                                                            className="text-amber-600 focus:text-amber-600"
+                                                            onClick={() => setStatusConfirm({ isOpen: true, studentId: student.id, studentName: student.name, newStatus: "inactive" })}
+                                                        >
+                                                            <XCircle className="mr-2 size-4" /> Deactivate
+                                                        </DropdownMenuItem>
+                                                    )}
+
+                                                    {/* Premium Toggle */}
+                                                    {student.premiumSubscription !== 'Active' ? (
+                                                        <DropdownMenuItem
+                                                            className="text-amber-600 focus:text-amber-600"
+                                                            onClick={() => setPremiumConfirm({ isOpen: true, studentId: student.id, studentName: student.name, action: "set" })}
+                                                        >
+                                                            <CrownIcon className="mr-2 size-4" /> Set Premium
+                                                        </DropdownMenuItem>
+                                                    ) : (
+                                                        <DropdownMenuItem
+                                                            onClick={() => setPremiumConfirm({ isOpen: true, studentId: student.id, studentName: student.name, action: "remove" })}
+                                                        >
+                                                            <CrownIcon className="mr-2 size-4" /> Remove Premium
+                                                        </DropdownMenuItem>
+                                                    )}
 
                                                     <DropdownMenuSeparator />
 
@@ -267,7 +376,7 @@ export function StudentTable({
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={5} className="p-8 text-center text-muted-foreground">
+                                    <td colSpan={6} className="p-8 text-center text-muted-foreground">
                                         No students found.
                                     </td>
                                 </tr>
@@ -336,11 +445,45 @@ export function StudentTable({
                     setChangeRoleConfirm({ isOpen: open, studentId: "", studentName: "" })
                 }
                 title="Change Student Role"
-                description={`Are you sure you want to change the role for "${changeRoleConfirm.studentName}"?`}
+                description={`Are you sure you want to change the role for "${changeRoleConfirm.studentName}"? This will convert them to a tutor.`}
                 confirmLabel="Change Role"
                 cancelLabel="Cancel"
                 variant="default"
                 onConfirm={handleChangeRole}
+            />
+
+            {/* Status Change Confirmation */}
+            <ConfirmDialog
+                open={statusConfirm.isOpen}
+                onOpenChange={(open) =>
+                    setStatusConfirm({ isOpen: open, studentId: "", studentName: "", newStatus: "active" })
+                }
+                title={statusConfirm.newStatus === "active" ? "Activate Student" : "Deactivate Student"}
+                description={statusConfirm.newStatus === "active"
+                    ? `Are you sure you want to activate "${statusConfirm.studentName}"?`
+                    : `Are you sure you want to deactivate "${statusConfirm.studentName}"? They will no longer be able to access the platform.`
+                }
+                confirmLabel={statusConfirm.newStatus === "active" ? "Activate" : "Deactivate"}
+                cancelLabel="Cancel"
+                variant={statusConfirm.newStatus === "active" ? "default" : "destructive"}
+                onConfirm={handleStatusChange}
+            />
+
+            {/* Premium Toggle Confirmation */}
+            <ConfirmDialog
+                open={premiumConfirm.isOpen}
+                onOpenChange={(open) =>
+                    setPremiumConfirm({ isOpen: open, studentId: "", studentName: "", action: "set" })
+                }
+                title={premiumConfirm.action === "set" ? "Set Premium" : "Remove Premium"}
+                description={premiumConfirm.action === "set"
+                    ? `Grant premium access to "${premiumConfirm.studentName}" for 1 year?`
+                    : `Remove premium access from "${premiumConfirm.studentName}"?`
+                }
+                confirmLabel={premiumConfirm.action === "set" ? "Set Premium" : "Remove Premium"}
+                cancelLabel="Cancel"
+                variant={premiumConfirm.action === "set" ? "default" : "destructive"}
+                onConfirm={handlePremiumToggle}
             />
         </>
     );
