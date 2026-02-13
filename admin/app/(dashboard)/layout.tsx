@@ -4,6 +4,9 @@ import { GoogleMapsProvider } from "@/contexts/google-maps";
 import { Bell, ChevronRight, Moon, Search } from "lucide-react";
 import { getBookings } from "@/services/booking";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DashboardLayout({
   children,
 }: {
