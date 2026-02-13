@@ -1,12 +1,12 @@
 import Link from "next/link";
 import {
   Plus,
-  Search,
-  ChevronDown,
   MoreVertical,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
+import { PageHeader } from "@/components/shared/page-header";
+import { SearchToolbar } from "@/components/shared/search-toolbar";
+import { Pagination } from "@/components/shared/pagination";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { getStudents } from "@/services/student";
 import { formatDate } from "@/utils/helpers/formatter";
 
@@ -27,54 +27,29 @@ export default async function Page({
 
   return (
     <div className="mx-auto max-w-[1440px] flex flex-col gap-6">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight">
-            Students
-          </h1>
-          <p className="text-muted-foreground text-base max-w-2xl">
-            Manage your student roster and monitor their progress.
-          </p>
-        </div>
-        <Link
-          href="/students/create"
-          className="flex items-center justify-center gap-2 h-10 px-5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap"
-        >
-          <Plus className="size-5" />
-          <span>Register Student</span>
-        </Link>
-      </div>
+      <PageHeader
+        title="Students"
+        subtitle="Manage your student roster and monitor their progress."
+        action={{ label: "Register Student", href: "/students/create", icon: Plus }}
+      />
 
-      {/* Filters & Controls */}
-      <div className="bg-card p-4 rounded-xl border border-border shadow-sm flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center">
-        {/* Left Side: Search & Filters */}
-        <form className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto flex-1">
-          {/* Search */}
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-5" />
-            <input
-              type="text"
-              name="q"
-              defaultValue={q}
-              placeholder="Search students..."
-              className="w-full h-10 pl-10 pr-4 bg-muted/50 border border-input rounded-lg text-sm placeholder:text-muted-foreground focus:ring-2 focus:ring-violet-600/20 focus:border-violet-600 transition-all"
-            />
-          </div>
-          {/* Status Filter - Disabled for now as backend support unclear */}
-          <div className="relative group min-w-[140px] opacity-50 pointer-events-none">
-            <div className="relative">
-              <select className="w-full h-10 pl-4 pr-10 bg-background border border-border rounded-lg text-sm text-foreground focus:ring-2 focus:ring-violet-600/20 focus:border-violet-600 appearance-none cursor-pointer hover:bg-muted/50 transition-colors">
-                <option value="all">Status: All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4.5 pointer-events-none" />
-            </div>
-          </div>
-          <button type="submit" className="hidden">Submit</button>
-        </form>
-      </div>
+      <SearchToolbar
+        placeholder="Search students..."
+        queryParamName="q"
+        defaultQuery={q}
+        filters={[
+          {
+            name: "status",
+            label: "Status",
+            options: [
+              { value: "all", label: "Status: All" },
+              { value: "active", label: "Active" },
+              { value: "inactive", label: "Inactive" },
+            ],
+            disabled: true,
+          },
+        ]}
+      />
 
       {/* Table Container */}
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden flex flex-col">
@@ -130,14 +105,7 @@ export default async function Page({
                       </div>
                     </td>
                     <td className="p-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${student.premiumSubscription === 'Active'
-                        ? 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
-                        : 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700/30 dark:text-slate-400 dark:border-slate-700/50'
-                        }`}>
-                        <span className={`h-1.5 w-1.5 rounded-full ${student.premiumSubscription === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'
-                          }`}></span>
-                        {student.premiumSubscription || 'Inactive'}
-                      </span>
+                      <StatusBadge status={student.premiumSubscription || "Inactive"} />
                     </td>
                     <td className="p-4">
                       <span className="text-sm text-muted-foreground">
@@ -162,32 +130,14 @@ export default async function Page({
           </table>
         </div>
 
-        {/* Pagination represented */}
         {metadata && (
-          <div className="px-6 py-4 border-t border-border flex items-center justify-between bg-card">
-            <span className="text-sm text-muted-foreground">
-              Showing page <span className="font-medium text-foreground">{page}</span> of <span className="font-medium text-foreground">{Math.ceil(metadata.total / pageSize)}</span> ({metadata.total} total)
-            </span>
-            <div className="flex gap-2">
-              <Link
-                href={`?page=${page > 1 ? page - 1 : 1}&q=${q}`}
-                className={`p-2 rounded-lg border border-border hover:bg-muted/50 text-muted-foreground transition-colors ${page <= 1 ? 'opacity-50 pointer-events-none' : ''}`}
-              >
-                <ChevronLeft className="size-4.5" />
-              </Link>
-              <Link
-                href={`?page=${page + 1}&q=${q}`}
-                className={`p-2 rounded-lg border border-border hover:bg-muted/50 text-muted-foreground hover:text-violet-600 transition-colors ${page * pageSize >= metadata.total ? 'opacity-50 pointer-events-none' : ''}`}
-              >
-                <ChevronRight className="size-4.5" />
-              </Link>
-            </div>
-          </div>
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={metadata.total}
+            queryParams={{ q }}
+          />
         )}
-      </div>
-
-      <div className="mt-8 text-center text-xs text-muted-foreground">
-        © 2023 Lesprivate Admin Portal. All rights reserved.
       </div>
     </div>
   );

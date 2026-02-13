@@ -6,6 +6,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Image from "next/image";
+import { PageHeader } from "@/components/shared/page-header";
 import { getStatisticSubscription, getStatisticUser, getTopSubjectBooked } from "@/services/statistic";
 import { getBookings } from "@/services/booking";
 import { formatRupiah } from "@/utils/helpers";
@@ -44,15 +45,10 @@ export default async function Page() {
 
   return (
     <div className="mx-auto max-w-[1440px] space-y-8">
-      {/* Header Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-black text-foreground tracking-tight">
-          Dashboard Overview
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Welcome back. Here&apos;s a snapshot of your platform&apos;s performance.
-        </p>
-      </div>
+      <PageHeader
+        title="Dashboard Overview"
+        subtitle="Welcome back. Here's a snapshot of your platform's performance."
+      />
 
       {/* Top Row: KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -342,15 +338,7 @@ export default async function Page() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="w-full py-6 text-muted-foreground text-xs flex flex-col md:flex-row justify-between items-center gap-4 border-t border-border">
-        <p>© 2024 Lesprivate Learning Systems. All rights reserved.</p>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-violet-600 transition-colors">Help Center</a>
-          <a href="#" className="hover:text-violet-600 transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-violet-600 transition-colors">Terms of Service</a>
-        </div>
-      </footer>
+
     </div>
   );
 }

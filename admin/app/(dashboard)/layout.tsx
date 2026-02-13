@@ -1,7 +1,8 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { GoogleMapsProvider } from "@/contexts/google-maps";
-import { Bell, ChevronRight, Moon, Search } from "lucide-react";
+import { Bell, Moon, Search } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 import { getBookings } from "@/services/booking";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +23,7 @@ export default async function DashboardLayout({
       <SidebarProvider
         style={
           {
-            "--sidebar-width": "18rem", // 72 * 0.25rem = 18rem
+            "--sidebar-width": "18rem",
             "--header-height": "4rem",
           } as React.CSSProperties
         }
@@ -31,12 +32,8 @@ export default async function DashboardLayout({
         <SidebarInset className="bg-muted/10 relative">
           <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-xl transition-all">
             <div className="flex items-center gap-2">
-              <SidebarTrigger className="-ml-2 md:hidden" />
-              <nav className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-                <a href="#" className="hover:text-foreground transition-colors">Home</a>
-                <ChevronRight className="size-4 text-muted-foreground/50" />
-                <span className="font-medium text-foreground">Dashboard</span>
-              </nav>
+              <SidebarTrigger className="-ml-2" />
+              <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4 hidden md:block" />
             </div>
 
             <div className="flex items-center gap-4">

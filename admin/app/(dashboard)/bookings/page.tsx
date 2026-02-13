@@ -1,18 +1,19 @@
 import {
   Calendar,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   Download,
   Filter,
   Layout,
   List,
   MoreVertical,
   Plus,
-  Search,
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";
+import { PageHeader } from "@/components/shared/page-header";
+import { SearchToolbar } from "@/components/shared/search-toolbar";
+import { Pagination } from "@/components/shared/pagination";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { getBookings } from "@/services/booking";
 import { type Booking, type Metadata } from "@/utils/types";
 import { formatDate } from "@/utils/helpers/formatter";
@@ -29,100 +30,58 @@ export default async function Page({
 
   const { data: bookings, metadata } = await getBookings({
     page,
-    pageSize: 100, // Fetch more for Kanban
+    pageSize: 100,
     studentName: q,
   });
 
   return (
-    <div className="mx-auto max-w-[1600px] flex flex-col h-[calc(100vh-100px)] gap-6">
-      {/* Header Section */}
+    <div className="mx-auto max-w-[1440px] flex flex-col h-[calc(100vh-100px)] gap-6">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-          <div className="flex flex-col gap-1">
-            <h1 className="text-3xl font-black text-foreground tracking-tight">
-              Bookings
-            </h1>
-            <p className="text-muted-foreground text-base max-w-2xl">
-              Manage and track all tutoring sessions, payments, and statuses.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* View Toggle */}
-            <div className="flex items-center bg-muted p-1 rounded-lg border border-border">
-              <Link
-                href={`?view=list&page=${page}&q=${q}`}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "list"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-                  }`}
-              >
-                <List className="size-4" />
-                <span>List</span>
-              </Link>
-              <Link
-                href={`?view=kanban&page=${page}&q=${q}`}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "kanban"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-                  }`}
-              >
-                <Layout className="size-4" />
-                <span>Kanban</span>
-              </Link>
-            </div>
-
-            <button className="flex items-center gap-2 h-10 px-4 bg-background border border-border rounded-lg text-foreground text-sm font-medium hover:bg-muted/50 transition-colors shadow-sm">
-              <Filter className="size-4" />
-              <span className="hidden sm:inline">Filter</span>
-            </button>
+        <PageHeader
+          title="Bookings"
+          subtitle="Manage and track all tutoring sessions, payments, and statuses."
+          action={{ label: "New Booking", href: "/bookings/create", icon: Plus }}
+        >
+          {/* View Toggle */}
+          <div className="flex items-center bg-muted p-1 rounded-lg border border-border">
             <Link
-              href="/bookings/create"
-              className="flex items-center justify-center gap-2 h-10 px-5 bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap"
+              href={`?view=list&page=${page}&q=${q}`}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "list"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
             >
-              <Plus className="size-5" />
-              <span>New Booking</span>
+              <List className="size-4" />
+              <span>List</span>
+            </Link>
+            <Link
+              href={`?view=kanban&page=${page}&q=${q}`}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${view === "kanban"
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
+            >
+              <Layout className="size-4" />
+              <span>Kanban</span>
             </Link>
           </div>
-        </div>
 
-        {/* Search & Filters Row */}
-        <form className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-card p-4 rounded-xl border border-border shadow-sm">
-          <div className="flex items-center gap-3 w-full sm:w-auto flex-1">
-            <div className="relative w-full sm:max-w-xs">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-5" />
-              <input
-                type="text"
-                name="q"
-                defaultValue={q}
-                placeholder="Search bookings..."
-                className="w-full h-10 pl-10 pr-4 bg-muted/50 border border-input rounded-lg text-sm placeholder:text-muted-foreground focus:ring-2 focus:ring-violet-600/20 focus:border-violet-600 transition-all"
-              />
-              <input type="hidden" name="view" value={view} />
-            </div>
-            {/* Secondary Filters */}
-            <div className="hidden md:flex gap-2">
-              <button type="button" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-xs font-medium hover:bg-muted/80 transition-colors border border-transparent hover:border-border">
-                All Subjects
-                <ChevronDown className="size-3" />
-              </button>
-              <button type="button" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-xs font-medium hover:bg-muted/80 transition-colors border border-transparent hover:border-border">
-                This Week
-                <ChevronDown className="size-3" />
-              </button>
-              <button type="button" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-muted-foreground text-xs font-medium hover:bg-muted/80 transition-colors border border-transparent hover:border-border">
-                Online
-                <ChevronDown className="size-3" />
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-            <button type="button" className="hidden sm:flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground text-sm font-medium transition-colors">
-              <Download className="size-4" />
-              <span className="hidden sm:inline">Export</span>
-            </button>
-          </div>
-        </form>
+          <button className="flex items-center gap-2 h-10 px-4 bg-background border border-border rounded-lg text-foreground text-sm font-medium hover:bg-muted/50 transition-colors shadow-sm">
+            <Filter className="size-4" />
+            <span className="hidden sm:inline">Filter</span>
+          </button>
+        </PageHeader>
+
+        <SearchToolbar
+          placeholder="Search bookings..."
+          queryParamName="q"
+          defaultQuery={q}
+        >
+          <button type="button" className="hidden sm:flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground text-sm font-medium transition-colors">
+            <Download className="size-4" />
+            <span className="hidden sm:inline">Export</span>
+          </button>
+        </SearchToolbar>
       </div>
 
       {/* Content Area */}
@@ -195,16 +154,7 @@ function ListView({ bookings, metadata, page, pageSize, q }: { bookings: Booking
                     </div>
                   </td>
                   <td className="px-6 py-4 align-top pt-5">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${booking.status === 'accepted' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' :
-                      booking.status === 'pending' ? 'bg-amber-100 text-amber-700 border-amber-200' :
-                        'bg-red-100 text-red-700 border-red-200'
-                      }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${booking.status === 'accepted' ? 'bg-emerald-600' :
-                        booking.status === 'pending' ? 'bg-amber-600' :
-                          'bg-red-600'
-                        }`}></span>
-                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                    </span>
+                    <StatusBadge status={booking.status} />
                   </td>
                   <td className="px-6 py-4 align-top pt-4 text-right">
                     <button className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
@@ -224,27 +174,13 @@ function ListView({ bookings, metadata, page, pageSize, q }: { bookings: Booking
         </table>
       </div>
 
-      {/* Pagination Footer */}
       {metadata && (
-        <div className="border-t border-border p-4 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto bg-card">
-          <div className="text-sm text-muted-foreground">
-            Showing page <span className="font-medium text-foreground">{page}</span> of <span className="font-medium text-foreground">{Math.ceil(metadata.total / pageSize)}</span> ({metadata.total} total)
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href={`?view=list&page=${page > 1 ? page - 1 : 1}&q=${q}`}
-              className={`p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-all ${page <= 1 ? 'opacity-50 pointer-events-none' : ''}`}
-            >
-              <ChevronLeft className="size-4" />
-            </Link>
-            <Link
-              href={`?view=list&page=${page + 1}&q=${q}`}
-              className={`p-2 rounded-lg border border-border text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-all ${page * pageSize >= metadata.total ? 'opacity-50 pointer-events-none' : ''}`}
-            >
-              <ChevronRight className="size-4" />
-            </Link>
-          </div>
-        </div>
+        <Pagination
+          page={page}
+          pageSize={pageSize}
+          total={metadata.total}
+          queryParams={{ view: "list", q }}
+        />
       )}
     </div>
   );
@@ -336,12 +272,7 @@ function BookingCard({ booking }: { booking: Booking }) {
           <Calendar className="size-4" />
           <span className="text-xs font-medium">{formatDate(booking.bookingDate)}</span>
         </div>
-        <span className={`px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider border ${booking.status === 'accepted' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-          booking.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-            'bg-muted text-muted-foreground border-border'
-          }`}>
-          {booking.status}
-        </span>
+        <StatusBadge status={booking.status} showDot={false} />
       </div>
     </div>
   )
