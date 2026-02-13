@@ -1,30 +1,40 @@
-import { ManagementForm } from "@/components/course/management-form";
 import { MainLayout } from "@/components/layout/main-layout";
-import { getCourseDetail } from "@/services/course";
+import { CourseWizard } from "@/components/course/course-wizard";
+import { getTutors } from "@/services/tutor";
+import { getCategories, getCourseDetail } from "@/services/course";
+import { notFound } from "next/navigation";
 
-type CourseEditPageProps = {
-  params: Promise<{ id: string }>;
-};
+interface CourseEditPageProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
 
-export default async function CourseEditPage(params: CourseEditPageProps) {
-  const resolvedParams = await params.params;
-  const courseId = resolvedParams.id;
-  const courseResponse = await getCourseDetail(courseId);
-  if (!courseResponse.data) {
-    return (
-      <MainLayout title="Course Not Found">
-        <div className="@container/main p-4">
-          <h1 className="text-2xl font-bold">Course Not Found</h1>
-          <p>The requested course does not exist.</p>
-        </div>
-      </MainLayout>
-    );
+export default async function CourseEditPage({ params }: CourseEditPageProps) {
+  const { id } = await params;
+  const [tutorsRes, categoriesRes, courseRes] = await Promise.all([
+    getTutors({ page: 1, pageSize: 100 }),
+    getCategories(),
+    getCourseDetail(id),
+  ]);
+
+  const tutors = tutorsRes?.data || [];
+  const categories = categoriesRes?.data || [];
+  const course = courseRes?.data;
+
+  if (!course) {
+    notFound();
   }
+
   return (
-    <MainLayout title={`Edit Course - ${courseResponse.data?.title || ""}`}>
-      <div className="@container/main p-4">
-        {/* Replace the following div with your CourseEditForm component */}
-        <ManagementForm detail={courseResponse.data} />
+    <MainLayout title="Edit Course">
+      <div className="@container/main p-4 md:p-8">
+        <CourseWizard
+          tutors={tutors}
+          categories={categories}
+          initialData={course}
+          isEditMode={true}
+        />
       </div>
     </MainLayout>
   );

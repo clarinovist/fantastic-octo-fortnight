@@ -5,11 +5,11 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { createCourseAction } from "@/actions/course";
+import { createCourseAction, updateCourseAction } from "@/actions/course";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Check, ArrowRight, ArrowLeft, Loader2, Trash2 } from "lucide-react";
+import { Check, ArrowRight, ArrowLeft, Loader2, Trash2, FileText, CreditCard, CalendarDays, CheckCircle } from "lucide-react";
 
 // Import Step Components (to be created)
 // Import Step Components
@@ -17,7 +17,7 @@ import { StepBasicInfo } from "@/components/course/wizard-steps/step-basic-info"
 import { StepPricing } from "@/components/course/wizard-steps/step-pricing";
 import { StepSchedule } from "@/components/course/wizard-steps/step-schedule";
 import { StepReview } from "@/components/course/wizard-steps/step-review";
-import type { Tutor, CourseCategory } from "@/utils/types";
+import type { Tutor, CourseCategory, CourseDetail, ClassType, CourseSchedule, CoursePayload } from "@/utils/types";
 
 export const courseWizardSchema = z.object({
     // Step 1: Basic Info
@@ -56,22 +56,95 @@ export const courseWizardSchema = z.object({
 
 export type CourseWizardData = z.infer<typeof courseWizardSchema>;
 
+const DAYS_OF_WEEK = [
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+    "Minggu",
+];
+
+const transformDetailToFormData = (detail: CourseDetail): Partial<CourseWizardData> => {
+    // Helper function to transform schedules from API format to form format
+    const transformSchedules = (schedules: {
+        [key: string]: { startTime: string; timezone: string }[];
+    }) => {
+        const transformed: Record<string, { startTime: string; timezone: string }[]> = {};
+
+        Object.entries(schedules).forEach(([dayIndex, timeSlots]) => {
+            // Convert day index to day name (assuming 1-7 maps to DAYS_OF_WEEK)
+            const dayName = DAYS_OF_WEEK[parseInt(dayIndex) - 1];
+            if (dayName && timeSlots && timeSlots.length > 0) {
+                transformed[dayName] = timeSlots.map((slot) => ({
+                    startTime: slot.startTime,
+                    timezone: slot.timezone,
+                }));
+            }
+        });
+
+        return transformed;
+    };
+
+    return {
+        classType:
+            detail.tutor.classType === "all"
+                ? ["Online", "Offline"]
+                : detail.tutor.classType === "online"
+                    ? ["Online"]
+                    : detail.tutor.classType === "offline"
+                        ? ["Offline"]
+                        : [],
+        courseCategoryID: detail.courseCategory.id,
+        coursePrices: {
+            offline: detail.coursePrices.offline?.map((price) => ({
+                durationInHour: price.durationInHour,
+                price: parseInt(price.price.replace(/[^\d]/g, "")) || 0,
+            })) || [{ durationInHour: 1, price: 0 }],
+            online: detail.coursePrices.online?.map((price) => ({
+                durationInHour: price.durationInHour,
+                price: parseInt(price.price.replace(/[^\d]/g, "")) || 0,
+            })) || [{ durationInHour: 1, price: 0 }],
+        },
+        courseSchedulesOffline: transformSchedules(
+            detail.courseSchedulesOffline || {}
+        ),
+        courseSchedulesOnline: transformSchedules(
+            detail.courseSchedulesOnline || {}
+        ),
+        description: detail.description,
+        isFreeFirstCourse: detail.isFreeFirstCourse,
+        levelEducationCourses: Array.isArray(detail.levelEducationCourse)
+            ? [...detail.levelEducationCourse]
+            : [],
+        onlineChannel:
+            detail.onlineChannel?.filter(Boolean) || [],
+        title: detail.title,
+        subCategoryIDs:
+            detail.subCourseCategories?.map((subCat) => subCat.id) || [],
+        tutorId: detail.tutor.id,
+    };
+};
+
 interface CourseWizardProps {
     tutors: Tutor[];
     categories: CourseCategory[];
+    initialData?: CourseDetail;
+    isEditMode?: boolean;
 }
 
 const STEPS = [
-    { id: 1, title: "Basic Info", icon: "edit_document" },
-    { id: 2, title: "Pricing", icon: "payments" },
-    { id: 3, title: "Schedule", icon: "calendar_month" },
-    { id: 4, title: "Review", icon: "check_circle" },
+    { id: 1, title: "Basic Info", icon: FileText },
+    { id: 2, title: "Pricing", icon: CreditCard },
+    { id: 3, title: "Schedule", icon: CalendarDays },
+    { id: 4, title: "Review", icon: CheckCircle },
 ];
 
 type ScheduleSlot = { startTime: string; timezone: string };
 type TransformedScheduleSlot = { startTime: string; timezone: string; classType: "online" | "offline" | "all" };
 
-export function CourseWizard({ tutors, categories }: CourseWizardProps) {
+export function CourseWizard({ tutors, categories, initialData, isEditMode = false }: CourseWizardProps) {
     const router = useRouter();
     const [currentStep, setCurrentStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,7 +152,7 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
     const form = useForm<CourseWizardData>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: zodResolver(courseWizardSchema) as any,
-        defaultValues: {
+        defaultValues: initialData ? transformDetailToFormData(initialData) : {
             title: "",
             description: "",
             courseCategoryID: "",
@@ -167,6 +240,27 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
                 classType = "offline";
             }
 
+            // Transform schedules helper for payload
+            const transformSchedulesForPayload = (
+                schedules: Record<string, ScheduleSlot[]> | undefined,
+                classType: "online" | "offline" | "all"
+            ): CourseSchedule => {
+                if (!schedules) return {};
+                const transformed: CourseSchedule = {};
+                Object.entries(schedules).forEach(([dayName, timeSlots]) => {
+                    const validTimeSlots = timeSlots.filter(slot => slot.startTime && slot.startTime.trim() !== "");
+                    if (validTimeSlots.length > 0) {
+                        const dayIndex = getDayIndex(dayName);
+                        transformed[dayIndex] = validTimeSlots.map(slot => ({
+                            startTime: slot.startTime.includes(":") && slot.startTime.split(":").length === 2 ? `${slot.startTime}:00` : slot.startTime,
+                            timezone: slot.timezone,
+                            classType: classType,
+                        }));
+                    }
+                });
+                return transformed;
+            };
+
             // Prepare payload for API
             const payload = {
                 title: data.title,
@@ -188,8 +282,9 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
                         price: p.price
                     }))
                 },
-                courseSchedulesOffline: transformSchedules(data.courseSchedulesOffline, classType),
-                courseSchedulesOnline: transformSchedules(data.courseSchedulesOnline, classType),
+                courseSchedulesOffline: transformSchedulesForPayload(data.courseSchedulesOffline, classType),
+                courseSchedulesOnline: transformSchedulesForPayload(data.courseSchedulesOnline, classType),
+                tutorDescription: initialData?.tutor.description || "",
             };
 
             if (!payload.tutorId) {
@@ -198,12 +293,31 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
                 return;
             }
 
-            const result = await createCourseAction(payload);
-            if (!result.success) {
-                toast.error(result.error || "Failed to create course");
+            if (isEditMode && initialData) {
+                const updatePayload = {
+                    ...payload,
+                    coursePrices: {
+                        offline: payload.coursePrices.offline.map(p => ({ ...p, price: String(p.price) })),
+                        online: payload.coursePrices.online.map(p => ({ ...p, price: String(p.price) })),
+                    }
+                };
+                const result = await updateCourseAction(initialData.id, updatePayload as unknown as CoursePayload);
+                if (!result.success) {
+                    toast.error(result.error || "Failed to update course");
+                } else {
+                    toast.success("Course updated successfully!");
+                    // Refresh current page to show updated data
+                    router.refresh();
+                    router.push(`/courses/${initialData.id}`);
+                }
             } else {
-                toast.success("Course created successfully!");
-                router.push("/courses");
+                const result = await createCourseAction(payload);
+                if (!result.success) {
+                    toast.error(result.error || "Failed to create course");
+                } else {
+                    toast.success("Course created successfully!");
+                    router.push("/courses");
+                }
             }
         } catch (error) {
             toast.error("Failed to create course");
@@ -218,8 +332,8 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
             {/* Page Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-[#131118] dark:text-white tracking-tight mb-1">Create New Course</h1>
-                    <p className="text-gray-500 dark:text-gray-400">Fill in the details below to configure your new course offering.</p>
+                    <h1 className="text-3xl font-bold text-[#131118] dark:text-white tracking-tight mb-1">{isEditMode ? "Edit Course" : "Create New Course"}</h1>
+                    <p className="text-gray-500 dark:text-gray-400">{isEditMode ? "Update course details and configuration." : "Fill in the details below to configure your new course offering."}</p>
                 </div>
                 <button
                     type="button"
@@ -263,9 +377,7 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
                                     {isCompleted ? (
                                         <Check className="size-5 animate-in zoom-in-0 duration-300" />
                                     ) : (
-                                        <span className="material-symbols-outlined text-[20px]">
-                                            {step.icon}
-                                        </span>
+                                        <step.icon className="size-5" />
                                     )}
                                 </div>
                                 <span className={cn(
@@ -321,7 +433,7 @@ export function CourseWizard({ tutors, categories }: CourseWizardProps) {
                                     className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/30 font-bold transition-all transform active:scale-95"
                                 >
                                     {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
-                                    Publish Course
+                                    {isEditMode ? "Update Course" : "Publish Course"}
                                 </Button>
                             )}
                         </div>
