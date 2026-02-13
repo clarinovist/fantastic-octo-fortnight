@@ -43,13 +43,14 @@ services:
   # ===========================================
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: ghcr.io/clarinovist/fantastic-octo-fortnight-backend:latest
     container_name: lesprivate-backend
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - ./.env:/app/.env:ro,Z
+      - ../backend/migrations:/app/migrations:ro,Z
     ports:
       - "${BACKEND_PORT}:8080"
     networks:
@@ -61,11 +62,7 @@ services:
         condition: service_healthy
 
   admin:
-    build:
-      context: ../admin
-      dockerfile: Dockerfile
-      args:
-        - NEXT_BASE_API_URL=${NEXT_BASE_API_URL}
+    image: ghcr.io/clarinovist/fantastic-octo-fortnight-admin:latest
     container_name: lesprivate-admin
     restart: unless-stopped
     env_file:
@@ -78,12 +75,7 @@ services:
       - backend
 
   mentor:
-    build:
-      context: ../mentor
-      dockerfile: Dockerfile
-      args:
-        - NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-        - NEXT_PUBLIC_FRONTEND_URL=${NEXT_PUBLIC_FRONTEND_URL}
+    image: ghcr.io/clarinovist/fantastic-octo-fortnight-mentor:latest
     container_name: lesprivate-mentor
     restart: unless-stopped
     env_file:
@@ -96,14 +88,7 @@ services:
       - backend
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-      args:
-        - NEXT_BASE_API_URL=${NEXT_BASE_API_URL}
-        - NEXT_GOOGLE_KEY=${NEXT_GOOGLE_KEY}
-        - NEXT_GOOGLE_AUTH_CLIENT_ID=${NEXT_GOOGLE_AUTH_CLIENT_ID}
-        - NEXT_GOOGLE_AUTH_CLIENT_SECRET=${NEXT_GOOGLE_AUTH_CLIENT_SECRET}
+    image: ghcr.io/clarinovist/fantastic-octo-fortnight-frontend:latest
     container_name: lesprivate-frontend
     restart: unless-stopped
     env_file:
@@ -116,9 +101,7 @@ services:
       - backend
 
   homepage:
-    build:
-      context: ../homepage
-      dockerfile: Dockerfile
+    image: ghcr.io/clarinovist/fantastic-octo-fortnight-homepage:latest
     container_name: lesprivate-homepage
     restart: unless-stopped
     ports:

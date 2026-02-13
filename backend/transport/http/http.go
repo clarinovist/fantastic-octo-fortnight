@@ -47,6 +47,11 @@ func (h *HTTP) globalMiddleware() {
 }
 
 func (h *HTTP) registerRouter() {
+	h.router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	})
+
 	h.router.Route("/v1", func(r chi.Router) {
 		h.v1.Router(r)
 	})
