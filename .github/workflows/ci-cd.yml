@@ -1,4 +1,4 @@
-name: Build and Push Images
+name: CI/CD Pipeline
 
 on:
   push:
@@ -15,7 +15,7 @@ env:
 
 jobs:
   # ─────────────────────────────────────────────
-  # Detect which services changed
+  # 1. Detect which services changed
   # ─────────────────────────────────────────────
   changes:
     runs-on: ubuntu-latest
@@ -46,7 +46,6 @@ jobs:
             homepage:
               - 'homepage/**'
 
-      # For workflow_dispatch, build everything
       - name: Check if any service changed
         id: check
         run: |
@@ -63,7 +62,7 @@ jobs:
           fi
 
   # ─────────────────────────────────────────────
-  # Build & push changed services
+  # 2. Build & push changed services
   # ─────────────────────────────────────────────
   build:
     needs: changes
@@ -159,3 +158,46 @@ jobs:
             NEXT_GOOGLE_KEY=${{ secrets.NEXT_GOOGLE_KEY }}
             NEXT_GOOGLE_AUTH_CLIENT_ID=${{ secrets.NEXT_GOOGLE_AUTH_CLIENT_ID }}
             NEXT_GOOGLE_AUTH_CLIENT_SECRET=${{ secrets.NEXT_GOOGLE_AUTH_CLIENT_SECRET }}
+
+  # ─────────────────────────────────────────────
+  # 3. Deploy to VPS
+  # ─────────────────────────────────────────────
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: always() && (needs.build.result == 'success' || needs.build.result == 'skipped')
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 103.31.38.183
+          username: nugroho
+          key: ${{ secrets.VPS_SSH_KEY }}
+          debug: true
+          script: |
+            echo "🚀 Starting deployment..."
+
+            cd ~/fantastic-octo-fortnight
+            
+            # Sync codebase
+            echo "⬇️ Updating codebase..."
+            git fetch origin
+            git reset --hard origin/main
+
+            cd infra
+
+            # Pull latest images
+            echo "📦 Pulling latest images..."
+            docker compose pull
+
+            # Restart with zero-downtime (recreate only changed containers)
+            echo "🔄 Restarting services..."
+            docker compose up -d --remove-orphans
+
+            # Cleanup old images
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
+
+            echo "✅ Deployment complete!"
+            docker compose ps
