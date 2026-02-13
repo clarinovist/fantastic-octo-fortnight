@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { TutorList } from "@/components/tutor/tutor-list";
+import { TutorTable } from "@/components/tutor/tutor-table";
 import { getTutors } from "@/services/tutor";
 
 export default async function Page({
@@ -41,7 +41,7 @@ export default async function Page({
       </div>
 
       <Suspense fallback={<div className="p-6 text-sm text-muted-foreground">Loading tutors...</div>}>
-        <TutorList
+        <TutorTable
           tutors={tutors || []}
           totalData={metadata?.total || 0}
           currentPage={page}
