@@ -37,6 +37,8 @@ type BalanceTransaction struct {
 	ReferenceID   uuid.UUID              `gorm:"type:char(36)" json:"reference_id"`
 	Description   string                 `gorm:"type:varchar(255)" json:"description"`
 	CreatedAt     time.Time              `json:"created_at"`
+
+	Tutor Tutor `gorm:"foreignKey:TutorID" json:"tutor"`
 }
 
 func (BalanceTransaction) TableName() string {

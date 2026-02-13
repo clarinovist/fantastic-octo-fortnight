@@ -2,10 +2,12 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/lesprivate/backend/internal/model"
+	"github.com/lesprivate/backend/internal/model/dto"
 	"github.com/lesprivate/backend/internal/repositories"
 	"github.com/lesprivate/backend/shared"
 )
@@ -27,6 +29,57 @@ func NewMentorBalanceAdminService(
 
 func (s *MentorBalanceAdminService) ListAllWithdrawals(ctx context.Context, status string, filter model.Pagination) ([]model.WithdrawalRequest, model.Metadata, error) {
 	return s.withdrawal.ListAll(ctx, status, filter)
+}
+
+func (s *MentorBalanceAdminService) ListAllTransactions(ctx context.Context, filter model.Pagination, tutorName string, txType string) ([]dto.AdminTransactionResponse, model.Metadata, error) {
+	txs, metadata, err := s.balance.ListAllTransactions(ctx, filter, tutorName, txType)
+	if err != nil {
+		return nil, metadata, fmt.Errorf("repo failed to list transactions: %w", err)
+	}
+
+	var res []dto.AdminTransactionResponse
+	for _, tx := range txs {
+		res = append(res, dto.AdminTransactionResponse{
+			ID:            tx.ID,
+			TutorID:       tx.TutorID,
+			TutorName:     tx.Tutor.User.Name,
+			TutorEmail:    tx.Tutor.User.Email,
+			Type:          string(tx.Type),
+			Amount:        tx.Amount,
+			Commission:    tx.Commission,
+			ReferenceType: tx.ReferenceType,
+			ReferenceID:   tx.ReferenceID,
+			Description:   tx.Description,
+			CreatedAt:     tx.CreatedAt,
+		})
+	}
+
+	return res, metadata, nil
+}
+
+func (s *MentorBalanceAdminService) GetTransactionStats(ctx context.Context) (*dto.AdminTransactionStats, error) {
+	// For MVP, we can iterate all or query summary from DB.
+	// Let's use ListAllTransactions with a large limit for simplicity or create a specific repo method.
+	// Since it's admin dashboard stats, a specific repo method is better.
+	// But let's check if we can just reuse ListAllTransactions for now.
+	filter := model.Pagination{Page: 1, PageSize: 10000}
+	txs, _, err := s.balance.ListAllTransactions(ctx, filter, "", "")
+	if err != nil {
+		return nil, fmt.Errorf("failed to list all transactions for stats: %w", err)
+	}
+
+	var stats dto.AdminTransactionStats
+	for _, tx := range txs {
+		if tx.Type == model.BalanceTransactionCredit {
+			stats.TotalCredit = stats.TotalCredit.Add(tx.Amount)
+			stats.TotalCommission = stats.TotalCommission.Add(tx.Commission)
+		} else if tx.Type == model.BalanceTransactionDebit {
+			stats.TotalDebit = stats.TotalDebit.Add(tx.Amount)
+		}
+	}
+	stats.TotalCount = int64(len(txs))
+
+	return &stats, nil
 }
 
 func (s *MentorBalanceAdminService) ApproveWithdrawal(ctx context.Context, id uuid.UUID, adminID uuid.UUID) error {

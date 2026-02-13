@@ -46,7 +46,14 @@ export const fetcher = async <T>(input: RequestInfo, options?: RequestInit): Pro
     return res as T;
   }
 
-  return res.json();
+  const text = await res.text();
+  try {
+    const data = JSON.parse(text);
+    return data;
+  } catch (e) {
+    console.error(`JSON Parse Error ${input}:`, text);
+    throw e;
+  }
 };
 
 export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit): Promise<BaseResponse<T>> {
@@ -77,7 +84,7 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
     };
   } catch (error: unknown) {
     const err = error as { statusCode?: number; message?: string; metadata?: unknown; error?: unknown; code?: number };
-    console.error(`Fetch error ${url}:`, JSON.stringify(err, null, 0));
+    console.error(`Fetch error ${url}:`, err);
     // Check for 401 Unauthorized
     if (err.statusCode === 401) {
       const cookiesStore = await cookies();

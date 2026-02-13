@@ -67,3 +67,38 @@ func (r *MentorBalanceRepository) ListTransactions(ctx context.Context, tutorID 
 	metadata.Total = total
 	return transactions, metadata, nil
 }
+
+func (r *MentorBalanceRepository) ListAllTransactions(ctx context.Context, filter model.Pagination, tutorName string, txType string) ([]model.BalanceTransaction, model.Metadata, error) {
+	var (
+		transactions []model.BalanceTransaction
+		total        int64
+		metadata     = model.Metadata{
+			Page:     filter.Page,
+			PageSize: filter.PageSize,
+		}
+	)
+
+	query := r.db.WithContext(ctx).Model(&model.BalanceTransaction{}).
+		Joins("JOIN tutors ON balance_transactions.tutor_id = tutors.id").
+		Joins("JOIN users ON tutors.user_id = users.id").
+		Order("balance_transactions.created_at DESC")
+
+	if tutorName != "" {
+		query = query.Where("users.name LIKE ?", "%"+tutorName+"%")
+	}
+
+	if txType != "" {
+		query = query.Where("balance_transactions.type = ?", txType)
+	}
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, metadata, err
+	}
+
+	if err := query.Preload("Tutor.User").Limit(filter.Limit()).Offset(filter.Offset()).Find(&transactions).Error; err != nil {
+		return nil, metadata, err
+	}
+
+	metadata.Total = total
+	return transactions, metadata, nil
+}

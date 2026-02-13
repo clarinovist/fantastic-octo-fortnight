@@ -150,4 +150,9 @@ func (a *Api) Router(r chi.Router) {
 		r.Post("/{id}/approve", a.ApproveWithdrawal)
 		r.Post("/{id}/reject", a.RejectWithdrawal)
 	})
+
+	r.Route("/transactions", func(r chi.Router) {
+		r.Get("/", a.GetTransactions)
+		r.Get("/stats", a.GetTransactionStats)
+	})
 }
