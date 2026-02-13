@@ -27,10 +27,6 @@ export default async function DetailTutorPage(pageProps: DetailTutorPageProps) {
           label: "List Tutor",
           href: "/tutors",
         },
-        {
-          label: "Tutor Details",
-          href: `/tutors/${id}`,
-        },
       ]}
     >
       <div className="@container/main p-4">

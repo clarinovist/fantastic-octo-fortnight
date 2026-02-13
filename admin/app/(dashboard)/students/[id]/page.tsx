@@ -21,10 +21,6 @@ export default async function DetailStudentPage(
           label: "List Student",
           href: "/students",
         },
-        {
-          label: "Student Details",
-          href: `/students/${id}`,
-        },
       ]}
     >
       <div className="@container/main p-4">

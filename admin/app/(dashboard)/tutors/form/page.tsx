@@ -22,35 +22,35 @@ export default async function TutorFormPage(props: PageProps) {
   // Transform TutorDetail to TutorFormValues format
   const initialData = tutor
     ? {
-        name: tutor.name,
-        email: tutor.email,
-        password: "",
-        phoneNumber: tutor.phoneNumber,
-        gender: tutor.gender as (typeof GENDER_OPTIONS)[number]["value"],
-        dateOfBirth: new Date(tutor.dateOfBirth),
-        levelPoint: tutor.levelPoint,
-        profilePhoto: tutor.photoProfile
+      name: tutor.name,
+      email: tutor.email,
+      password: "",
+      phoneNumber: tutor.phoneNumber,
+      gender: tutor.gender as (typeof GENDER_OPTIONS)[number]["value"],
+      dateOfBirth: new Date(tutor.dateOfBirth),
+      levelPoint: tutor.levelPoint,
+      profilePhoto: tutor.photoProfile
+        ? {
+          url: tutor.photoProfile,
+          key: "",
+          filename: "",
+          size: 0,
+        }
+        : undefined,
+      location:
+        tutor.latitude && tutor.longitude
           ? {
-              url: tutor.photoProfile,
-              key: "",
-              filename: "",
-              size: 0,
-            }
+            lat: parseFloat(tutor.latitude),
+            lng: parseFloat(tutor.longitude),
+          }
           : undefined,
-        location:
-          tutor.latitude && tutor.longitude
-            ? {
-                lat: parseFloat(tutor.latitude),
-                lng: parseFloat(tutor.longitude),
-              }
-            : undefined,
-        socialMediaLinks: tutor.socialMediaLinks
-          ? Object.entries(tutor.socialMediaLinks).map(([platform, url]) => ({
-              platform,
-              url,
-            }))
-          : [],
-      }
+      socialMediaLinks: tutor.socialMediaLinks
+        ? Object.entries(tutor.socialMediaLinks).map(([platform, url]) => ({
+          platform,
+          url,
+        }))
+        : [],
+    }
     : undefined;
 
   // Create a unified action handler
@@ -69,10 +69,6 @@ export default async function TutorFormPage(props: PageProps) {
         {
           label: "List Tutors",
           href: "/tutors",
-        },
-        {
-          label: id ? "Edit Tutor" : "Create Tutor",
-          href: id ? `/tutors/form/${id}` : "/tutors/form",
         },
       ]}
     >
