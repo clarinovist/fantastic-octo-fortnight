@@ -21,7 +21,14 @@ jobs:
           script: |
             echo "🚀 Starting deployment..."
 
-            cd ~/lesprivate/infra
+            cd ~/lesprivate
+            
+            # Sync codebase
+            echo "⬇️ Updating codebase..."
+            git fetch origin
+            git reset --hard origin/main
+
+            cd infra
 
             # Pull latest images
             echo "📦 Pulling latest images..."
