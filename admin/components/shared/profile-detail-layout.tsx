@@ -261,14 +261,14 @@ export function ProfileDetailLayout({
                 {/* Main Content */}
                 <div className="lg:col-span-3 space-y-8">
                     {/* Personal Information */}
-                    <Card className="p-8">
-                        <div className="space-y-8">
+                    <Card className="p-6">
+                        <div className="space-y-4">
                             {infoFields.map((field) => (
                                 <div key={field.label}>
                                     <p className="text-sm text-muted-foreground mb-1">
                                         {field.label}
                                     </p>
-                                    <p className="text-xl font-semibold text-foreground">
+                                    <p className="text-base font-semibold text-foreground">
                                         {field.value || "-"}
                                     </p>
                                 </div>
