@@ -29,7 +29,7 @@ func (r *UserRepository) Create(ctx context.Context, user *model.User) error {
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user model.User
-	err := r.db.Read.WithContext(ctx).Where("email = ?", email).First(&user).Error
+	err := r.db.Read.WithContext(ctx).Where("email = ?", email).Preload("Roles").First(&user).Error
 	if err != nil {
 		return nil, err
 	}

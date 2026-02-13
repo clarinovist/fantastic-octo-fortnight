@@ -181,6 +181,53 @@ func (a *Api) VerifyEmail(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, http.StatusOK, result, base.SetMessage("Email verification completed"))
 }
 
+// ResendVerification
+// @Summary Resend verification email
+// @Description Resend verification email to the user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body dto.ResendVerificationRequest true "Resend verification request"
+// @Success 200 {object} base.Base{data=dto.ResendVerificationResponse}
+// @Failure 400 {object} base.Base
+// @Failure 500 {object} base.Base
+// @Router /v1/auth/resend-verification [post]
+func (a *Api) ResendVerification(w http.ResponseWriter, r *http.Request) {
+	var (
+		req dto.ResendVerificationRequest
+		ctx = r.Context()
+	)
+
+	// Parse JSON request body
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to decode JSON request")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"), base.SetError(err.Error()))
+		return
+	}
+
+	// Validate request
+	if err := req.Validate(); err != nil {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage(err.Error()), base.SetError(err.Error()))
+		return
+	}
+
+	// Resend verification
+	err := a.user.ResendVerification(ctx, req)
+	if err != nil {
+		if serviceErr, ok := err.(base.Error); ok {
+			response.Failure(w, base.CustomError(serviceErr))
+			return
+		}
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to resend verification")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("Internal server error"))
+		return
+	}
+
+	response.Success(w, http.StatusOK, dto.ResendVerificationResponse{
+		Message: "Verification email sent successfully",
+	}, base.SetMessage("Verification email resent"))
+}
+
 // GoogleLogin
 // @Summary Login with Google SSO
 // @Description Login user using Google OAuth ID token

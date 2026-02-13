@@ -135,7 +135,13 @@ func (s *UserService) Register(ctx context.Context, req dto.RegisterRequest) (mo
 	go func() {
 		// Create a new context for the email operation to avoid cancellation
 		emailCtx := context.Background()
-		_ = s.notification.RegisterUser(emailCtx, user, *role)
+		if err := s.notification.RegisterUser(emailCtx, user, *role); err != nil {
+			logger.ErrorCtx(emailCtx).
+				Err(err).
+				Str("userID", user.ID.String()).
+				Str("email", user.Email).
+				Msg("failed to send registration verification email")
+		}
 	}()
 
 	return user, nil
@@ -720,6 +726,45 @@ func (s *UserService) ChangePassword(ctx context.Context, userID uuid.UUID, req 
 	logger.InfoCtx(ctx).
 		Str("userID", userID.String()).
 		Msg("password changed successfully")
+
+	return nil
+}
+
+// ResendVerification handles resending the verification email
+func (s *UserService) ResendVerification(ctx context.Context, req dto.ResendVerificationRequest) error {
+	// Get user by email
+	user, err := s.user.GetByEmail(ctx, req.Email)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			logger.WarnCtx(ctx).Str("email", req.Email).Msg("user not found for verification resend")
+			return Error(shared.MakeError(ErrBadRequest, "user not found"))
+		}
+		logger.ErrorCtx(ctx).Err(err).Msg("failed to get user by email for verification resend")
+		return Error(shared.MakeError(ErrInternalServer))
+	}
+
+	// Check if user is already verified
+	if user.VerifiedAt.Valid {
+		logger.WarnCtx(ctx).Str("email", req.Email).Msg("user already verified")
+		return Error(shared.MakeError(ErrBadRequest, "user is already verified"))
+	}
+
+	// Send verification email asynchronously
+	go func() {
+		emailCtx := context.Background()
+		if err := s.notification.RegisterUser(emailCtx, *user, user.FirstRole()); err != nil {
+			logger.ErrorCtx(emailCtx).
+				Err(err).
+				Str("userID", user.ID.String()).
+				Str("email", user.Email).
+				Msg("failed to resend verification email")
+		}
+	}()
+
+	logger.InfoCtx(ctx).
+		Str("userID", user.ID.String()).
+		Str("email", user.Email).
+		Msg("verification email resend triggered")
 
 	return nil
 }

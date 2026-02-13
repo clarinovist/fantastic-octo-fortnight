@@ -55,3 +55,9 @@ export async function resetPassword(token: string, newPassword: string): Promise
     body: JSON.stringify({ token, newPassword }),
   });
 }
+export async function resendVerification(email: string): Promise<BaseResponse<null>> {
+  return fetcherBase<null>('/v1/auth/resend-verification', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}

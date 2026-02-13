@@ -285,3 +285,25 @@ func (r *ChangePasswordRequest) Validate() error {
 	}
 	return nil
 }
+
+// ResendVerificationRequest represents the request payload for resending verification email
+type ResendVerificationRequest struct {
+	Email string `json:"email" form:"email"`
+}
+
+// Validate validates the resend verification request
+func (r *ResendVerificationRequest) Validate() error {
+	if strings.TrimSpace(r.Email) == "" {
+		return errors.New("email is required")
+	}
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	if !emailRegex.MatchString(r.Email) {
+		return errors.New("invalid email format")
+	}
+	return nil
+}
+
+// ResendVerificationResponse represents the response payload for resending verification email
+type ResendVerificationResponse struct {
+	Message string `json:"message"`
+}

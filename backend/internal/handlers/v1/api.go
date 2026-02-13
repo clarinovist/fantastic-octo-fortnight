@@ -127,6 +127,7 @@ func (a *Api) Router(r chi.Router) {
 		r.Post("/login", a.Login)
 		r.Post("/refresh", a.RefreshToken)
 		r.Post("/verify-email", a.VerifyEmail)
+		r.Post("/resend-verification", a.ResendVerification)
 		r.Post("/google", a.GoogleLogin)
 		r.Post("/check-user", a.CheckUser)
 		r.Post("/forgot-password", a.ForgotPassword)
