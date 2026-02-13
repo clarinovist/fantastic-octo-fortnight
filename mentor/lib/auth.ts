@@ -23,7 +23,8 @@ export const authOptions: NextAuthOptions = {
                     // Call backend to authenticate with Google ID token
                     // Since we are in the mentor portal, the backend handles user upsert
                     // and token generation. Mentor role check happens via middleware on subsequent requests.
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/v1/auth/google`, {
+                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_BASE_API_URL || 'http://localhost:8080';
+                    const res = await fetch(`${apiUrl}/v1/auth/google`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ idToken: account.id_token }),

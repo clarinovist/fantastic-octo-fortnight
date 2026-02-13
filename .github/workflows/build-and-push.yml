@@ -151,8 +151,10 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
           build-args: |
             NEXT_BASE_API_URL=${{ secrets.NEXT_BASE_API_URL }}
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_BASE_API_URL }}
             NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}
             NEXTAUTH_URL=${{ matrix.nextauth_secret != '' && secrets[matrix.nextauth_secret] || '' }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
             NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
             NEXT_GOOGLE_KEY=${{ secrets.NEXT_GOOGLE_KEY }}
             NEXT_GOOGLE_AUTH_CLIENT_ID=${{ secrets.NEXT_GOOGLE_AUTH_CLIENT_ID }}
