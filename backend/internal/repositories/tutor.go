@@ -227,6 +227,23 @@ func (r *TutorRepository) CountTotal(ctx context.Context) (int64, error) {
 	return count, nil
 }
 
+func (r *TutorRepository) CountActive(ctx context.Context) (int64, error) {
+	var count int64
+	err := r.db.Read.WithContext(ctx).
+		Model(&model.Tutor{}).
+		Where("deleted_at IS NULL").
+		Where("status = ?", model.TutorStatusActive).
+		Count(&count).Error
+
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[CountActive] Error counting active tutors")
+		return 0, fmt.Errorf("failed to count active tutors: %w", err)
+	}
+
+	logger.InfoCtx(ctx).Int64("count", count).Msg("[CountActive] Successfully counted active tutors")
+	return count, nil
+}
+
 func (r *TutorRepository) GetTutorsCreatedPerDay(ctx context.Context, startDate, endDate time.Time) ([]model.UserCreatedPerDay, error) {
 	var results []model.UserCreatedPerDay
 

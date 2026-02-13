@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CourseWizardData } from "../course-wizard";
 import { Tutor, CourseCategory } from "@/utils/types";
-import { } from "lucide-react";
+import { Bold, Italic, Underline, List, ListOrdered, Link, ImageIcon, Search, X } from "lucide-react";
 
 import Image from "next/image";
 
@@ -56,15 +56,15 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
                             <div className="rounded-lg border border-gray-300 dark:border-gray-700 overflow-hidden shadow-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
                                 {/* Rich Text Toolbar */}
                                 <div className="flex items-center gap-1 p-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Bold"><span className="material-symbols-outlined text-[20px]">format_bold</span></button>
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Italic"><span className="material-symbols-outlined text-[20px]">format_italic</span></button>
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Underline"><span className="material-symbols-outlined text-[20px]">format_underlined</span></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Bold"><Bold className="size-5" /></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Italic"><Italic className="size-5" /></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Underline"><Underline className="size-5" /></button>
                                     <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Bulleted List"><span className="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Numbered List"><span className="material-symbols-outlined text-[20px]">format_list_numbered</span></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Bulleted List"><List className="size-5" /></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Numbered List"><ListOrdered className="size-5" /></button>
                                     <div className="w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1"></div>
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Link"><span className="material-symbols-outlined text-[20px]">link</span></button>
-                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Image"><span className="material-symbols-outlined text-[20px]">image</span></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Link"><Link className="size-5" /></button>
+                                    <button type="button" className="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors" title="Image"><ImageIcon className="size-5" /></button>
                                 </div>
                                 <FormControl>
                                     <Textarea
@@ -125,7 +125,7 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
                                             onClick={() => field.onChange(field.value.filter(v => v !== id))}
                                             className="hover:text-primary-dark transition-colors"
                                         >
-                                            <span className="material-symbols-outlined text-[14px]">close</span>
+                                            <X className="size-3.5" />
                                         </button>
                                     </div>
                                 ))}
@@ -190,7 +190,7 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
                             <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-200">Assign Primary Tutor</FormLabel>
                             <div className="relative group">
                                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-primary transition-colors">
-                                    <span className="material-symbols-outlined text-[20px]">search</span>
+                                    <Search className="size-5" />
                                 </span>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
@@ -241,7 +241,7 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
                             onClick={() => setValue("tutorId", "")}
                             className="text-gray-400 hover:text-red-500 transition-colors"
                         >
-                            <span className="material-symbols-outlined">close</span>
+                            <X className="size-5" />
                         </button>
                     </div>
                 )}

@@ -38,10 +38,10 @@ func NewDashboardService(
 }
 
 func (s *DashboardService) GetStatisticUser(ctx context.Context, startDate, endDate time.Time) (*model.DashboardStatistics, error) {
-	totalTutors, err := s.tutorRepo.CountTotal(ctx)
+	totalTutors, err := s.tutorRepo.CountActive(ctx)
 	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).Msg("[GetStatisticUser] Failed to count total tutors")
-		return nil, fmt.Errorf("failed to count total tutors: %w", err)
+		logger.ErrorCtx(ctx).Err(err).Msg("[GetStatisticUser] Failed to count active tutors")
+		return nil, fmt.Errorf("failed to count active tutors: %w", err)
 	}
 
 	totalStudents, err := s.studentRepo.CountTotal(ctx)

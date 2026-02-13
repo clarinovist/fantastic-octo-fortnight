@@ -103,7 +103,7 @@ export default async function Page() {
         <div className="bg-card p-6 rounded-xl border border-border shadow-sm flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-start mb-4">
-              <p className="text-muted-foreground text-sm font-medium">Active Students</p>
+              <p className="text-muted-foreground text-sm font-medium">Total Students</p>
               <span className="flex items-center gap-1 text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full text-xs font-medium" title="Sample data - awaiting backend integration">
                 <TrendingUp className="size-3" />
                 +8.1%
