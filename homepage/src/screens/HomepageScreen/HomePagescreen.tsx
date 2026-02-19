@@ -44,7 +44,7 @@ export const HomepageScreen = (): JSX.Element => {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen relative font-['Lato']">
+    <div className="bg-white min-h-screen relative font-body">
 
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 bg-[#7000FE] shadow-md transition-all duration-300">
@@ -137,7 +137,7 @@ export const HomepageScreen = (): JSX.Element => {
 
             {/* Hero Text */}
             <div className="text-center lg:text-left text-white space-y-6">
-              <h1 className="font-['Gochi_Hand'] text-5xl lg:text-7xl leading-tight">
+              <h1 className="font-display text-5xl lg:text-7xl leading-tight">
                 Temukan Guru Les <br />
                 <span className="text-[#FECB00]">Terbaik</span> di Sekitar Anda
               </h1>
@@ -188,7 +188,7 @@ export const HomepageScreen = (): JSX.Element => {
 
             <div className="relative">
               <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#FECB00]/20 rounded-full blur-2xl"></div>
-              <h2 className="font-['Lato'] font-black text-4xl lg:text-5xl text-gray-900 leading-tight relative z-10">
+              <h2 className="font-body font-black text-4xl lg:text-5xl text-gray-900 leading-tight relative z-10">
                 Belajar Lebih Fokus, <br />
                 <span className="text-[#7000FE]">Tanpa Ribet</span>
               </h2>
@@ -234,7 +234,7 @@ export const HomepageScreen = (): JSX.Element => {
       {/* Why Choose Section (Yellow) */}
       <section id="why-choose" className="py-20 bg-[#FECB00]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-['Gochi_Hand'] text-5xl text-[#3a0083] mb-4">Kenapa Memilih Kami?</h2>
+          <h2 className="font-display text-5xl text-[#3a0083] mb-4">Kenapa Memilih Kami?</h2>
           <p className="text-[#3a0083] font-bold text-xl mb-12 opacity-80 max-w-2xl mx-auto">
             Ribuan orang tua di Jabodetabek mempercayakan pendidikan tambahan anaknya kepada Lesprivate.id
           </p>
@@ -261,7 +261,7 @@ export const HomepageScreen = (): JSX.Element => {
       {/* How It Works */}
       <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-['Lato'] font-black text-4xl mb-4 text-[#333]">Cara Kerja Simple</h2>
+          <h2 className="font-body font-black text-4xl mb-4 text-[#333]">Cara Kerja Simple</h2>
           <p className="text-xl text-gray-500 mb-16">Mulai belajar dalam 4 langkah mudah</p>
 
           <div className="relative">
@@ -276,7 +276,7 @@ export const HomepageScreen = (): JSX.Element => {
                 { step: "4", title: "Lanjut Paket", desc: "Cocok? Langsung ambil paket belajar hemat." },
               ].map((step, idx) => (
                 <div key={idx} className="flex flex-col items-center">
-                  <div className="w-24 h-24 bg-[#7000FE] rounded-full flex items-center justify-center text-white text-3xl font-['Gochi_Hand'] shadow-lg border-4 border-white mb-6 transform hover:scale-110 transition-transform">
+                  <div className="w-24 h-24 bg-[#7000FE] rounded-full flex items-center justify-center text-white text-3xl font-display shadow-lg border-4 border-white mb-6 transform hover:scale-110 transition-transform">
                     {step.step}
                   </div>
                   <h3 className="font-extrabold text-2xl text-gray-900 mb-3">{step.title}</h3>
@@ -292,7 +292,7 @@ export const HomepageScreen = (): JSX.Element => {
       <section id="teachers" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-['Gochi_Hand'] text-5xl text-[#7000FE] mb-4">Guru Pilihan Kami</h2>
+            <h2 className="font-display text-5xl text-[#7000FE] mb-4">Guru Pilihan Kami</h2>
             <p className="text-xl text-gray-600">Siap membantu anak Anda meraih prestasi terbaik</p>
           </div>
 
@@ -335,7 +335,7 @@ export const HomepageScreen = (): JSX.Element => {
       <section id="testimonials" className="py-20 bg-gradient-to-br from-[#18181b] to-[#2d2d2d] text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="font-['Lato'] font-black text-4xl mb-4 text-[#FECB00]">Kata Orang Tua</h2>
+            <h2 className="font-body font-black text-4xl mb-4 text-[#FECB00]">Kata Orang Tua</h2>
             <p className="text-xl text-gray-400">Pengalaman mereka belajar bersama Lesprivate.id</p>
           </div>
 

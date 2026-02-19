@@ -14,8 +14,8 @@ export const Homepage: React.FC<ButtonProps> = ({
   children,
   ...props
 }) => {
-  const baseStyles = "inline-flex items-center justify-center font-['Lato'] font-extrabold transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
-  
+  const baseStyles = "inline-flex items-center justify-center font-body font-extrabold transition-all duration-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+
   const variants = {
     primary: "bg-[#7000FE] text-white hover:bg-[#5b00cf] hover:shadow-lg hover:scale-105 active:scale-95",
     secondary: "bg-[#FECB00] text-[#3a0083] hover:bg-[#e5b700] hover:shadow-lg hover:scale-105 active:scale-95",
