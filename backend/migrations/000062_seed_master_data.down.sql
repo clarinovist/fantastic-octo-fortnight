@@ -1,0 +1,3 @@
+-- Revert Seed Data
+-- Intentionally left empty or specific delete statements if desired.
+-- For now, deleting seed data might be risky if already referenced.
