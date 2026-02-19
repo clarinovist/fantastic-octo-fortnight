@@ -1,13 +1,16 @@
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json ./
+# Install compat library for cross-platform builds (needed for @tailwindcss/oxide)
+RUN apk add --no-cache libc6-compat
 
-# Install dependencies
-RUN npm install --legacy-peer-deps
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies (ci is stricter and better for builds)
+RUN npm ci
 
 # Copy source code
 COPY . .
