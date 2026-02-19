@@ -100,10 +100,10 @@ export const HomepageScreen = (): JSX.Element => {
           </div>
 
           <div className="flex gap-1 sm:gap-2 md:gap-4 flex-shrink-0">
-            <a href="https://app.lesprivate.id/signup" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.lesprivate.my.id/signup" target="_blank" rel="noopener noreferrer">
               <Homepage className="!h-8 sm:!h-10 md:!h-12 !w-20 xs:!w-24 sm:!w-28 md:!w-[148px] !relative !left-0 !top-0" hasBookingButton={false} homepage="btn" text="Daftar jadi Guru" />
             </a>
-            <a href="https://app.lesprivate.id/signup" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.lesprivate.my.id/signup" target="_blank" rel="noopener noreferrer">
               <Homepage className="!h-8 sm:!h-10 md:!h-12 !w-20 xs:!w-24 sm:!w-28 md:!w-[148px] !relative !left-0 !top-0" hasBookingButton={false} homepage="btnyellow" text="Daftar jadi Murid" />
             </a>
           </div>

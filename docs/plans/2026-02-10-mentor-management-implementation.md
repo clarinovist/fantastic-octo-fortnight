@@ -379,7 +379,7 @@ export async function removeStudent(id): Promise<BaseResponse<void>>
 - Tambah service `mentor` yang build dari `mentor/`
 
 #### [MODIFY] Nginx config (production)
-- Tambah server block untuk `mentor.lesprivate.id` → proxy ke `mentor:3002`
+- Tambah server block untuk `mentor.lesprivate.my.id` → proxy ke `mentor:3002`
 
 ---
 

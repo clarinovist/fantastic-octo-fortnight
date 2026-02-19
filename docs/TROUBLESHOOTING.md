@@ -85,5 +85,5 @@ export function GoogleMapsProvider({ children }: GoogleMapsProviderProps) {
 
 ### Database & Seeding
 - **Seed Admin User:** Run `seed_admin.sql` to create the initial super admin.
-  - Email: `admin@lesprivate.id`
+  - Email: `admin@lesprivate.my.id`
   - Password: `password`

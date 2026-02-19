@@ -171,9 +171,9 @@ XENDIT.BASE_URL=https://api.xendit.co
 XENDIT.SECRET_KEY=your-xendit-secret-key
 XENDIT.WEBHOOK_KEY=your-xendit-webhook-key
 
-MAIL.HOST=mail.lesprivate.id
+MAIL.HOST=mail.lesprivate.my.id
 MAIL.PORT=465
-MAIL.EMAIL=dev@lesprivate.id
+MAIL.EMAIL=dev@lesprivate.my.id
 MAIL.PASSWORD=your-mail-password
 ```
 
@@ -310,4 +310,4 @@ This project is proprietary and confidential.
 
 ## Support
 
-For support, email dev@lesprivate.id or contact the development team.
+For support, email dev@lesprivate.my.id or contact the development team.

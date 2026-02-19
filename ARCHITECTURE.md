@@ -15,7 +15,7 @@ Dokumentasi arsitektur lengkap platform les privat online Lesprivate.
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         NGINX REVERSE PROXY                                  │
 │  ┌──────────────┬──────────────┬──────────────┬──────────────┐             │
-│  │lesprivate.id │app.lesprivate│admin.lespri  │api.lesprivate│             │
+│  │lesprivate.my.id │app.lesprivate│admin.lespri  │api.lesprivate│             │
 │  │   :3000      │   .id:7002   │ vate.id:3001 │   .id:8082   │             │
 │  └──────┬───────┴──────┬───────┴──────┬───────┴──────┬───────┘             │
 └─────────┼──────────────┼──────────────┼──────────────┼──────────────────────┘

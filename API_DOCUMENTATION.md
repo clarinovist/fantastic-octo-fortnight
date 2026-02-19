@@ -2,7 +2,7 @@
 
 Dokumentasi lengkap REST API backend Lesprivate.
 
-**Base URL**: `http://localhost:8080/v1` (development) | `https://api.lesprivate.id/v1` (production)
+**Base URL**: `http://localhost:8080/v1` (development) | `https://api.lesprivate.my.id/v1` (production)
 
 **Swagger UI**: `http://localhost:8080/swagger/index.html`
 
@@ -661,7 +661,7 @@ file: <binary>
 ```json
 {
   "data": {
-    "url": "https://storage.lesprivate.id/uploads/..."
+    "url": "https://storage.lesprivate.my.id/uploads/..."
   }
 }
 ```

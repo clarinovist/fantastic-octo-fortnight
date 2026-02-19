@@ -22,7 +22,7 @@ Membangun **Sistem Manajemen Murid** sebagai aplikasi terpisah (`mentor/`) yang 
 | Aspek | Detail |
 |-------|--------|
 | **Folder** | `/mentor` |
-| **Domain** | `mentor.lesprivate.id` |
+| **Domain** | `mentor.lesprivate.my.id` |
 | **Tech Stack** | Next.js (clone dari `admin/`) |
 | **Port** | TBD (dev), TBD (prod) |
 | **Boilerplate** | Clone `admin/` — auth, proxy, layout |
@@ -60,7 +60,7 @@ Membangun **Sistem Manajemen Murid** sebagai aplikasi terpisah (`mentor/`) yang 
 Mentor generate invite link
         │
         ▼
-mentor.lesprivate.id/join/{MENTOR_CODE}
+mentor.lesprivate.my.id/join/{MENTOR_CODE}
         │
         ▼
   ┌─────────────────┐
