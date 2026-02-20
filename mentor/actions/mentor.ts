@@ -1,4 +1,4 @@
-"use client";
+"use server";
 
 import { requestWithdrawal } from "@/services/mentor";
 import { mutate } from "swr";
