@@ -1,7 +1,7 @@
 "use server";
 
 import { requestWithdrawal } from "@/services/mentor";
-import { mutate } from "swr";
+import { revalidatePath } from "next/cache";
 
 export async function submitWithdrawalAction(formData: FormData) {
     const amount = parseFloat(formData.get("amount") as string);
@@ -22,10 +22,9 @@ export async function submitWithdrawalAction(formData: FormData) {
         });
 
         if (res.success) {
-            // Revalidate relevant SWR keys
-            mutate("/v1/mentor/balance");
-            mutate("/v1/mentor/withdrawals");
-            mutate("/v1/mentor/transactions");
+            // Revalidate relevant cached paths in Next.js Server
+            revalidatePath("/(mentor)/withdrawals", "page");
+            revalidatePath("/(mentor)/dashboard", "page");
             return { success: true };
         } else {
             return { success: false, error: res.message || "Gagal mengajukan penarikan" };
