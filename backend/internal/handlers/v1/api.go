@@ -152,6 +152,7 @@ func (a *Api) Router(r chi.Router) {
 
 	r.Route("/tutors", func(r chi.Router) {
 		r.Use(middleware.JWTAuth(a.jwt))
+		r.Get("/level", a.GetTutorLevel)
 
 		r.Route("/courses", func(r chi.Router) {
 			r.Get("/", a.ListTutorCourses)

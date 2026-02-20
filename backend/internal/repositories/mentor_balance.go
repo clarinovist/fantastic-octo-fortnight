@@ -7,6 +7,7 @@ import (
 	"github.com/lesprivate/backend/internal/model"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type MentorBalanceRepository struct {
@@ -23,12 +24,30 @@ func (r *MentorBalanceRepository) GetOrCreate(ctx context.Context, tutorID uuid.
 	var mb model.MentorBalance
 	err := r.db.WithContext(ctx).
 		Where("tutor_id = ?", tutorID).
-		FirstOrCreate(&mb, model.MentorBalance{
-			ID:      uuid.New(),
-			TutorID: tutorID,
-			Balance: decimal.NewFromInt(0),
-		}).Error
-	return &mb, err
+		First(&mb).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			newMb := model.MentorBalance{
+				ID:      uuid.New(),
+				TutorID: tutorID,
+				Balance: decimal.NewFromInt(0),
+			}
+			// Use OnConflict DoNothing to handle race conditions gracefully
+			err = r.db.WithContext(ctx).
+				Clauses(clause.OnConflict{DoNothing: true}).
+				Create(&newMb).Error
+			if err != nil {
+				return nil, err
+			}
+			// Fetch again to ensure we have the correct record (created by us or concurrently)
+			err = r.db.WithContext(ctx).Where("tutor_id = ?", tutorID).First(&mb).Error
+			return &mb, err
+		}
+		return nil, err
+	}
+
+	return &mb, nil
 }
 
 func (r *MentorBalanceRepository) UpdateBalance(ctx context.Context, tutorID uuid.UUID, amount decimal.Decimal) error {

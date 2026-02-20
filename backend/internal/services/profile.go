@@ -459,6 +459,45 @@ func (s *ProfileService) GetProfile(ctx context.Context, userID uuid.UUID) (dto.
 	return profile, nil
 }
 
+func (s *ProfileService) GetTutorLevel(ctx context.Context, userID uuid.UUID) (dto.TutorLevelInfo, error) {
+	tutor, err := s.tutor.GetByUserID(ctx, userID)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).
+			Str("user_id", userID.String()).
+			Msg("[ProfileService.GetTutorLevel] Failed to get tutor")
+		return dto.TutorLevelInfo{}, shared.MakeError(ErrInternalServer)
+	}
+
+	if tutor == nil {
+		logger.ErrorCtx(ctx).
+			Str("user_id", userID.String()).
+			Msg("[ProfileService.GetTutorLevel] Tutor not found")
+		return dto.TutorLevelInfo{}, shared.MakeError(ErrEntityNotFound, "tutor")
+	}
+
+	currentLevel := tutor.LevelByPoint()
+	var nextLevel string
+	var pointsNeeded uint
+
+	if tutor.LevelPoint < 10 {
+		nextLevel = string(model.TutorLevelGuruAktif)
+		pointsNeeded = 10 - tutor.LevelPoint
+	} else if tutor.LevelPoint < 25 {
+		nextLevel = string(model.TutorLevelGuruFavorit)
+		pointsNeeded = 25 - tutor.LevelPoint
+	} else {
+		nextLevel = "Max Level"
+		pointsNeeded = 0
+	}
+
+	return dto.TutorLevelInfo{
+		CurrentPoint: tutor.LevelPoint,
+		CurrentLevel: currentLevel,
+		NextLevel:    nextLevel,
+		PointsNeeded: pointsNeeded,
+	}, nil
+}
+
 func (s *ProfileService) fillProfileForTutor(ctx context.Context, userID uuid.UUID, profile *dto.ProfileResponse) error {
 	tutor, err := s.tutor.GetByUserID(ctx, userID)
 	if err != nil {

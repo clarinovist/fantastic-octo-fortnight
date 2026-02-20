@@ -53,9 +53,10 @@ export default function FinancePage() {
     const [page, setPage] = useState(1);
     const [typeFilter, setTypeFilter] = useState<string[]>([]);
 
-    const { data: balanceRes, isLoading: isLoadingBalance } = useSWR("/v1/mentor/balance", getMentorBalance);
-    const { data: statsRes, isLoading: isLoadingStats } = useSWR("/v1/mentor/finance/stats", getFinanceStats);
+    const { data: balanceRes, isLoading: isLoadingBalance } = useSWR("/v1/mentor/balance", () => getMentorBalance());
+    const { data: statsRes, isLoading: isLoadingStats } = useSWR("/v1/mentor/finance/stats", () => getFinanceStats());
     const { data: txRes, isLoading: isLoadingTx } = useSWR(
+
         [`/v1/mentor/transactions`, page, typeFilter.join(",")],
         () => getMentorTransactions(page, 10, typeFilter.join(","))
     );

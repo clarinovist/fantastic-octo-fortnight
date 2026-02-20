@@ -122,3 +122,26 @@ func (a *Api) GetProfile(w http.ResponseWriter, r *http.Request) {
 
 	response.Success(w, http.StatusOK, profile)
 }
+
+// GetTutorLevel
+// @Summary Get tutor level information
+// @Description Returns the tutor's current level, points, and next level requirements
+// @Tags profile
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} base.Base{data=dto.TutorLevelInfo}
+// @Failure 401 {object} base.Base
+// @Router /v1/tutors/level [get]
+func (a *Api) GetTutorLevel(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	userId := middleware.GetUserID(ctx)
+
+	info, err := a.profile.GetTutorLevel(ctx, userId)
+	if err != nil {
+		response.Failure(w, base.CustomError(services.Error(err)))
+		return
+	}
+
+	response.Success(w, http.StatusOK, info)
+}

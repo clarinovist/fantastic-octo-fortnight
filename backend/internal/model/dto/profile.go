@@ -78,3 +78,10 @@ type ProfileResponse struct {
 	AverageRating       float64             `json:"average_rating"`
 	JoinedAt            time.Time           `json:"joined_at"`
 }
+
+type TutorLevelInfo struct {
+	CurrentPoint uint   `json:"current_point"`
+	CurrentLevel string `json:"current_level"`
+	NextLevel    string `json:"next_level"`
+	PointsNeeded uint   `json:"points_needed"`
+}

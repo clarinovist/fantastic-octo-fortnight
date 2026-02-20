@@ -23,12 +23,13 @@ export default function SearchPage() {
 
     const { data: studentsRes, isLoading: loadingStudents } = useSWR(
         "/v1/mentor/students",
-        getMentorStudents
+        () => getMentorStudents()
     );
     const { data: txRes, isLoading: loadingTx } = useSWR(
         "/v1/mentor/transactions",
-        getMentorTransactions
+        () => getMentorTransactions()
     );
+
 
     const students = studentsRes?.data || [];
     const transactions = txRes?.data || [];

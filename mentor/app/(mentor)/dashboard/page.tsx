@@ -31,10 +31,11 @@ const formatCurrency = (value: string | number) => {
 };
 
 export default function Dashboard() {
-    const { data: balanceRes, isLoading: isLoadingBalance } = useSWR("/v1/mentor/balance", getMentorBalance);
-    const { data: studentsRes, isLoading: isLoadingStudents } = useSWR("/v1/mentor/students", getMentorStudents);
-    const { data: txRes } = useSWR("/v1/mentor/transactions", getMentorTransactions);
-    const { data: withdrawRes } = useSWR("/v1/mentor/withdrawals", getMentorWithdrawals);
+    const { data: balanceRes, isLoading: isLoadingBalance } = useSWR("/v1/mentor/balance", () => getMentorBalance());
+    const { data: studentsRes, isLoading: isLoadingStudents } = useSWR("/v1/mentor/students", () => getMentorStudents());
+    const { data: txRes } = useSWR("/v1/mentor/transactions", () => getMentorTransactions());
+    const { data: withdrawRes } = useSWR("/v1/mentor/withdrawals", () => getMentorWithdrawals());
+
 
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
