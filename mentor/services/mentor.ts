@@ -126,11 +126,11 @@ export async function getMentorSessions(page = 1, limit = 10): Promise<BaseRespo
         page: page.toString(),
         limit: limit.toString(),
     });
-    return fetcherBase<Session[]>(`/v1/mentor/bookings?${query}`);
+    return fetcherBase<Session[]>(`/v1/mentor/sessions?${query}`);
 }
 
 export async function createSession(data: CreateSessionRequest): Promise<BaseResponse<Session>> {
-    return fetcherBase<Session>("/v1/mentor/bookings", {
+    return fetcherBase<Session>("/v1/mentor/sessions", {
         method: "POST",
         body: JSON.stringify(data),
     });
@@ -172,11 +172,11 @@ export async function getStudentDetail(studentId: string): Promise<BaseResponse<
 
 // Session Detail & Status
 export async function getSessionDetail(sessionId: string): Promise<BaseResponse<Session>> {
-    return fetcherBase<Session>(`/v1/mentor/bookings/${sessionId}`);
+    return fetcherBase<Session>(`/v1/mentor/sessions/${sessionId}`);
 }
 
 export async function updateSessionStatus(sessionId: string, status: string): Promise<BaseResponse<null>> {
-    return fetcherBase<null>(`/v1/mentor/bookings/${sessionId}/status`, {
+    return fetcherBase<null>(`/v1/mentor/sessions/${sessionId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
     });

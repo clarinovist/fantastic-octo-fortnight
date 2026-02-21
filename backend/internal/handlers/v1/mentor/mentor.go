@@ -55,7 +55,7 @@ func (h *MentorHandler) Router(r chi.Router) {
 	r.Get("/withdrawals", h.ListWithdrawals)
 	r.Get("/finance/stats", h.GetFinanceStats)
 
-	r.Route("/bookings", func(r chi.Router) {
+	r.Route("/sessions", func(r chi.Router) {
 		r.Get("/", h.ListSessions)
 		r.Post("/", h.CreateSession)
 		r.Get("/stats", h.GetBookingStats)
