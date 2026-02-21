@@ -78,7 +78,7 @@ export function CourseCard({ course }: CourseCardProps) {
                         )}
                     </div>
                     <h3 className="font-semibold text-lg line-clamp-1 mt-2">{course.title}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-1">{course.courseCategory.name}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-1">{course.courseCategory?.name || "Kategori tidak dikonfigurasi"}</p>
                 </div>
             </CardHeader>
             <CardContent className="p-4 pt-0">
