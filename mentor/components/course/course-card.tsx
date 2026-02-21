@@ -86,7 +86,17 @@ export function CourseCard({ course }: CourseCardProps) {
                     {course.description || "Tidak ada deskripsi"}
                 </p>
                 <div className="mt-4 flex items-center justify-between">
-                    <span className="text-sm font-medium">Rp {parseInt(course.price).toLocaleString('id-ID')} / jam</span>
+                    {(() => {
+                        let displayPrice = 0;
+                        if (course.price && !isNaN(parseInt(course.price))) {
+                            displayPrice = parseInt(course.price);
+                        } else if (course.coursePrices?.online?.[0]?.price) {
+                            displayPrice = parseInt(course.coursePrices.online[0].price);
+                        } else if (course.coursePrices?.offline?.[0]?.price) {
+                            displayPrice = parseInt(course.coursePrices.offline[0].price);
+                        }
+                        return <span className="text-sm font-medium">Rp {displayPrice.toLocaleString('id-ID')} / jam</span>
+                    })()}
                 </div>
             </CardContent>
             <CardFooter className="p-4 bg-muted/30 flex items-center justify-between border-t">
@@ -103,7 +113,7 @@ export function CourseCard({ course }: CourseCardProps) {
                 </div>
                 <div className="flex items-center gap-1">
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href={`/courses/${course.id}/edit`}>
+                        <Link href={`/courses/edit/${course.id}`}>
                             <Pencil className="w-4 h-4" />
                         </Link>
                     </Button>
