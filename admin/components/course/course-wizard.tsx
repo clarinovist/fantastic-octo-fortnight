@@ -375,8 +375,22 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
 
             {/* Form Content */}
             <FormProvider {...form}>
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                <form onSubmit={form.handleSubmit(onSubmit as any)} className="w-full">
+                <form
+                    onSubmit={form.handleSubmit(
+                        (data) => onSubmit(data as CourseWizardData),
+                        (errors) => {
+                            const firstErrorField = Object.keys(errors)[0];
+                            const firstErrorMessage = errors[firstErrorField as keyof typeof errors]?.message;
+                            if (firstErrorMessage) {
+                                toast.error(`Validation error: ${String(firstErrorMessage)}`);
+                            } else {
+                                toast.error("Please fill in all required fields correctly.");
+                            }
+                            console.error("Form validation errors:", errors);
+                        }
+                    )}
+                    className="w-full"
+                >
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col">
                         <div className="flex-1 p-6 lg:p-10">
                             {currentStep === 1 && <StepBasicInfo categories={categories} tutors={tutors} />}

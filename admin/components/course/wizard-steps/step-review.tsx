@@ -101,6 +101,20 @@ export function StepReview() {
                                 </div>
                             </div>
                         )}
+
+                        {isOffline && values.coursePrices.offline?.length > 0 && (
+                            <div className="space-y-2">
+                                <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Offline Packages</p>
+                                <div className="space-y-1">
+                                    {values.coursePrices.offline.map((pkg, i) => (
+                                        <div key={i} className="flex justify-between text-sm">
+                                            <span>{pkg.durationInHour} Hours</span>
+                                            <span className="font-mono font-medium">{formatMoney(pkg.price)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

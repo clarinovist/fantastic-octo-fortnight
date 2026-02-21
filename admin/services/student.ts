@@ -20,7 +20,8 @@ export async function getStudents(params: StudentsParams): Promise<BaseResponse<
   if (params.name) qs.append('name', params.name);
   if (params.email) qs.append('email', params.email);
   if (params.q) qs.append('q', params.q);
-  qs.append('sort', params.sort || "created_at");
+  const sort = params.sort || 'students.created_at';
+  if (sort) qs.append('sort', sort);
   qs.append('sortDirection', params.sortDirection || "DESC");
   return fetcherBase<Student[]>(`/v1/admin/students?${qs.toString()}`, {
     next: { tags: ['students'] },

@@ -3,6 +3,7 @@
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { CurrencyIdrInput } from "@/components/ui/currency-idr-input";
 
 import { CourseWizardData } from "../course-wizard";
 import { cn } from "@/lib/utils";
@@ -30,6 +31,11 @@ export function StepPricing() {
     const { fields: onlinePackages, append: appendOnline, remove: removeOnline } = useFieldArray({
         control,
         name: "coursePrices.online"
+    });
+
+    const { fields: offlinePackages, append: appendOffline, remove: removeOffline } = useFieldArray({
+        control,
+        name: "coursePrices.offline"
     });
 
     return (
@@ -139,15 +145,20 @@ export function StepPricing() {
                                             control={control}
                                             name={`coursePrices.online.${index}.durationInHour`}
                                             render={({ field }) => (
-                                                <div className="relative">
-                                                    <Input
-                                                        type="number"
-                                                        {...field}
-                                                        onChange={e => field.onChange(parseFloat(e.target.value))}
-                                                        className="pr-12"
-                                                    />
-                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">hrs</span>
-                                                </div>
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <div className="relative">
+                                                            <Input
+                                                                type="number"
+                                                                {...field}
+                                                                onChange={e => field.onChange(parseFloat(e.target.value))}
+                                                                className="pr-12"
+                                                            />
+                                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">hrs</span>
+                                                        </div>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
                                             )}
                                         />
                                     </div>
@@ -156,21 +167,96 @@ export function StepPricing() {
                                             control={control}
                                             name={`coursePrices.online.${index}.price`}
                                             render={({ field }) => (
-                                                <div className="relative">
-                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
-                                                    <Input
-                                                        type="number"
-                                                        {...field}
-                                                        onChange={e => field.onChange(parseFloat(e.target.value))}
-                                                        className="pl-7 pr-12"
-                                                    />
-                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">USD</span>
-                                                </div>
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <CurrencyIdrInput
+                                                            value={field.value || 0}
+                                                            onChange={field.onChange}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
                                             )}
                                         />
                                     </div>
                                     <div className="col-span-1 flex justify-center">
                                         <button type="button" onClick={() => removeOnline(index)} className="text-slate-400 hover:text-red-500 transition-colors">
+                                            <Trash2 className="size-4" />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Offline Packages */}
+                {isOffline && (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h3 className="font-bold text-slate-900 dark:text-white">Offline Packages</h3>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="text-primary hover:text-primary/80"
+                                onClick={() => appendOffline({ durationInHour: 1, price: 0 })}
+                            >
+                                <Plus className="size-4 mr-1" /> Add Package
+                            </Button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {/* Header */}
+                            <div className="grid grid-cols-12 gap-4 text-xs font-medium text-slate-500 uppercase px-4">
+                                <div className="col-span-6">Duration (Hours)</div>
+                                <div className="col-span-5">Price</div>
+                                <div className="col-span-1"></div>
+                            </div>
+
+                            {offlinePackages.map((item, index) => (
+                                <div key={item.id} className="grid grid-cols-12 gap-4 items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    <div className="col-span-6">
+                                        <FormField
+                                            control={control}
+                                            name={`coursePrices.offline.${index}.durationInHour`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <div className="relative">
+                                                            <Input
+                                                                type="number"
+                                                                {...field}
+                                                                onChange={e => field.onChange(parseFloat(e.target.value))}
+                                                                className="pr-12"
+                                                            />
+                                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">hrs</span>
+                                                        </div>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="col-span-5">
+                                        <FormField
+                                            control={control}
+                                            name={`coursePrices.offline.${index}.price`}
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <CurrencyIdrInput
+                                                            value={field.value || 0}
+                                                            onChange={field.onChange}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <div className="col-span-1 flex justify-center">
+                                        <button type="button" onClick={() => removeOffline(index)} className="text-slate-400 hover:text-red-500 transition-colors">
                                             <Trash2 className="size-4" />
                                         </button>
                                     </div>
