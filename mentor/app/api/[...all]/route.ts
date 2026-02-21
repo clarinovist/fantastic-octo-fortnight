@@ -17,6 +17,7 @@ async function proxy(request: NextRequest) {
             body = await request.text();
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res = await fetcherBase<any>(`${pathname}?${searchParams.toString()}`, {
             body,
             method: request.method,
