@@ -16,7 +16,7 @@ export async function publishCourseAction(id: string) {
         revalidateTag("courses", "default");
         return res;
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }
 
@@ -26,7 +26,7 @@ export async function deleteCourseAction(id: string) {
         revalidateTag("courses", "default");
         return res;
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }
 
@@ -36,26 +36,28 @@ export async function submitCourseAction(id: string) {
         revalidateTag("courses", "default");
         return res;
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }
 
 export async function createCourseAction(data: CoursePayload) {
     try {
         const res = await createCourse(data);
+        console.log("SERVER ACTION createCourse RES:", res);
         revalidateTag("courses", "default");
         return res;
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }
 
 export async function updateCourseAction(id: string, data: CoursePayload) {
     try {
         const res = await updateCourse(id, data);
+        console.log("SERVER ACTION updateCourse RES:", res);
         revalidateTag("courses", "default");
         return res;
     } catch (error) {
-        return { success: false, error };
+        return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
 }

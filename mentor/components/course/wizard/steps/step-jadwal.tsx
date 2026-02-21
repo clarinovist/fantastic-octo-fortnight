@@ -145,7 +145,7 @@ function DayCard({ day, slots, selectedTimezone, onAdd, onRemove }: {
                     <p className="text-xs text-muted-foreground uppercase">{slots.length} Sesi Aktif</p>
                 </div>
 
-                <div className="flex-1 flex flex-wrap gap-2">
+                <div className="flex-1 flex flex-wrap gap-2 items-center">
                     {slots.length === 0 ? (
                         <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase opacity-50">
                             <Globe className="w-4 h-4" /> {selectedTimezone}
@@ -167,38 +167,46 @@ function DayCard({ day, slots, selectedTimezone, onAdd, onRemove }: {
                     )}
                 </div>
 
-                <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-xl border border-dashed">
-                    <Select value={h} onValueChange={setH}>
-                        <SelectTrigger className="w-16 h-10 border-none bg-transparent font-bold">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {Array.from({ length: 24 }).map((_, i) => (
-                                <SelectItem key={i} value={i.toString().padStart(2, '0')}>
-                                    {i.toString().padStart(2, '0')}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <span className="font-bold">:</span>
-                    <Select value={m} onValueChange={setM}>
-                        <SelectTrigger className="w-16 h-10 border-none bg-transparent font-bold">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {["00", "15", "30", "45"].map((val) => (
-                                <SelectItem key={val} value={val}>{val}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Button
-                        type="button"
-                        size="sm"
-                        className="w-10 h-10 rounded-lg shrink-0"
-                        onClick={() => onAdd(h, m)}
-                    >
-                        <Plus className="w-4 h-4" />
-                    </Button>
+                <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-xl border border-dashed ml-auto">
+                    <div className="flex flex-col gap-1 items-center">
+                        <span className="text-[10px] font-semibold text-muted-foreground uppercase">Jam</span>
+                        <Select value={h} onValueChange={setH}>
+                            <SelectTrigger className="w-[70px] h-10 bg-background border font-bold">
+                                <SelectValue placeholder="Jam" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {Array.from({ length: 24 }).map((_, i) => (
+                                    <SelectItem key={i} value={i.toString().padStart(2, '0')}>
+                                        {i.toString().padStart(2, '0')}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <span className="font-bold text-xl pt-5">:</span>
+                    <div className="flex flex-col gap-1 items-center">
+                        <span className="text-[10px] font-semibold text-muted-foreground uppercase">Menit</span>
+                        <Select value={m} onValueChange={setM}>
+                            <SelectTrigger className="w-[70px] h-10 bg-background border font-bold">
+                                <SelectValue placeholder="Menit" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {["00", "15", "30", "45"].map((val) => (
+                                    <SelectItem key={val} value={val}>{val}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex flex-col justify-end pt-5">
+                        <Button
+                            type="button"
+                            size="sm"
+                            className="w-10 h-10 rounded-lg shrink-0 bg-primary/10 hover:bg-primary/20 text-primary"
+                            onClick={() => onAdd(h, m)}
+                        >
+                            <Plus className="w-4 h-4" />
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>

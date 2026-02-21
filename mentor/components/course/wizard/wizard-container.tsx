@@ -4,6 +4,11 @@ import { createContext, useContext, useState, useEffect, useCallback } from "rea
 import { UseFormReturn } from "react-hook-form"
 import { CourseWizardData } from "./schema"
 import { CourseDetailSaved } from "@/utils/types/course"
+import useSWR from "swr"
+import { getProfile } from "@/services/auth"
+import { Loader2, AlertCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 interface WizardContextType {
     currentStep: number
@@ -38,6 +43,9 @@ export function WizardContainer({ children, detail }: WizardContainerProps) {
     const [formInstance, setFormInstance] = useState<UseFormReturn<CourseWizardData> | null>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [allStepsValid, setAllStepsValid] = useState(false)
+
+    // Check profile
+    const { data: profileRes, isLoading: isLoadingProfile, error: profileError } = useSWR("/v1/me", getProfile)
 
     const steps = ["Audiens", "Tentang", "Harga", "Jadwal", "Preview"]
 
@@ -123,6 +131,37 @@ export function WizardContainer({ children, detail }: WizardContainerProps) {
         })
         return () => subs.unsubscribe()
     }, [formInstance, validateStep])
+
+    if (isLoadingProfile) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-muted-foreground mt-4">Memuat data...</p>
+            </div>
+        )
+    }
+
+    // Check if profile fails to load or not found
+    if (profileError || !profileRes?.success) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center max-w-md mx-auto space-y-6">
+                <div className="bg-destructive/10 p-4 rounded-full">
+                    <AlertCircle className="w-12 h-12 text-destructive" />
+                </div>
+                <div>
+                    <h2 className="text-2xl font-bold mb-2">Profil Tutor Belum Lengkap</h2>
+                    <p className="text-muted-foreground">
+                        Anda harus melengkapi profil biodata Anda terlebih dahulu sebelum dapat membuat kelas baru.
+                    </p>
+                </div>
+                <Button asChild className="mt-4">
+                    <Link href="/profile">
+                        Lengkapi Profil Saya
+                    </Link>
+                </Button>
+            </div>
+        )
+    }
 
     return (
         <WizardContext.Provider value={{

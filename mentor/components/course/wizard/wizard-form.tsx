@@ -112,8 +112,8 @@ export function WizardForm() {
                 router.push("/courses")
             } else {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                toast.error(`Gagal menyimpan kelas: ${(res as any).message || (res as any).error || "Unknown Error"}`)
-                console.error("API Error Response:", res)
+                toast.error(`Gagal menyimpan kelas: ${(res as any)?.message || (res as any)?.error || "Unknown Error"}`)
+                console.error("API Error Response:", JSON.stringify(res, null, 2), "Full response:", res)
             }
         } catch (error) {
             toast.error(`Terjadi kesalahan sistem: ${error instanceof Error ? error.message : "Unknown error"}`)
