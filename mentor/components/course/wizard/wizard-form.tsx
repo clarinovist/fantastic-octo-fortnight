@@ -22,17 +22,36 @@ export function WizardForm() {
     const { currentStep, nextStep, prevStep, setFormInstance, detail, setIsSubmitting, isSubmitting } = useWizard()
     const router = useRouter()
 
+    // Reverse mapping: API integer day keys -> form day names
+    const dayIndexToName: Record<string, string> = {
+        "1": "Senin", "2": "Selasa", "3": "Rabu", "4": "Kamis",
+        "5": "Jumat", "6": "Sabtu", "7": "Minggu"
+    }
+    const convertScheduleKeys = (schedules: Record<string, { startTime: string; timezone: string }[]> | undefined) => {
+        if (!schedules) return {}
+        const result: Record<string, { startTime: string; timezone: string }[]> = {}
+        for (const [key, slots] of Object.entries(schedules)) {
+            const dayName = dayIndexToName[key] || key
+            result[dayName] = (slots || []).map(s => ({ startTime: s.startTime, timezone: s.timezone }))
+        }
+        return result
+    }
+
     const form = useForm<CourseWizardData>({
         resolver: zodResolver(wizardFormSchema),
         defaultValues: detail ? {
             ...detail,
+            courseCategoryID: detail.courseCategory?.id || "",
+            courseCategoryName: detail.courseCategory?.name || "",
             classType: detail.classType === "all" ? ["Online", "Offline"] : [detail.classType === "online" ? "Online" : "Offline"],
             oneHourOnlinePrice: parseInt(detail.coursePrices.online?.find(p => p.durationInHour === 1)?.price.replace(/\D/g, '') || "0"),
             oneHourOfflinePrice: parseInt(detail.coursePrices.offline?.find(p => p.durationInHour === 1)?.price.replace(/\D/g, '') || "0"),
             coursePrices: {
-                online: detail.coursePrices.online.map(p => ({ ...p, price: parseInt(p.price.replace(/\D/g, '')) })),
-                offline: detail.coursePrices.offline.map(p => ({ ...p, price: parseInt(p.price.replace(/\D/g, '')) })),
-            }
+                online: (detail.coursePrices.online || []).map(p => ({ ...p, price: parseInt(p.price.replace(/\D/g, '')) })),
+                offline: (detail.coursePrices.offline || []).map(p => ({ ...p, price: parseInt(p.price.replace(/\D/g, '')) })),
+            },
+            courseSchedulesOnline: convertScheduleKeys(detail.courseSchedulesOnline),
+            courseSchedulesOffline: convertScheduleKeys(detail.courseSchedulesOffline),
         } as unknown as CourseWizardData : {
             classType: [],
             courseCategoryID: "",
@@ -69,6 +88,10 @@ export function WizardForm() {
     };
 
     const onSubmit = async (values: CourseWizardData) => {
+        // Guard: only allow submission from the Preview step (step 4)
+        if (currentStep !== 4) {
+            return
+        }
         setIsSubmitting(true)
         try {
             // Transform schedules helper for payload
@@ -138,19 +161,7 @@ export function WizardForm() {
         <div className="max-w-4xl mx-auto w-full pb-20">
             <Form {...form}>
                 <form
-                    onSubmit={form.handleSubmit(
-                        (data) => onSubmit(data),
-                        (errors) => {
-                            const firstErrorField = Object.keys(errors)[0];
-                            const firstErrorMessage = errors[firstErrorField as keyof typeof errors]?.message;
-                            if (firstErrorMessage) {
-                                toast.error(`Validation error: ${String(firstErrorMessage)}`);
-                            } else {
-                                toast.error("Please fill in all required fields correctly.");
-                            }
-                            console.error("Form validation errors:", errors);
-                        }
-                    )}
+                    onSubmit={(e) => e.preventDefault()}
                     className="space-y-8"
                 >
                     {renderStep()}
@@ -180,7 +191,20 @@ export function WizardForm() {
                                     </Button>
                                 ) : (
                                     <Button
-                                        type="submit"
+                                        type="button"
+                                        onClick={form.handleSubmit(
+                                            (data) => onSubmit(data),
+                                            (errors) => {
+                                                const firstErrorField = Object.keys(errors)[0];
+                                                const firstErrorMessage = errors[firstErrorField as keyof typeof errors]?.message;
+                                                if (firstErrorMessage) {
+                                                    toast.error(`Validation error: ${String(firstErrorMessage)}`);
+                                                } else {
+                                                    toast.error("Please fill in all required fields correctly.");
+                                                }
+                                                console.error("Form validation errors:", errors);
+                                            }
+                                        )}
                                         className="bg-primary hover:bg-primary/90"
                                         disabled={isSubmitting}
                                     >

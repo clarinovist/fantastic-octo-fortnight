@@ -29,6 +29,8 @@ export function StepJadwal({ form }: StepProps) {
     const onlineSchedules = form.watch("courseSchedulesOnline") || {}
     const offlineSchedules = form.watch("courseSchedulesOffline") || {}
 
+
+
     useEffect(() => {
         if (classType && classType.length > 0 && !classType.includes(activeTab)) {
             setActiveTab(classType[0] as "Online" | "Offline")

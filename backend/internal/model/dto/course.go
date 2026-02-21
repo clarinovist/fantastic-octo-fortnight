@@ -719,20 +719,33 @@ func (r *TutorCourseRequest) prepareLevelEducationCourses() []model.LevelEducati
 }
 
 type TutorCourseListResponse struct {
-	ID          uuid.UUID          `json:"id"`
-	Title       string             `json:"title"`
-	Description string             `json:"description"`
-	IsPublished bool               `json:"isPublished"`
-	Status      model.CourseStatus `json:"status"`
+	ID                uuid.UUID                         `json:"id"`
+	Title             string                            `json:"title"`
+	Description       string                            `json:"description"`
+	IsPublished       bool                              `json:"isPublished"`
+	Status            model.CourseStatus                `json:"status"`
+	Price             decimal.Decimal                   `json:"price"`
+	CoursePrices      map[model.ClassType][]CoursePrice `json:"coursePrices"`
+	IsFreeFirstCourse bool                              `json:"isFreeFirstCourse"`
+	ClassType         model.ClassType                   `json:"classType"`
+	CourseCategory    CourseCategory                    `json:"courseCategory"`
 }
 
 func NewTutorCourseListResponse(course model.Course) TutorCourseListResponse {
 	t := TutorCourseListResponse{
-		ID:          course.ID,
-		Title:       course.Title,
-		Description: course.Description,
-		IsPublished: course.IsPublished.Bool,
-		Status:      course.Status,
+		ID:                course.ID,
+		Title:             course.Title,
+		Description:       course.Description,
+		IsPublished:       course.IsPublished.Bool,
+		Status:            course.Status,
+		Price:             course.Price,
+		CoursePrices:      NewCoursePrices(course.CoursePrices),
+		IsFreeFirstCourse: course.IsFreeFirstCourse.Bool,
+		ClassType:         course.ClassType,
+		CourseCategory: CourseCategory{
+			ID:   course.CourseCategoryID,
+			Name: course.CourseCategory.Name,
+		},
 	}
 
 	if course.Draft != nil {
@@ -743,6 +756,10 @@ func NewTutorCourseListResponse(course model.Course) TutorCourseListResponse {
 
 		t.Title = draft.Title
 		t.Description = draft.Description
+		t.Price = draft.Price
+		t.CoursePrices = NewCoursePrices(draft.CoursePrices)
+		t.IsFreeFirstCourse = draft.IsFreeFirstCourse.Bool
+		t.ClassType = draft.ClassType
 	}
 
 	return t

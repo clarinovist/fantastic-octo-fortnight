@@ -16,6 +16,9 @@ interface UpdateProfilePayload {
     phoneNumber?: string;
     address?: string;
     photoProfile?: string;
+    gender?: string;
+    dateOfBirth?: string;
+    bio?: string;
 }
 
 interface ChangePasswordPayload {

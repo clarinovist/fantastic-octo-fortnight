@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"errors"
+	"reflect"
 	"time"
 
 	"github.com/google/uuid"
@@ -118,8 +119,14 @@ func (r *UserRepository) UpdateProfile(ctx context.Context, user *model.User, pr
 			return err
 		}
 
-		if err := tx.Save(profile).Error; err != nil {
-			return err
+		// Handle cases where profile is an interface containing a typed nil pointer
+		if profile != nil {
+			val := reflect.ValueOf(profile)
+			if !(val.Kind() == reflect.Ptr && val.IsNil()) {
+				if err := tx.Save(profile).Error; err != nil {
+					return err
+				}
+			}
 		}
 
 		return nil

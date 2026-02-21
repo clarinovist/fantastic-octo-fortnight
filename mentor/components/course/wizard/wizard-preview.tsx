@@ -5,7 +5,7 @@ import { CourseWizardData } from "./schema"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Calendar, Globe, Laptop, MapPin, Tag, Users } from "lucide-react"
+import { Calendar, CheckCircle2, Globe, Laptop, MapPin, Tag, Users } from "lucide-react"
 
 interface PreviewProps {
     form: UseFormReturn<CourseWizardData>
@@ -24,9 +24,17 @@ export function WizardPreview({ form }: PreviewProps) {
 
     return (
         <div className="space-y-12">
-            <div>
-                <h2 className="text-2xl font-bold mb-2">Pratinjau Kelas</h2>
-                <p className="text-muted-foreground">Tinjau kembali detail kelas Anda sebelum mempublikasikannya.</p>
+            {/* Prominent confirmation banner */}
+            <div className="border-2 border-primary/30 bg-primary/5 rounded-2xl p-6 space-y-2">
+                <div className="flex items-center gap-3">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                        <CheckCircle2 className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold">Konfirmasi & Tinjau</h2>
+                        <p className="text-muted-foreground">Periksa kembali semua informasi kelas Anda di bawah ini. Klik <strong>&quot;Simpan &amp; Publikasikan&quot;</strong> di bagian bawah jika sudah benar.</p>
+                    </div>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -133,8 +141,16 @@ export function WizardPreview({ form }: PreviewProps) {
                         </div>
                         <div className="space-y-2">
                             {Object.entries(values.courseSchedulesOnline || {}).map(([day, slots]: [string, { startTime: string; timezone: string }[]]) => (
-                                <div key={day} className="flex items-center justify-between text-sm">
-                                    <span className="font-bold">{day}</span>
+                                <div key={`online-${day}`} className="flex items-center justify-between text-sm">
+                                    <span className="font-bold">{day} <span className="text-xs font-normal text-muted-foreground">(Online)</span></span>
+                                    <div className="flex gap-1">
+                                        {slots.map((s, i) => <Badge key={i} variant="secondary" className="text-[10px]">{s.startTime}</Badge>)}
+                                    </div>
+                                </div>
+                            ))}
+                            {Object.entries(values.courseSchedulesOffline || {}).map(([day, slots]: [string, { startTime: string; timezone: string }[]]) => (
+                                <div key={`offline-${day}`} className="flex items-center justify-between text-sm">
+                                    <span className="font-bold">{day} <span className="text-xs font-normal text-muted-foreground">(Offline)</span></span>
                                     <div className="flex gap-1">
                                         {slots.map((s, i) => <Badge key={i} variant="secondary" className="text-[10px]">{s.startTime}</Badge>)}
                                     </div>

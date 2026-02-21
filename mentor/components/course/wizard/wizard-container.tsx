@@ -109,9 +109,15 @@ export function WizardContainer({ children, detail }: WizardContainerProps) {
             setCurrentStep(currentStep + 1)
             window.scrollTo({ top: 0, behavior: "smooth" })
         } else {
-            // Include toast from sonner
+            // Show step-specific validation messages
             import("sonner").then(({ toast }) => {
-                toast.error("Mohon lengkapi semua isian yang kosong atau salah pada langkah ini.");
+                const stepMessages: Record<number, string> = {
+                    0: "Pilih minimal satu tingkat pendidikan, subjek utama, dan sub-subjek.",
+                    1: "Isi judul kelas (min. 5 karakter), deskripsi (min. 10 karakter), dan deskripsi tutor.",
+                    2: "Pilih tipe kelas (Online/Offline), isi tarif dasar (harus lebih dari Rp 0), dan pilih media pembelajaran jika Online.",
+                    3: "Tambahkan minimal satu jadwal ketersediaan mengajar.",
+                }
+                toast.error(stepMessages[currentStep] || "Mohon lengkapi semua isian yang kosong atau salah pada langkah ini.");
             });
         }
     }

@@ -7,8 +7,9 @@ import { SearchableSelect } from "@/components/ui/searchable-select"
 import { MultipleSelect } from "@/components/ui/multiple-select"
 import { UseFormReturn } from "react-hook-form"
 import { CourseWizardData } from "../schema"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search } from "lucide-react"
+import { useWizard } from "../wizard-container"
 
 interface StepProps {
     form: UseFormReturn<CourseWizardData>
@@ -21,10 +22,40 @@ const GRADES = [
 ]
 
 export function StepAudiens({ form }: StepProps) {
+    const { detail } = useWizard()
     const [searchCategory, setSearchCategory] = useState("")
     const [selectedCategory, setSelectedCategory] = useState<{ id: string; name: string } | null>(null)
     const [subCategoryOptions, setSubCategoryOptions] = useState<{ id: string; label: string }[]>([])
     const [subCategoryKey, setSubCategoryKey] = useState(0)
+
+    // Initialize from existing course data in edit mode
+    useEffect(() => {
+        if (detail?.courseCategory) {
+            setSearchCategory(detail.courseCategory.name)
+            setSelectedCategory({ id: detail.courseCategory.id, name: detail.courseCategory.name })
+
+            // Pre-fetch sub-categories for the existing category
+            fetch(`/api/v1/course-categories/${detail.courseCategory.id}/sub?page=1`)
+                .then(res => res.json())
+                .then(({ data }) => {
+                    const options = data?.map((item: { id: string; name: string }) => ({ id: item.id, label: item.name })) || []
+                    setSubCategoryOptions(options)
+                    setSubCategoryKey(prev => prev + 1)
+
+                    // Populate subCategoryNames from fetched options matching existing IDs
+                    const currentSubIDs = form.getValues("subCategoryIDs") || []
+                    if (currentSubIDs.length > 0) {
+                        const names = currentSubIDs
+                            .map((id: string) => options.find((o: { id: string; label: string }) => o.id === id)?.label)
+                            .filter(Boolean) as string[]
+                        if (names.length > 0) {
+                            form.setValue("subCategoryNames", names)
+                        }
+                    }
+                })
+                .catch(() => { /* ignore */ })
+        }
+    }, [detail])
 
     return (
         <div className="space-y-12">
@@ -111,7 +142,7 @@ export function StepAudiens({ form }: StepProps) {
                         <div className="border rounded-xl p-6 bg-muted/30">
                             <MultipleSelect
                                 key={subCategoryKey}
-                                options={subCategoryOptions}
+                                options={[...new Map(subCategoryOptions.map(o => [o.id, o])).values()]}
                                 value={field.value || []}
                                 onLoadMore={async (page) => {
                                     if (!selectedCategory) return []
@@ -119,7 +150,11 @@ export function StepAudiens({ form }: StepProps) {
                                         const res = await fetch(`/api/v1/course-categories/${selectedCategory.id}/sub?page=${page}`)
                                         const { data } = await res.json()
                                         const newOptions = data?.map((item: { id: string; name: string }) => ({ id: item.id, label: item.name })) || []
-                                        setSubCategoryOptions(prev => [...prev, ...newOptions])
+                                        setSubCategoryOptions(prev => {
+                                            const existingIds = new Set(prev.map(o => o.id))
+                                            const uniqueNew = newOptions.filter((o: { id: string }) => !existingIds.has(o.id))
+                                            return [...prev, ...uniqueNew]
+                                        })
                                         return newOptions
                                     } catch {
                                         return []

@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 import { updateProfile, uploadFile } from "@/services/auth";
 import { updateLocation } from "@/services/account";
 
-export async function updateProfileAction(data: { name?: string; phoneNumber?: string; address?: string; bio?: string }) {
+export async function updateProfileAction(data: { name?: string; phoneNumber?: string; address?: string; bio?: string; gender?: string; dateOfBirth?: string; }) {
     try {
         const res = await updateProfile(data);
         revalidateTag("profile", "default");

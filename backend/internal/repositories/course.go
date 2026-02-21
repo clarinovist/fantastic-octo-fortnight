@@ -198,6 +198,10 @@ func (r *CourseRepository) GetTutorCourse(ctx context.Context, filter model.Cour
 
 	// Base query for courses
 	db := r.db.Read.Model(&model.Course{}).
+		Preload("CourseCategory").
+		Preload("CoursePrices", func(db *gorm.DB) *gorm.DB {
+			return db.Order("duration_in_hour asc")
+		}).
 		Preload("Draft", func(db *gorm.DB) *gorm.DB {
 			return db.Where("course_drafts.status <> ?", model.DraftStatusApproved)
 		})

@@ -87,15 +87,44 @@ export function CourseCard({ course }: CourseCardProps) {
                 </p>
                 <div className="mt-4 flex items-center justify-between">
                     {(() => {
+                        // Find the best price to display: first look for 1-hour rates, then any non-zero price
                         let displayPrice = 0;
-                        if (course.price && !isNaN(parseInt(course.price))) {
+
+                        // Check top-level price field
+                        if (course.price && !isNaN(parseInt(course.price)) && parseInt(course.price) > 0) {
                             displayPrice = parseInt(course.price);
-                        } else if (course.coursePrices?.online?.[0]?.price) {
-                            displayPrice = parseInt(course.coursePrices.online[0].price);
-                        } else if (course.coursePrices?.offline?.[0]?.price) {
-                            displayPrice = parseInt(course.coursePrices.offline[0].price);
                         }
-                        return <span className="text-sm font-medium">Rp {displayPrice.toLocaleString('id-ID')} / jam</span>
+
+                        // If no top-level price, search coursePrices for 1-hour rate first
+                        if (displayPrice === 0) {
+                            const oneHourOnline = course.coursePrices?.online?.find(p => p.durationInHour === 1);
+                            const oneHourOffline = course.coursePrices?.offline?.find(p => p.durationInHour === 1);
+                            if (oneHourOnline?.price && parseInt(oneHourOnline.price) > 0) {
+                                displayPrice = parseInt(oneHourOnline.price);
+                            } else if (oneHourOffline?.price && parseInt(oneHourOffline.price) > 0) {
+                                displayPrice = parseInt(oneHourOffline.price);
+                            }
+                        }
+
+                        // Fallback: any non-zero price in the arrays
+                        if (displayPrice === 0) {
+                            const anyOnline = course.coursePrices?.online?.find(p => parseInt(p.price) > 0);
+                            const anyOffline = course.coursePrices?.offline?.find(p => parseInt(p.price) > 0);
+                            if (anyOnline) displayPrice = parseInt(anyOnline.price);
+                            else if (anyOffline) displayPrice = parseInt(anyOffline.price);
+                        }
+
+                        if (displayPrice > 0) {
+                            return (
+                                <span className="text-sm font-medium">
+                                    Rp {displayPrice.toLocaleString('id-ID')} / jam
+                                    {course.isFreeFirstCourse && (
+                                        <span className="ml-2 text-xs text-primary font-bold">• Sesi 1 Gratis</span>
+                                    )}
+                                </span>
+                            )
+                        }
+                        return <span className="text-sm text-muted-foreground italic">Harga belum diatur</span>
                     })()}
                 </div>
             </CardContent>

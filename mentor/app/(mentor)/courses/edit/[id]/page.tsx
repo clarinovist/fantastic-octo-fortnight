@@ -5,13 +5,14 @@ import { getCourseSaved } from "@/services/course"
 import { notFound } from "next/navigation"
 
 interface EditCoursePageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
 export default async function EditCoursePage({ params }: EditCoursePageProps) {
-    const res = await getCourseSaved(params.id)
+    const { id } = await params
+    const res = await getCourseSaved(id)
 
     if (!res.success || !res.data) {
         notFound()

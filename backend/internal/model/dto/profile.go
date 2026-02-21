@@ -20,6 +20,7 @@ type UpdateProfileRequest struct {
 	PhoneNumber     string            `json:"phoneNumber"`
 	Address         string            `json:"address"`
 	SocialMediaLink map[string]string `json:"socialMediaLink"`
+	Bio             string            `json:"bio"`
 }
 
 // Validate validates the update profile request
@@ -74,6 +75,7 @@ type ProfileResponse struct {
 	Location            Location            `json:"location"`
 	IsPremium           bool                `json:"isPremium"`
 	Address             null.String         `json:"address"`
+	Bio                 string              `json:"bio"`
 	TotalSessions       int64               `json:"total_sessions"`
 	AverageRating       float64             `json:"average_rating"`
 	JoinedAt            time.Time           `json:"joined_at"`

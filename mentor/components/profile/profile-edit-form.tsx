@@ -13,12 +13,15 @@ import { updateProfileAction, updateLocationAction } from "@/actions/profile"
 import { User } from "@/utils/types"
 import { toast } from "sonner"
 import { Loader2, Save } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const profileSchema = z.object({
     name: z.string().min(2, "Nama minimal 2 karakter"),
     phoneNumber: z.string().min(10, "Nomor telepon tidak valid"),
     address: z.string().optional(),
     bio: z.string().optional(),
+    gender: z.string().optional(),
+    dateOfBirth: z.string().optional(),
 })
 
 interface ProfileEditFormProps {
@@ -49,6 +52,8 @@ export function ProfileEditForm({ user, onCancel, onSuccess }: ProfileEditFormPr
             // Checking Step 1022 type definition... it doesn't seem to have bio explicitly, 
             // but the plan mentioned bio. We'll leave it optional/empty if not present.
             bio: user.bio || "",
+            gender: user.gender || "",
+            dateOfBirth: user.date_of_birth || "",
         },
     })
 
@@ -59,7 +64,9 @@ export function ProfileEditForm({ user, onCancel, onSuccess }: ProfileEditFormPr
                 name: values.name,
                 phoneNumber: values.phoneNumber,
                 address: values.address,
-                bio: values.bio
+                bio: values.bio,
+                gender: values.gender,
+                dateOfBirth: values.dateOfBirth
             })
 
             // Update Location
@@ -114,6 +121,43 @@ export function ProfileEditForm({ user, onCancel, onSuccess }: ProfileEditFormPr
                                 <FormLabel>Nomor Telepon</FormLabel>
                                 <FormControl>
                                     <Input placeholder="08..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                        control={form.control}
+                        name="gender"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Jenis Kelamin</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Pilih jenis kelamin" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Pria">Pria</SelectItem>
+                                        <SelectItem value="Wanita">Wanita</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="dateOfBirth"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Tanggal Lahir</FormLabel>
+                                <FormControl>
+                                    <Input type="date" {...field} value={field.value || ""} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

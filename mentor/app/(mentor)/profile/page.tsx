@@ -168,12 +168,14 @@ export default function ProfilePage() {
                                 {/* Name & Details */}
                                 <div className="mt-4 sm:mt-0 sm:ml-5 flex-1 text-center sm:text-left">
                                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
-                                        <h1 className="text-2xl font-bold">{profile?.name || "Memuat..."}</h1>
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
-                                            ✓ Tutor Terverifikasi
-                                        </span>
+                                        <h1 className="text-2xl font-bold">{profile?.name || "Profil Belum Lengkap"}</h1>
+                                        {profile?.name && (
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800">
+                                                ✓ Tutor Terverifikasi
+                                            </span>
+                                        )}
                                     </div>
-                                    <p className="text-sm text-muted-foreground">{profile?.email}</p>
+                                    <p className="text-sm text-muted-foreground">{profile?.email || "Tambah data diri Anda agar bisa membuat kelas"}</p>
                                 </div>
                                 {/* Action Button */}
                                 <div className="mt-4 sm:mt-0 flex-shrink-0 w-full sm:w-auto">
@@ -184,7 +186,7 @@ export default function ProfilePage() {
                                             onClick={() => setIsEditingMode(true)}
                                         >
                                             <Edit className="mr-2 h-4 w-4" />
-                                            Edit Profil
+                                            {profile?.name ? "Edit Profil" : "Lengkapi Profil"}
                                         </Button>
                                     )}
                                 </div>
@@ -203,9 +205,10 @@ export default function ProfilePage() {
                                         <p className="text-sm text-muted-foreground mt-1">Perbarui data diri dan lokasi mengajar Anda.</p>
                                     </div>
 
-                                    {isEditingMode && profile ? (
+                                    {isEditingMode ? (
                                         <ProfileEditForm
-                                            user={profile}
+                                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                            user={profile || { name: "", email: "", phone_number: "", address: "", bio: "" } as any}
                                             onCancel={() => setIsEditingMode(false)}
                                             onSuccess={() => {
                                                 setIsEditingMode(false);

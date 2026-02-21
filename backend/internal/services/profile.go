@@ -2,12 +2,15 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/guregu/null/v6"
 	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
 
 	"github.com/lesprivate/backend/internal/model"
 	"github.com/lesprivate/backend/internal/model/dto"
@@ -94,6 +97,14 @@ func (s *ProfileService) UpdateProfile(ctx context.Context, userID uuid.UUID, re
 		return fmt.Errorf("unsupported user role: %s", userRole)
 	}
 
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).
+			Str("user_id", userID.String()).
+			Str("role", userRole).
+			Msg("[ProfileService.UpdateProfile] Failed to build profile")
+		return err
+	}
+
 	err = s.user.UpdateProfile(ctx, user, profile)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).
@@ -155,6 +166,14 @@ func (s *ProfileService) UpdateProfileLocation(ctx context.Context, userID uuid.
 		profile, err = s.updateTutorProfileLocation(ctx, req, user)
 	default:
 		return fmt.Errorf("unsupported user role: %s", userRole)
+	}
+
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).
+			Str("user_id", userID.String()).
+			Str("role", userRole).
+			Msg("[ProfileService.UpdateProfileLocation] Failed to build profile location")
+		return err
 	}
 
 	err = s.user.UpdateProfile(ctx, user, profile)
@@ -236,7 +255,7 @@ func (s *ProfileService) hasActiveTutorDocuments(ctx context.Context, tutorID uu
 
 func (s *ProfileService) updateStudentProfileLocation(ctx context.Context, req dto.UpdateProfileLocationRequest, user *model.User) (*model.Student, error) {
 	student, err := s.student.GetByUserID(ctx, user.ID)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && !strings.Contains(err.Error(), "not found") {
 		logger.ErrorCtx(ctx).Err(err).
 			Str("user_id", user.ID.String()).
 			Msg("[ProfileService.updateStudentProfileLocation] Failed to get student")
@@ -244,10 +263,9 @@ func (s *ProfileService) updateStudentProfileLocation(ctx context.Context, req d
 	}
 
 	if student == nil {
-		logger.ErrorCtx(ctx).
-			Str("user_id", user.ID.String()).
-			Msg("[ProfileService.updateStudentProfileLocation] Student not found")
-		return nil, shared.MakeError(ErrEntityNotFound, "student")
+		student = &model.Student{
+			UserID: user.ID,
+		}
 	}
 
 	// Update student fields
@@ -265,7 +283,7 @@ func (s *ProfileService) updateStudentProfileLocation(ctx context.Context, req d
 
 func (s *ProfileService) updateStudentProfile(ctx context.Context, req dto.UpdateProfileRequest, user *model.User) (*model.Student, error) {
 	student, err := s.student.GetByUserID(ctx, user.ID)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && !strings.Contains(err.Error(), "not found") {
 		logger.ErrorCtx(ctx).Err(err).
 			Str("user_id", user.ID.String()).
 			Msg("[ProfileService.updateStudentProfile] Failed to get student")
@@ -273,20 +291,21 @@ func (s *ProfileService) updateStudentProfile(ctx context.Context, req dto.Updat
 	}
 
 	if student == nil {
-		logger.ErrorCtx(ctx).
-			Str("user_id", user.ID.String()).
-			Msg("[ProfileService.updateStudentProfile] Student not found")
-		return nil, shared.MakeError(ErrEntityNotFound, "student")
+		student = &model.Student{
+			UserID: user.ID,
+		}
 	}
 
 	// Update student fields
 	student.PhotoProfile = null.StringFrom(req.PhotoProfile)
 	student.Gender = null.StringFrom(req.Gender)
-	dateOfBirth, err := time.Parse("2006-01-02", req.DateOfBirth)
-	if err != nil {
-		return nil, shared.MakeError(ErrBadRequest, "invalid date format")
+	if req.DateOfBirth != "" {
+		dateOfBirth, err := time.Parse("2006-01-02", req.DateOfBirth)
+		if err != nil {
+			return nil, shared.MakeError(ErrBadRequest, "invalid date format")
+		}
+		student.DateOfBirth = null.TimeFrom(dateOfBirth)
 	}
-	student.DateOfBirth = null.TimeFrom(dateOfBirth)
 	student.PhoneNumber = null.StringFrom(req.PhoneNumber)
 	if req.SocialMediaLink != nil {
 		links := make([]model.SocialMediaLink, 0)
@@ -305,7 +324,7 @@ func (s *ProfileService) updateStudentProfile(ctx context.Context, req dto.Updat
 
 func (s *ProfileService) updateTutorProfile(ctx context.Context, req dto.UpdateProfileRequest, user *model.User) (*model.Tutor, error) {
 	tutor, err := s.tutor.GetByUserID(ctx, user.ID)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && !strings.Contains(err.Error(), "not found") {
 		logger.ErrorCtx(ctx).Err(err).
 			Str("user_id", user.ID.String()).
 			Msg("[ProfileService.updateTutorProfile] Failed to get tutor")
@@ -313,22 +332,24 @@ func (s *ProfileService) updateTutorProfile(ctx context.Context, req dto.UpdateP
 	}
 
 	if tutor == nil {
-		logger.ErrorCtx(ctx).
-			Str("user_id", user.ID.String()).
-			Msg("[ProfileService.updateTutorProfile] Tutor not found")
-		return nil, shared.MakeError(ErrEntityNotFound, "tutor")
+		tutor = &model.Tutor{
+			UserID: user.ID,
+		}
 	}
 
 	// Update tutor fields
 	tutor.PhotoProfile = null.StringFrom(req.PhotoProfile)
 	tutor.Gender = null.StringFrom(req.Gender)
-	dateOfBirth, err := time.Parse("2006-01-02", req.DateOfBirth)
-	if err != nil {
-		return nil, shared.MakeError(ErrBadRequest, "invalid date format")
+	if req.DateOfBirth != "" {
+		dateOfBirth, err := time.Parse("2006-01-02", req.DateOfBirth)
+		if err != nil {
+			return nil, shared.MakeError(ErrBadRequest, "invalid date format")
+		}
+		tutor.DateOfBirth = null.TimeFrom(dateOfBirth)
 	}
-	tutor.DateOfBirth = null.TimeFrom(dateOfBirth)
 	tutor.PhoneNumber = null.StringFrom(req.PhoneNumber)
 	tutor.Address = null.StringFrom(req.Address)
+	tutor.Description = req.Bio
 	if req.SocialMediaLink != nil {
 		links := make([]model.SocialMediaLink, 0)
 		for socialMedia, link := range req.SocialMediaLink {
@@ -346,7 +367,7 @@ func (s *ProfileService) updateTutorProfile(ctx context.Context, req dto.UpdateP
 
 func (s *ProfileService) updateTutorProfileLocation(ctx context.Context, req dto.UpdateProfileLocationRequest, user *model.User) (*model.Tutor, error) {
 	tutor, err := s.tutor.GetByUserID(ctx, user.ID)
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) && !strings.Contains(err.Error(), "not found") {
 		logger.ErrorCtx(ctx).Err(err).
 			Str("user_id", user.ID.String()).
 			Msg("[ProfileService.updateTutorProfileLocation] Failed to get tutor")
@@ -354,10 +375,9 @@ func (s *ProfileService) updateTutorProfileLocation(ctx context.Context, req dto
 	}
 
 	if tutor == nil {
-		logger.ErrorCtx(ctx).
-			Str("user_id", user.ID.String()).
-			Msg("[ProfileService.updateTutorProfileLocation] Tutor not found")
-		return nil, shared.MakeError(ErrEntityNotFound, "tutor")
+		tutor = &model.Tutor{
+			UserID: user.ID,
+		}
 	}
 
 	tutor.Latitude = decimal.NullDecimal{
@@ -427,10 +447,7 @@ func (s *ProfileService) GetProfile(ctx context.Context, userID uuid.UUID) (dto.
 		}
 
 		if student == nil {
-			logger.ErrorCtx(ctx).
-				Str("user_id", userID.String()).
-				Msg("[ProfileService.UpdateProfile] Student not found")
-			return dto.ProfileResponse{}, shared.MakeError(ErrEntityNotFound, "student")
+			return profile, nil
 		}
 
 		profile.Gender = student.Gender
@@ -508,10 +525,7 @@ func (s *ProfileService) fillProfileForTutor(ctx context.Context, userID uuid.UU
 	}
 
 	if tutor == nil {
-		logger.ErrorCtx(ctx).
-			Str("user_id", userID.String()).
-			Msg("[ProfileService.UpdateProfile] Tutor not found")
-		return shared.MakeError(ErrEntityNotFound, "tutor")
+		return nil
 	}
 
 	profile.Gender = tutor.Gender
@@ -526,6 +540,7 @@ func (s *ProfileService) fillProfileForTutor(ctx context.Context, userID uuid.UU
 	for _, link := range tutor.SocialMediaLink {
 		profile.SocialMediaLink[link.Name] = link.Link
 	}
+	profile.Bio = tutor.Description
 	profile.LevelPoint = tutor.LevelPoint
 	profile.Level = null.StringFrom(tutor.LevelByPoint())
 	profile.Address = tutor.Address
@@ -554,16 +569,18 @@ func (s *ProfileService) fillProfileForTutor(ctx context.Context, userID uuid.UU
 	}
 	profile.AverageRating = avgRating
 
-	location, err := s.courseService.GetLocationByLatLong(ctx, profile.Latitude.Decimal, profile.Longitude.Decimal)
-	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).
-			Str("user_id", userID.String()).
-			Msg("[ProfileService.UpdateProfile] Failed to get location")
-		return shared.MakeError(ErrInternalServer)
-	}
-
-	profile.Location = dto.Location{
-		FullName: location.FullName,
+	if profile.Latitude.Valid && profile.Longitude.Valid {
+		location, err := s.courseService.GetLocationByLatLong(ctx, profile.Latitude.Decimal, profile.Longitude.Decimal)
+		if err != nil {
+			logger.ErrorCtx(ctx).Err(err).
+				Str("user_id", userID.String()).
+				Msg("[ProfileService.UpdateProfile] Failed to get location")
+			// Don't fail the whole request
+		} else {
+			profile.Location = dto.Location{
+				FullName: location.FullName,
+			}
+		}
 	}
 
 	profile.FinishUpdateProfile = tutor.StatusLabel() == model.TutorStatusActive
