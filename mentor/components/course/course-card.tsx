@@ -31,11 +31,11 @@ export function CourseCard({ course }: CourseCardProps) {
     const [isPending, startTransition] = useTransition()
     const [isDeleting, setIsDeleting] = useState(false)
 
-    const handlePublishToggle = async () => {
+    const handlePublishToggle = async (checked: boolean) => {
         startTransition(async () => {
-            const res = await publishCourseAction(course.id)
+            const res = await publishCourseAction(course.id, checked)
             if (res.success) {
-                toast.success(`Kelas berhasil ${course.isPublished ? "diunpublish" : "dipublish"}`)
+                toast.success(`Kelas berhasil ${checked ? "dipublish" : "diunpublish"}`)
             } else {
                 toast.error("Gagal mengubah status publikasi")
             }

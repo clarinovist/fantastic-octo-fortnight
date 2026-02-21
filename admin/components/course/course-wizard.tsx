@@ -48,11 +48,11 @@ export const courseWizardSchema = z.object({
     courseSchedulesOffline: z.record(z.string(), z.array(z.object({
         startTime: z.string(),
         timezone: z.string(),
-    }))).default({}),
+    })).optional()).default({}),
     courseSchedulesOnline: z.record(z.string(), z.array(z.object({
         startTime: z.string(),
         timezone: z.string(),
-    }))).default({}),
+    })).optional()).default({}),
 });
 
 export type CourseWizardData = z.infer<typeof courseWizardSchema>;
@@ -186,15 +186,40 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
     };
 
 
+    const validateAllSteps = async (): Promise<string[]> => {
+        const errors: string[] = [];
+        const values = form.getValues();
+
+        // Step 1: Basic Info
+        if (!values.title || values.title.trim() === "") errors.push("Judul kursus wajib diisi");
+        if (!values.courseCategoryID) errors.push("Kategori wajib dipilih");
+
+        // Step 2: Pricing
+        if (!values.classType || values.classType.length === 0) errors.push("Pilih minimal satu tipe kelas");
+        const isOnline = values.classType.includes("Online");
+        const isOffline = values.classType.includes("Offline");
+        if (isOnline && (!values.coursePrices.online || values.coursePrices.online.length === 0 || values.coursePrices.online.every(p => p.price <= 0))) {
+            errors.push("Harga paket Online wajib diisi");
+        }
+        if (isOffline && (!values.coursePrices.offline || values.coursePrices.offline.length === 0 || values.coursePrices.offline.every(p => p.price <= 0))) {
+            errors.push("Harga paket Offline wajib diisi");
+        }
+
+        // Tutor
+        if (!values.tutorId) errors.push("Tutor wajib dipilih");
+
+        return errors;
+    };
+
     const nextStep = async () => {
         // Validate current step fields before moving
         let isValid = false;
         if (currentStep === 1) {
             isValid = await form.trigger(["title", "courseCategoryID"]);
         } else if (currentStep === 2) {
-            isValid = await form.trigger(["classType"]); // Add other fields as needed
+            isValid = await form.trigger(["classType"]);
         } else if (currentStep === 3) {
-            isValid = true; // Schedule validation is complex, assume valid for now or add specific checks
+            isValid = true;
         } else {
             isValid = true;
         }
@@ -206,6 +231,29 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
                 toast.error("Mohon lengkapi isian yang kosong atau salah.");
             });
         }
+    };
+
+    const handlePublish = async () => {
+        // First validate all steps
+        const validationErrors = await validateAllSteps();
+        if (validationErrors.length > 0) {
+            toast.error(
+                `Mohon lengkapi data berikut:\n${validationErrors.map(e => `• ${e}`).join('\n')}`,
+                { duration: 6000 }
+            );
+            return;
+        }
+
+        // Then trigger Zod schema validation and submit
+        const isSchemaValid = await form.trigger();
+        if (!isSchemaValid) {
+            toast.error("Ada data yang belum valid. Mohon periksa kembali.");
+            return;
+        }
+
+        // Manually call onSubmit with current values
+        const data = form.getValues();
+        await onSubmit(data);
     };
 
     const prevStep = () => {
@@ -227,12 +275,13 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
 
             // Transform schedules helper for payload
             const transformSchedulesForPayload = (
-                schedules: Record<string, ScheduleSlot[]> | undefined,
+                schedules: Record<string, ScheduleSlot[] | undefined> | undefined,
                 classType: "online" | "offline" | "all"
             ): CourseSchedule => {
                 if (!schedules) return {};
                 const transformed: CourseSchedule = {};
                 Object.entries(schedules).forEach(([dayName, timeSlots]) => {
+                    if (!timeSlots) return;
                     const validTimeSlots = timeSlots.filter(slot => slot.startTime && slot.startTime.trim() !== "");
                     if (validTimeSlots.length > 0) {
                         const dayIndex = getDayIndex(dayName);
@@ -380,19 +429,15 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
             {/* Form Content */}
             <FormProvider {...form}>
                 <form
-                    onSubmit={form.handleSubmit(
-                        (data) => onSubmit(data as CourseWizardData),
-                        (errors) => {
-                            const firstErrorField = Object.keys(errors)[0];
-                            const firstErrorMessage = errors[firstErrorField as keyof typeof errors]?.message;
-                            if (firstErrorMessage) {
-                                toast.error(`Validation error: ${String(firstErrorMessage)}`);
-                            } else {
-                                toast.error("Please fill in all required fields correctly.");
-                            }
-                            console.error("Form validation errors:", errors);
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && e.target instanceof HTMLInputElement) {
+                            e.preventDefault();
                         }
-                    )}
+                    }}
+                    onSubmit={(e) => {
+                        // Prevent default form submission — we handle it via handlePublish
+                        e.preventDefault();
+                    }}
                     className="w-full"
                 >
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col">
@@ -400,7 +445,7 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
                             {currentStep === 1 && <StepBasicInfo categories={categories} tutors={tutors} />}
                             {currentStep === 2 && <StepPricing />}
                             {currentStep === 3 && <StepSchedule />}
-                            {currentStep === 4 && <StepReview />}
+                            {currentStep === 4 && <StepReview categories={categories} tutors={tutors} />}
                         </div>
 
                         {/* Footer Navigation */}
@@ -427,7 +472,8 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
                                 </Button>
                             ) : (
                                 <Button
-                                    type="submit"
+                                    type="button"
+                                    onClick={handlePublish}
                                     disabled={isSubmitting}
                                     className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/30 font-bold transition-all transform active:scale-95"
                                 >

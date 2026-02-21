@@ -151,7 +151,8 @@ export function StepPricing() {
                                                             <Input
                                                                 type="number"
                                                                 {...field}
-                                                                onChange={e => field.onChange(parseFloat(e.target.value))}
+                                                                value={Number.isNaN(field.value) ? "" : field.value}
+                                                                onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                                                                 className="pr-12"
                                                             />
                                                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">hrs</span>
@@ -227,7 +228,8 @@ export function StepPricing() {
                                                             <Input
                                                                 type="number"
                                                                 {...field}
-                                                                onChange={e => field.onChange(parseFloat(e.target.value))}
+                                                                value={Number.isNaN(field.value) ? "" : field.value}
+                                                                onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
                                                                 className="pr-12"
                                                             />
                                                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">hrs</span>

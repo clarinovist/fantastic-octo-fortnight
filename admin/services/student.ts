@@ -24,7 +24,7 @@ export async function getStudents(params: StudentsParams): Promise<BaseResponse<
   if (sort) qs.append('sort', sort);
   qs.append('sortDirection', params.sortDirection || "DESC");
   return fetcherBase<Student[]>(`/v1/admin/students?${qs.toString()}`, {
-    next: { tags: ['students'] },
+    cache: 'no-store',
   });
 }
 

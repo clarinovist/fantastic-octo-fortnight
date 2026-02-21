@@ -4,12 +4,23 @@ import { useFormContext } from "react-hook-form";
 import { CourseWizardData } from "../course-wizard";
 import { CheckCircle, Info, Tag, Calendar, Users } from "lucide-react";
 
-export function StepReview() {
+import { Tutor, CourseCategory } from "@/utils/types";
+
+interface StepReviewProps {
+    categories: CourseCategory[];
+    tutors: Tutor[];
+}
+
+export function StepReview({ categories, tutors }: StepReviewProps) {
     const { watch } = useFormContext<CourseWizardData>();
     const values = watch();
 
     const isOnline = values.classType.includes("Online");
     const isOffline = values.classType.includes("Offline");
+
+    // Lookup names
+    const categoryName = categories.find(c => c.id === values.courseCategoryID)?.name || values.courseCategoryID;
+    const tutorName = tutors.find(t => t.id === values.tutorId)?.name || values.tutorId;
 
     // Basic formatting helper
     const formatMoney = (amount: number) => {
@@ -49,22 +60,19 @@ export function StepReview() {
 
                         <div className="space-y-1">
                             <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Description</p>
-                            <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">{values.description || "No description provided."}</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">{values.description ? <span dangerouslySetInnerHTML={{ __html: values.description }} /> : "No description provided."}</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 pt-2">
                             <div className="space-y-1">
                                 <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Category</p>
-                                {/* Note: We only have ID here, ideally we find name from props but context doesn't have it easily. 
-                                 For now displaying ID or simple placeholder. 
-                                 In real app, we'd pass categories map to this component or context. */}
-                                <p className="text-sm font-medium">{values.courseCategoryID || "-"}</p>
+                                <p className="text-sm font-medium">{categoryName || "-"}</p>
                             </div>
                             <div className="space-y-1">
                                 <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Tutor</p>
                                 <div className="flex items-center gap-2">
                                     <Users className="size-3 text-slate-400" />
-                                    <span className="text-sm font-medium">{values.tutorId || "Unassigned"}</span>
+                                    <span className="text-sm font-medium">{tutorName || "Unassigned"}</span>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +139,7 @@ export function StepReview() {
                                 <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-2">Online Sessions</p>
                                 <div className="space-y-2">
                                     {Object.entries(values.courseSchedulesOnline || {}).map(([day, slots]) => (
-                                        slots?.length > 0 && (
+                                        (slots && slots.length > 0) && (
                                             <div key={day} className="flex gap-2 text-sm">
                                                 <span className="w-20 font-medium text-slate-700 dark:text-slate-300">{day}</span>
                                                 <div className="flex flex-col">
@@ -150,7 +158,7 @@ export function StepReview() {
                                 <p className="text-xs text-slate-500 uppercase font-bold tracking-wider mb-2">Offline Sessions</p>
                                 <div className="space-y-2">
                                     {Object.entries(values.courseSchedulesOffline || {}).map(([day, slots]) => (
-                                        slots?.length > 0 && (
+                                        (slots && slots.length > 0) && (
                                             <div key={day} className="flex gap-2 text-sm">
                                                 <span className="w-20 font-medium text-slate-700 dark:text-slate-300">{day}</span>
                                                 <div className="flex flex-col">

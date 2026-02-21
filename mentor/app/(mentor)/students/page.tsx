@@ -204,15 +204,27 @@ export default function StudentsPage() {
                                                 </td>
                                             </tr>
                                         ) : students.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={5} className="py-20 text-center">
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <UserX className="h-10 w-10 text-muted-foreground/50" />
-                                                        <p className="text-muted-foreground font-medium">Belum ada murid terdaftar</p>
-                                                        <p className="text-xs text-muted-foreground">Gunakan kode undangan di atas untuk menambah murid baru.</p>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            debouncedSearch ? (
+                                                <tr>
+                                                    <td colSpan={5} className="py-20 text-center">
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <Search className="h-10 w-10 text-muted-foreground/50" />
+                                                            <p className="text-muted-foreground font-medium">Pencarian tidak ditemukan</p>
+                                                            <p className="text-xs text-muted-foreground">Tidak ada murid yang cocok dengan "{debouncedSearch}".</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={5} className="py-20 text-center">
+                                                        <div className="flex flex-col items-center gap-2">
+                                                            <UserX className="h-10 w-10 text-muted-foreground/50" />
+                                                            <p className="text-muted-foreground font-medium">Belum ada murid terdaftar</p>
+                                                            <p className="text-xs text-muted-foreground">Gunakan kode undangan di atas untuk menambah murid baru.</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )
                                         ) : (
                                             students.map((s, idx) => (
                                                 <tr key={idx} className="hover:bg-muted/30 transition-colors">

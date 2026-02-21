@@ -115,18 +115,26 @@ export function CreateSessionDialog({ open, onOpenChange, onSuccess }: CreateSes
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Pilih Siswa</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={!studentsData?.data || studentsData.data.length === 0}
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Cari nama siswa..." />
+                                                <SelectValue placeholder={(!studentsData?.data || studentsData.data.length === 0) ? "Belum ada siswa" : "Cari nama siswa..."} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {studentsData?.data?.map((student) => (
-                                                <SelectItem key={student.student_id} value={student.student_id}>
-                                                    {student.name}
-                                                </SelectItem>
-                                            ))}
+                                            {(!studentsData?.data || studentsData.data.length === 0) ? (
+                                                <SelectItem value="empty" disabled>Belum ada siswa</SelectItem>
+                                            ) : (
+                                                studentsData.data.map((student) => (
+                                                    <SelectItem key={student.student_id} value={student.student_id}>
+                                                        {student.name}
+                                                    </SelectItem>
+                                                ))
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -140,18 +148,26 @@ export function CreateSessionDialog({ open, onOpenChange, onSuccess }: CreateSes
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Mata Pelajaran</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={!coursesData?.data || coursesData.data.length === 0}
+                                    >
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Pilih mata pelajaran" />
+                                                <SelectValue placeholder={(!coursesData?.data || coursesData.data.length === 0) ? "Belum ada mata pelajaran" : "Pilih mata pelajaran"} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {coursesData?.data?.map((course) => (
-                                                <SelectItem key={course.id} value={course.id}>
-                                                    {course.title}
-                                                </SelectItem>
-                                            ))}
+                                            {(!coursesData?.data || coursesData.data.length === 0) ? (
+                                                <SelectItem value="empty" disabled>Belum ada mata pelajaran</SelectItem>
+                                            ) : (
+                                                coursesData.data.map((course) => (
+                                                    <SelectItem key={course.id} value={course.id}>
+                                                        {course.title}
+                                                    </SelectItem>
+                                                ))
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />

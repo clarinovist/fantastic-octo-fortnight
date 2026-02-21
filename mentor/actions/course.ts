@@ -10,9 +10,9 @@ import {
 } from "@/services/course";
 import { CoursePayload } from "@/utils/types/course";
 
-export async function publishCourseAction(id: string) {
+export async function publishCourseAction(id: string, isPublished: boolean) {
     try {
-        const res = await publishCourse(id);
+        const res = await publishCourse(id, isPublished);
         revalidateTag("courses", "default");
         return res;
     } catch (error) {

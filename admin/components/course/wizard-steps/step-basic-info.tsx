@@ -5,11 +5,21 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { MultipleSelect } from "@/components/ui/multiple-select";
+import { useState, useEffect } from "react";
 import { CourseWizardData } from "../course-wizard";
 import { Tutor, CourseCategory } from "@/utils/types";
 import { Bold, Italic, Underline, List, ListOrdered, Link, ImageIcon, Search, X } from "lucide-react";
 
 import Image from "next/image";
+
+const GRADES = [
+    ["TK", "SD", "SMP", "SMA"],
+    ["MI", "MTs", "MTA"],
+    ["SMK"]
+];
 
 interface StepBasicInfoProps {
     categories: CourseCategory[];
@@ -19,7 +29,27 @@ interface StepBasicInfoProps {
 export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
     const { control, watch, setValue } = useFormContext<CourseWizardData>();
     const selectedTutorId = watch("tutorId");
+    const courseCategoryID = watch("courseCategoryID");
     const selectedTutor = tutors.find(t => t.id === selectedTutorId);
+
+    const [subCategoryOptions, setSubCategoryOptions] = useState<{ id: string; label: string }[]>([]);
+    const [subCategoryKey, setSubCategoryKey] = useState(0);
+
+    // Fetch initial subcategories when category changes
+    useEffect(() => {
+        if (courseCategoryID) {
+            setSubCategoryKey(prev => prev + 1);
+            fetch(`/api/v1/course-categories/${courseCategoryID}/sub?page=1`)
+                .then(res => res.json())
+                .then(({ data }) => {
+                    const options = data?.map((item: { id: string; name: string }) => ({ id: item.id, label: item.name })) || [];
+                    setSubCategoryOptions(options);
+                })
+                .catch(() => { /* ignore */ });
+        } else {
+            setSubCategoryOptions([]);
+        }
+    }, [courseCategoryID]);
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
@@ -84,7 +114,7 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
             <hr className="border-gray-100 dark:border-gray-800" />
 
             {/* Section: Classification */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="space-y-6">
                 {/* Category / Course Function */}
                 <FormField
                     control={control}
@@ -116,62 +146,71 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
                     render={({ field }) => (
                         <FormItem className="space-y-2">
                             <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-200">Sub-Categories</FormLabel>
-                            <div className="relative w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-1.5 flex flex-wrap gap-2 shadow-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all min-h-[44px]">
-                                {field.value?.map((id) => (
-                                    <div key={id} className="flex items-center gap-1 bg-primary/10 text-primary text-xs font-semibold px-2 py-1 rounded-md">
-                                        <span>{id}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => field.onChange(field.value.filter(v => v !== id))}
-                                            className="hover:text-primary-dark transition-colors"
-                                        >
-                                            <X className="size-3.5" />
-                                        </button>
-                                    </div>
-                                ))}
-                                <input
-                                    className="flex-1 min-w-[80px] bg-transparent border-none focus:ring-0 text-sm p-1 placeholder:text-gray-400"
-                                    placeholder="Add tag..."
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            const val = e.currentTarget.value.trim();
-                                            if (val && !field.value.includes(val)) {
-                                                field.onChange([...field.value, val]);
-                                                e.currentTarget.value = '';
-                                            }
+                            <div className="border rounded-xl p-4 bg-gray-50 dark:bg-gray-800/50 min-h-[140px]">
+                                <MultipleSelect
+                                    key={subCategoryKey}
+                                    options={[...new Map(subCategoryOptions.map(o => [o.id, o])).values()]}
+                                    value={field.value || []}
+                                    onLoadMore={async (page) => {
+                                        if (!courseCategoryID) return [];
+                                        try {
+                                            const res = await fetch(`/api/v1/course-categories/${courseCategoryID}/sub?page=${page}`);
+                                            const { data } = await res.json();
+                                            const newOptions = data?.map((item: { id: string; name: string }) => ({ id: item.id, label: item.name })) || [];
+                                            setSubCategoryOptions(prev => {
+                                                const existingIds = new Set(prev.map(o => o.id));
+                                                const uniqueNew = newOptions.filter((o: { id: string }) => !existingIds.has(o.id));
+                                                return [...prev, ...uniqueNew];
+                                            });
+                                            return newOptions;
+                                        } catch {
+                                            return [];
                                         }
                                     }}
+                                    onSelectionChange={field.onChange}
                                 />
                             </div>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
+            </div>
 
+            <hr className="border-gray-100 dark:border-gray-800" />
+
+            <div className="space-y-6">
                 {/* Education Level */}
                 <FormField
                     control={control}
                     name="levelEducationCourses"
                     render={({ field }) => (
-                        <FormItem className="space-y-2">
+                        <FormItem className="space-y-4">
                             <FormLabel className="text-sm font-semibold text-gray-700 dark:text-gray-200">Education Level</FormLabel>
-                            <Select
-                                onValueChange={(val) => field.onChange([val])}
-                                defaultValue={field.value?.[0]}
-                            >
-                                <FormControl>
-                                    <SelectTrigger className="w-full h-11 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white focus:border-primary focus:ring-primary shadow-sm px-4">
-                                        <SelectValue placeholder="Select Level" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="Beginner / General">Beginner / General</SelectItem>
-                                    <SelectItem value="Intermediate">Intermediate</SelectItem>
-                                    <SelectItem value="Advanced">Advanced</SelectItem>
-                                    <SelectItem value="University Level">University Level</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {GRADES.map((column, colIdx) => (
+                                    <div key={colIdx} className="space-y-3">
+                                        {column.map((grade) => (
+                                            <div key={grade} className="flex items-center space-x-3">
+                                                <Checkbox
+                                                    id={`grade-admin-${grade}`}
+                                                    checked={field.value?.includes(grade)}
+                                                    onCheckedChange={(checked) => {
+                                                        if (checked) {
+                                                            field.onChange([...(field.value || []), grade])
+                                                        } else {
+                                                            field.onChange(field.value?.filter((g: string) => g !== grade))
+                                                        }
+                                                    }}
+                                                    className="w-5 h-5 rounded"
+                                                />
+                                                <Label htmlFor={`grade-admin-${grade}`} className="text-sm font-medium leading-none cursor-pointer">
+                                                    {grade}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
                             <FormMessage />
                         </FormItem>
                     )}

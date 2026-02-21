@@ -34,9 +34,10 @@ export async function submitCourse(id: string): Promise<BaseResponse<null>> {
     });
 }
 
-export async function publishCourse(id: string): Promise<BaseResponse<string>> {
+export async function publishCourse(id: string, isPublished: boolean): Promise<BaseResponse<string>> {
     return fetcherBase<string>(`/v1/tutors/courses/${id}/publish`, {
         method: "PUT",
+        body: JSON.stringify({ isPublished }),
     });
 }
 

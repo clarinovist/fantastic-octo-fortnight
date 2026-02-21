@@ -195,12 +195,20 @@ export function WizardForm() {
                                         onClick={form.handleSubmit(
                                             (data) => onSubmit(data),
                                             (errors) => {
-                                                const firstErrorField = Object.keys(errors)[0];
-                                                const firstErrorMessage = errors[firstErrorField as keyof typeof errors]?.message;
-                                                if (firstErrorMessage) {
-                                                    toast.error(`Validation error: ${String(firstErrorMessage)}`);
+                                                const extractErrors = (obj: any): string[] => {
+                                                    let msgs: string[] = [];
+                                                    if (!obj) return msgs;
+                                                    if (obj.message && typeof obj.message === 'string') msgs.push(obj.message);
+                                                    Object.values(obj).forEach(val => {
+                                                        if (typeof val === 'object') msgs = msgs.concat(extractErrors(val));
+                                                    });
+                                                    return msgs;
+                                                };
+                                                const allErrors = extractErrors(errors);
+                                                if (allErrors.length > 0) {
+                                                    toast.error(`Validasi gagal: ${allErrors[0]}`);
                                                 } else {
-                                                    toast.error("Please fill in all required fields correctly.");
+                                                    toast.error("Mohon lengkapi semua isian yang wajib dengan benar.");
                                                 }
                                                 console.error("Form validation errors:", errors);
                                             }

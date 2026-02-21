@@ -23,7 +23,7 @@ export async function getTutors(params: TutorsParams): Promise<BaseResponse<Tuto
   qs.append('sort', params.sort || "created_at");
   qs.append('sortDirection', params.sortDirection || "DESC");
   return fetcherBase<Tutor[]>(`/v1/admin/tutors?${qs.toString()}`, {
-    next: { tags: ['tutors'] },
+    cache: 'no-store',
   });
 }
 

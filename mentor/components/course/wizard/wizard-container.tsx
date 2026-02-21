@@ -62,9 +62,9 @@ export function WizardContainer({ children, detail }: WizardContainerProps) {
                 )
             case 1: // Tentang
                 return (
-                    !!values.title?.trim() &&
-                    !!values.description?.trim() &&
-                    !!values.tutorDescription?.trim()
+                    (values.title?.trim()?.length || 0) >= 5 &&
+                    (values.description?.trim()?.length || 0) >= 10 &&
+                    (values.tutorDescription?.trim()?.length || 0) >= 10
                 )
             case 2: // Harga
                 const hasOnline = values.classType?.includes("Online")
