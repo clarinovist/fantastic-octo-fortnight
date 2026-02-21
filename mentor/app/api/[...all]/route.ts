@@ -17,11 +17,15 @@ async function proxy(request: NextRequest) {
             body = await request.text();
         }
 
-        const res = await fetcherBase(`${pathname}?${searchParams.toString()}`, {
+        const res = await fetcherBase<any>(`${pathname}?${searchParams.toString()}`, {
             body,
             method: request.method,
             next: { revalidate: 0 },
         });
+
+        if (!res.success) {
+            console.error("API Proxy Error:", pathname, request.method, res);
+        }
 
         // Check if response is a Response object (binary data like PDF)
         if (res instanceof Response) {

@@ -49,9 +49,9 @@ export function WizardPreview({ form }: PreviewProps) {
                         </div>
                         <div className="space-y-2">
                             <p className="text-xs font-bold text-muted-foreground uppercase">Kategori & Sub-Kategori</p>
-                            <p className="font-bold text-lg">{values.courseCategoryID || "-"}</p>
+                            <p className="font-bold text-lg">{values.courseCategoryName || values.courseCategoryID || "-"}</p>
                             <div className="flex flex-wrap gap-2">
-                                {values.subCategoryIDs.map(sub => (
+                                {(values.subCategoryNames?.length ? values.subCategoryNames : values.subCategoryIDs).map(sub => (
                                     <Badge key={sub} variant="secondary">{sub}</Badge>
                                 ))}
                             </div>

@@ -82,10 +82,29 @@ export function WizardContainer({ children, detail }: WizardContainerProps) {
         }
     }, [formInstance])
 
-    const nextStep = () => {
-        if (validateStep(currentStep) && currentStep < steps.length - 1) {
+    const nextStep = async () => {
+        if (!formInstance) return;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let fieldsToValidate: any[] = [];
+        switch (currentStep) {
+            case 0: fieldsToValidate = ["levelEducationCourses", "courseCategoryID", "subCategoryIDs"]; break;
+            case 1: fieldsToValidate = ["title", "description", "tutorDescription"]; break;
+            case 2: fieldsToValidate = ["classType", "coursePrices", "onlineChannel", "oneHourOnlinePrice", "oneHourOfflinePrice"]; break;
+            case 3: fieldsToValidate = ["courseSchedulesOnline", "courseSchedulesOffline"]; break;
+        }
+
+        const isRHFValid = await formInstance.trigger(fieldsToValidate);
+        const isManualValid = validateStep(currentStep);
+
+        if (isManualValid && isRHFValid && currentStep < steps.length - 1) {
             setCurrentStep(currentStep + 1)
             window.scrollTo({ top: 0, behavior: "smooth" })
+        } else {
+            // Include toast from sonner
+            import("sonner").then(({ toast }) => {
+                toast.error("Mohon lengkapi semua isian yang kosong atau salah pada langkah ini.");
+            });
         }
     }
 

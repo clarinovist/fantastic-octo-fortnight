@@ -87,7 +87,9 @@ export function StepAudiens({ form }: StepProps) {
                                     onSelect={(category) => {
                                         setSelectedCategory(category)
                                         field.onChange(category.id)
+                                        form.setValue("courseCategoryName", category.name)
                                         form.setValue("subCategoryIDs", [])
+                                        form.setValue("subCategoryNames", [])
                                         setSubCategoryKey(prev => prev + 1)
                                         setSubCategoryOptions([])
                                     }}
@@ -123,7 +125,13 @@ export function StepAudiens({ form }: StepProps) {
                                         return []
                                     }
                                 }}
-                                onSelectionChange={(ids) => field.onChange(ids)}
+                                onSelectionChange={(ids) => {
+                                    field.onChange(ids)
+                                    const selectedLabels = ids
+                                        .map(id => subCategoryOptions.find(opt => opt.id === id)?.label)
+                                        .filter(Boolean) as string[];
+                                    form.setValue("subCategoryNames", selectedLabels)
+                                }}
                             />
                         </div>
                         <FormMessage />

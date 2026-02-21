@@ -201,6 +201,10 @@ export function CourseWizard({ tutors, categories, initialData, isEditMode = fal
 
         if (isValid) {
             setCurrentStep((prev) => Math.min(prev + 1, STEPS.length));
+        } else {
+            import("sonner").then(({ toast }) => {
+                toast.error("Mohon lengkapi isian yang kosong atau salah.");
+            });
         }
     };
 

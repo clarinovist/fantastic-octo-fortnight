@@ -30,6 +30,8 @@ export const wizardFormSchema = z.object({
     tutorDescription: z.string().min(10, "Deskripsi tutor minimal 10 karakter"),
     oneHourOnlinePrice: z.number().optional(),
     oneHourOfflinePrice: z.number().optional(),
+    courseCategoryName: z.string().optional(),
+    subCategoryNames: z.array(z.string()).optional(),
 })
 
 export type CourseWizardData = z.infer<typeof wizardFormSchema>

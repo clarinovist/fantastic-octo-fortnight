@@ -55,12 +55,49 @@ export function WizardForm() {
         setFormInstance(form)
     }, [form, setFormInstance])
 
+    const getDayIndex = (day: string) => {
+        const days: Record<string, string> = {
+            "Senin": "1",
+            "Selasa": "2",
+            "Rabu": "3",
+            "Kamis": "4",
+            "Jumat": "5",
+            "Sabtu": "6",
+            "Minggu": "7"
+        };
+        return days[day] || "1";
+    };
+
     const onSubmit = async (values: CourseWizardData) => {
         setIsSubmitting(true)
         try {
+            // Transform schedules helper for payload
+            const transformSchedulesForPayload = (
+                schedules: Record<string, { startTime: string; timezone: string }[]> | undefined,
+                classType: "online" | "offline" | "all"
+            ) => {
+                if (!schedules) return {};
+                const transformed: Record<string, any[]> = {};
+                Object.entries(schedules).forEach(([dayName, timeSlots]) => {
+                    const validTimeSlots = timeSlots.filter(slot => slot.startTime && slot.startTime.trim() !== "");
+                    if (validTimeSlots.length > 0) {
+                        const dayIndex = getDayIndex(dayName);
+                        transformed[dayIndex] = validTimeSlots.map(slot => ({
+                            startTime: slot.startTime.includes(":") && slot.startTime.split(":").length === 2 ? `${slot.startTime}:00` : slot.startTime,
+                            timezone: slot.timezone,
+                            classType: classType,
+                        }));
+                    }
+                });
+                return transformed;
+            };
+
+            const computedClassType = values.classType.length === 2 ? "all" : values.classType[0].toLowerCase();
             const payload = {
                 ...values,
-                classType: values.classType.length === 2 ? "all" : values.classType[0].toLowerCase(),
+                classType: computedClassType,
+                courseSchedulesOnline: transformSchedulesForPayload(values.courseSchedulesOnline, computedClassType as any),
+                courseSchedulesOffline: transformSchedulesForPayload(values.courseSchedulesOffline, computedClassType as any),
             }
 
             const res = detail?.id
@@ -71,10 +108,12 @@ export function WizardForm() {
                 toast.success("Kelas berhasil disimpan")
                 router.push("/courses")
             } else {
-                toast.error("Gagal menyimpan kelas")
+                toast.error(`Gagal menyimpan kelas: ${(res as any).message || (res as any).error || "Unknown Error"}`)
+                console.error("API Error Response:", res)
             }
-        } catch {
-            toast.error("Terjadi kesalahan sistem")
+        } catch (error) {
+            toast.error(`Terjadi kesalahan sistem: ${error instanceof Error ? error.message : "Unknown error"}`)
+            console.error("System Error:", error)
         } finally {
             setIsSubmitting(false)
         }
@@ -94,7 +133,22 @@ export function WizardForm() {
     return (
         <div className="max-w-4xl mx-auto w-full pb-20">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form
+                    onSubmit={form.handleSubmit(
+                        (data) => onSubmit(data),
+                        (errors) => {
+                            const firstErrorField = Object.keys(errors)[0];
+                            const firstErrorMessage = errors[firstErrorField as keyof typeof errors]?.message;
+                            if (firstErrorMessage) {
+                                toast.error(`Validation error: ${String(firstErrorMessage)}`);
+                            } else {
+                                toast.error("Please fill in all required fields correctly.");
+                            }
+                            console.error("Form validation errors:", errors);
+                        }
+                    )}
+                    className="space-y-8"
+                >
                     {renderStep()}
 
                     <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 z-30 lg:left-72">
