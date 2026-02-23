@@ -17,10 +17,17 @@ async function proxy(request: NextRequest) {
             body = await request.text();
         }
 
+        const headers: Record<string, string> = {};
+        const authorization = request.headers.get("authorization");
+        if (authorization) {
+            headers["authorization"] = authorization;
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const res = await fetcherBase<any>(`${pathname}?${searchParams.toString()}`, {
             body,
             method: request.method,
+            headers,
             next: { revalidate: 0 },
         });
 

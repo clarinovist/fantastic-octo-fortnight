@@ -7,9 +7,18 @@ export async function getTutorDocuments(): Promise<BaseResponse<TutorDocument[]>
 }
 
 export async function uploadTutorDocument(formData: FormData): Promise<BaseResponse<TutorDocument>> {
-    return fetcherBase<TutorDocument>('/v1/tutors/documents', {
+    const fileUpload = await fetcherBase<{ url: string }>('/v1/files/upload', {
         method: 'POST',
         body: formData,
+    });
+
+    if (!fileUpload.success) {
+        return fileUpload as any;
+    }
+
+    return fetcherBase<TutorDocument>('/v1/tutors/documents', {
+        method: 'POST',
+        body: JSON.stringify({ document: fileUpload.data.url }),
     });
 }
 
