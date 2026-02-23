@@ -125,7 +125,7 @@ func (r *StudentRepository) Get(ctx context.Context, filter model.StudentFilter)
 		}
 	)
 
-	db := r.db.Read.WithContext(ctx).Model(&model.Student{}).Joins("User").Preload("User")
+	db := r.db.Read.WithContext(ctx).Model(&model.Student{}).Joins("LEFT JOIN users User ON User.id = students.user_id").Preload("User")
 
 	if filter.UserID != uuid.Nil {
 		db = db.Where("students.user_id = ?", filter.UserID)

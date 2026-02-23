@@ -120,7 +120,7 @@ func (r *TutorRepository) Get(ctx context.Context, filter model.TutorFilter) ([]
 		}
 	)
 
-	db := r.db.Read.WithContext(ctx).Model(&model.Tutor{}).Joins("User").Preload("User")
+	db := r.db.Read.WithContext(ctx).Model(&model.Tutor{}).Joins("LEFT JOIN users User ON User.id = tutors.user_id").Preload("User")
 
 	if filter.Query != "" {
 		db = db.Where("(lower(User.name) LIKE lower(?) or lower(User.email) LIKE lower(?))", "%"+filter.Query+"%", "%"+filter.Query+"%")
