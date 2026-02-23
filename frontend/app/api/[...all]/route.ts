@@ -17,9 +17,16 @@ async function proxy(request: NextRequest) {
       body = await request.text();
     }
 
+    const headers: Record<string, string> = {};
+    const authorization = request.headers.get("authorization");
+    if (authorization) {
+      headers["authorization"] = authorization;
+    }
+
     const res = await fetcherBase(`${pathname}?${searchParams.toString()}`, {
       body,
       method: request.method,
+      headers,
       next: { revalidate: 0 },
     });
 
