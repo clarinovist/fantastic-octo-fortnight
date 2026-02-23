@@ -8,7 +8,9 @@ import (
 )
 
 type CreateAdminTutorDocumentRequest struct {
-	URL string `json:"url"`
+	URL  string `json:"url"`
+	Name string `json:"name"`
+	Type string `json:"type"`
 }
 
 func (r *CreateAdminTutorDocumentRequest) Validate() error {
@@ -23,5 +25,7 @@ type AdminTutorDocument struct {
 	ID      uuid.UUID                 `json:"id"`
 	TutorID uuid.UUID                 `json:"tutorId"`
 	URL     string                    `json:"url"`
+	Name    string                    `json:"name"`
+	Type    string                    `json:"type"`
 	Status  model.TutorDocumentStatus `json:"status"`
 }

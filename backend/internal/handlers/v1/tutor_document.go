@@ -107,6 +107,8 @@ func (a *Api) ListTutorDocument(w http.ResponseWriter, r *http.Request) {
 		resp = append(resp, dto.TutorDocumentResponse{
 			ID:        document.ID,
 			URL:       document.URL,
+			Name:      document.Name,
+			Type:      document.Type,
 			Status:    document.Status,
 			CreatedAt: document.CreatedAt,
 			UpdatedAt: document.UpdatedAt,

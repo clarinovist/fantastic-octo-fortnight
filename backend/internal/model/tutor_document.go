@@ -23,6 +23,8 @@ type TutorDocument struct {
 	ID        uuid.UUID
 	TutorID   uuid.UUID
 	URL       string
+	Name      string
+	Type      string
 	Status    TutorDocumentStatus
 	CreatedAt time.Time
 	UpdatedAt time.Time

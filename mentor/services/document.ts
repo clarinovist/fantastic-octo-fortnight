@@ -18,7 +18,11 @@ export async function uploadTutorDocument(formData: FormData): Promise<BaseRespo
 
     return fetcherBase<TutorDocument>('/v1/tutors/documents', {
         method: 'POST',
-        body: JSON.stringify({ document: fileUpload.data.url }),
+        body: JSON.stringify({
+            document: fileUpload.data.url,
+            name: formData.get("name")?.toString() || "",
+            type: formData.get("type")?.toString() || "",
+        }),
     });
 }
 

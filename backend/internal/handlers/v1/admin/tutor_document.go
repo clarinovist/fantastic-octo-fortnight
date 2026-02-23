@@ -66,6 +66,8 @@ func (a *Api) CreateTutorDocument(w http.ResponseWriter, r *http.Request) {
 		ID:      document.ID,
 		TutorID: document.TutorID,
 		URL:     document.URL,
+		Name:    document.Name,
+		Type:    document.Type,
 		Status:  document.Status,
 	}
 
@@ -113,6 +115,8 @@ func (a *Api) GetTutorDocuments(w http.ResponseWriter, r *http.Request) {
 			ID:      doc.ID,
 			TutorID: doc.TutorID,
 			URL:     doc.URL,
+			Name:    doc.Name,
+			Type:    doc.Type,
 			Status:  doc.Status,
 		})
 	}
@@ -180,6 +184,8 @@ func (a *Api) UpdateTutorDocumentStatus(w http.ResponseWriter, r *http.Request) 
 		ID:      document.ID,
 		TutorID: document.TutorID,
 		URL:     document.URL,
+		Name:    document.Name,
+		Type:    document.Type,
 		Status:  document.Status,
 	}
 

@@ -17,7 +17,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useState, useTransition } from "react"
+import React, { useState, useTransition } from "react"
 import { deleteDocumentAction } from "@/actions/document"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
@@ -57,9 +57,11 @@ export function DocumentCard({ document }: DocumentCardProps) {
                     {getIcon()}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-sm truncate" title={document.name || "Dokumen"}>
-                        {document.name || document.url?.split('/').pop() || "Dokumen"}
-                    </h4>
+                    <a href={document.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                        <h4 className="font-semibold text-sm truncate" title={document.name || "Dokumen"}>
+                            {document.name || document.url?.split('/').pop() || "Dokumen"}
+                        </h4>
+                    </a>
                     <p className="text-xs text-muted-foreground mt-1 capitalize">
                         {(document.type || "Lainnya").replace(/_/g, " ")}
                     </p>
@@ -85,7 +87,7 @@ export function DocumentCard({ document }: DocumentCardProps) {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel disabled={isDeleting}>Batal</AlertDialogCancel>
-                            <AlertDialogAction onClick={(e) => { e.preventDefault(); handleDelete(); }} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
+                            <AlertDialogAction onClick={(e: React.MouseEvent) => { e.preventDefault(); handleDelete(); }} disabled={isDeleting} className="bg-destructive hover:bg-destructive/90">
                                 {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Hapus"}
                             </AlertDialogAction>
                         </AlertDialogFooter>
