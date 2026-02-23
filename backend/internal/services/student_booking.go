@@ -21,6 +21,7 @@ type StudentBookingService struct {
 	course        *repositories.CourseRepository
 	tutor         *repositories.TutorRepository
 	reportBooking *repositories.ReportBookingRepository
+	mentorStudent *repositories.MentorStudentRepository
 	notification  *NotificationService
 	courseService *CourseService
 	config        *config.Config
@@ -32,6 +33,7 @@ func NewStudentBookingService(
 	course *repositories.CourseRepository,
 	tutor *repositories.TutorRepository,
 	reportBooking *repositories.ReportBookingRepository,
+	mentorStudent *repositories.MentorStudentRepository,
 	notification *NotificationService,
 	courseService *CourseService,
 	config *config.Config,
@@ -42,6 +44,7 @@ func NewStudentBookingService(
 		course:        course,
 		tutor:         tutor,
 		reportBooking: reportBooking,
+		mentorStudent: mentorStudent,
 		config:        config,
 		notification:  notification,
 		courseService: courseService,
@@ -268,6 +271,19 @@ func (s *StudentBookingService) Create(ctx context.Context, request dto.CreateSt
 		logger.ErrorCtx(ctx).Err(err).Msg("[CreateStudentBooking] Error creating student booking")
 		return nil, shared.MakeError(ErrInternalServer)
 	}
+
+	// Auto-join logic: establish tutor-student relationship if it doesn't exist
+	go func() {
+		ctx := context.Background()
+		_, err := s.mentorStudent.GetByTutorAndStudent(ctx, course.TutorID, student.ID)
+		if err != nil {
+			// If not found or error, attempt to create
+			_ = s.mentorStudent.Create(ctx, &model.MentorStudent{
+				TutorID:   course.TutorID,
+				StudentID: student.ID,
+			})
+		}
+	}()
 
 	go func() {
 		ctx := context.Background()

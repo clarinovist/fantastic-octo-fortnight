@@ -57,3 +57,15 @@ export async function deleteTutorDocumentAction(id: string): Promise<BaseRespons
 
   return response
 }
+
+export async function submitInviteCodeAction(code: string) {
+  try {
+    const { joinMentorByCode } = await import("@/services/account");
+    const res = await joinMentorByCode(code);
+    updateTag("me");
+    return res;
+  } catch (error: any) {
+    return { success: false, message: error?.message || "Terjadi kesalahan" };
+  }
+}
+

@@ -19,3 +19,10 @@ export const updateMeLocation = (data: { latitude: number; longitude: number }):
     body: JSON.stringify(data),
   });
 }
+
+export const joinMentorByCode = (code: string): Promise<BaseResponse<any>> => {
+  return fetcherBase(`/v1/mentor/join`, {
+    method: "POST",
+    body: JSON.stringify({ code }),
+  });
+}

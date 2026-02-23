@@ -16,6 +16,7 @@ import { Lock, Pencil, User } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { SubscriptionContainer } from "../subscriptions/subscription-container"
+import { InviteCodeModal } from "./invite-code-modal"
 
 type AccountInfoViewProps = {
   detail: MeResponse
@@ -197,6 +198,11 @@ export function AccountInfoView({ detail, onEdit }: AccountInfoViewProps) {
               </DialogContent>
             </Dialog>
           )}
+
+          {detail?.role === "student" && (
+            <InviteCodeModal />
+          )}
+
           <button className="text-blue-600 font-medium cursor-pointer">CHANGE PASSWORD</button>
           <button className="text-blue-600 font-medium cursor-pointer" onClick={handleLogout}>
             LOG OUT
