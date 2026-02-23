@@ -43,9 +43,10 @@ export function DocumentCard({ document }: DocumentCardProps) {
     }
 
     const getIcon = () => {
-        const type = document.type.toLowerCase()
-        if (type.includes("image") || type === "ktp" || type === "foto") return <ImageIcon className="h-8 w-8 text-blue-500" />
-        if (type.includes("pdf")) return <FileText className="h-8 w-8 text-red-500" />
+        const type = (document.type || "").toLowerCase()
+        const urlStr = (document.url || "").toLowerCase()
+        if (type.includes("image") || type === "ktp" || type === "foto" || urlStr.match(/\.(jpeg|jpg|gif|png)$/)) return <ImageIcon className="h-8 w-8 text-blue-500" />
+        if (type.includes("pdf") || urlStr.endsWith(".pdf")) return <FileText className="h-8 w-8 text-red-500" />
         return <File className="h-8 w-8 text-gray-500" />
     }
 
@@ -56,11 +57,11 @@ export function DocumentCard({ document }: DocumentCardProps) {
                     {getIcon()}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-sm truncate" title={document.name}>
-                        {document.name}
+                    <h4 className="font-semibold text-sm truncate" title={document.name || "Dokumen"}>
+                        {document.name || document.url?.split('/').pop() || "Dokumen"}
                     </h4>
                     <p className="text-xs text-muted-foreground mt-1 capitalize">
-                        {document.type.replace(/_/g, " ")}
+                        {(document.type || "Lainnya").replace(/_/g, " ")}
                     </p>
                     <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
                         <Calendar className="h-3 w-3" />
