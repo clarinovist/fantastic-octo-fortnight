@@ -36,6 +36,10 @@ func (r *TutorDocumentRepository) Get(ctx context.Context, filter model.TutorDoc
 		db = db.Where("status = ?", filter.Status)
 	}
 
+	if len(filter.ExcludeStatuses) > 0 {
+		db = db.Where("status NOT IN ?", filter.ExcludeStatuses)
+	}
+
 	if !filter.Pagination.IsEmpty() {
 		db = db.Limit(filter.Pagination.Limit()).
 			Offset(filter.Pagination.Offset())

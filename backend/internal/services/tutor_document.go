@@ -81,7 +81,8 @@ func (s *TutorDocumentService) ListTutorDocument(ctx context.Context, request dt
 	}
 
 	filter := model.TutorDocumentFilter{
-		TutorID: tutor.ID,
+		TutorID:         tutor.ID,
+		ExcludeStatuses: []model.TutorDocumentStatus{model.TutorDocumentStatusPendingDeleted},
 		Sort: model.Sort{
 			Sort:          "created_at",
 			SortDirection: "desc",

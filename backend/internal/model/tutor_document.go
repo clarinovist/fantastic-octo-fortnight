@@ -35,9 +35,10 @@ type TutorDocument struct {
 }
 
 type TutorDocumentFilter struct {
-	ID      uuid.UUID
-	TutorID uuid.UUID
-	Status  TutorDocumentStatus
+	ID              uuid.UUID
+	TutorID         uuid.UUID
+	Status          TutorDocumentStatus
+	ExcludeStatuses []TutorDocumentStatus
 	Pagination
 	Sort
 }
