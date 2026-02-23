@@ -6,10 +6,10 @@ export async function getTutorDocuments(): Promise<BaseResponse<TutorDocument[]>
     return fetcherBase<TutorDocument[]>("/v1/tutors/documents");
 }
 
-export async function uploadTutorDocument(data: UploadDocumentRequest): Promise<BaseResponse<TutorDocument>> {
-    return fetcherBase<TutorDocument>("/v1/tutors/documents", {
-        method: "POST",
-        body: JSON.stringify(data),
+export async function uploadTutorDocument(formData: FormData): Promise<BaseResponse<TutorDocument>> {
+    return fetcherBase<TutorDocument>('/v1/tutors/documents', {
+        method: 'POST',
+        body: formData,
     });
 }
 

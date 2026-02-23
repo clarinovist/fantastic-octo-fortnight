@@ -4,9 +4,9 @@ import { revalidateTag } from "next/cache";
 import { uploadTutorDocument, deleteTutorDocument } from "@/services/document";
 import { UploadDocumentRequest } from "@/utils/types/document";
 
-export async function uploadDocumentAction(data: UploadDocumentRequest) {
+export async function uploadDocumentAction(formData: FormData) {
     try {
-        const res = await uploadTutorDocument(data);
+        const res = await uploadTutorDocument(formData);
         revalidateTag("documents", "default");
         return res;
     } catch (error) {

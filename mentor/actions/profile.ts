@@ -27,12 +27,12 @@ export async function updateLocationAction(latitude: number, longitude: number, 
 export async function uploadPhotoAction(formData: FormData) {
     try {
         const file = formData.get("file") as File;
-        if (!file) {
+        if (!file || file.size === 0) {
             return { success: false, error: "No file provided" };
         }
 
         // Step 1: Upload the file to get URL
-        const uploadRes = await uploadFile(file);
+        const uploadRes = await uploadFile(formData);
         if (!uploadRes.success || !uploadRes.data?.url) {
             return { success: false, error: "Failed to upload file" };
         }

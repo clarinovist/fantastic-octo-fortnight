@@ -37,9 +37,7 @@ export async function updateProfile(body: UpdateProfilePayload): Promise<BaseRes
     });
 }
 
-export async function uploadFile(file: File): Promise<BaseResponse<UploadResult>> {
-    const formData = new FormData();
-    formData.append('file', file);
+export async function uploadFile(formData: FormData): Promise<BaseResponse<UploadResult>> {
     return fetcherBase<UploadResult>('/v1/files/upload', {
         method: 'POST',
         body: formData,

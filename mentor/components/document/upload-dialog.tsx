@@ -48,34 +48,23 @@ export function UploadDialog() {
 
         startUpload(async () => {
             try {
-                // Convert to base64
-                const reader = new FileReader()
-                reader.onloadend = async () => {
-                    const base64String = reader.result as string
-                    // Remove data URL prefix (e.g. "data:application/pdf;base64,")
-                    // Actually usually backend handles full data URI or just base64? 
-                    // Let's assume full data URI is safer or strip it if known backend requirement.
-                    // Plan says "base64", usually implies content. But for simplicity let's send full string 
-                    // and let backend parse/strip if needed, or stripping it safely.
-                    // Common pattern: send full dataURI.
+                const formData = new FormData()
+                formData.append('name', name)
+                formData.append('type', type)
+                formData.append('file', file)
 
-                    const res = await uploadDocumentAction({
-                        name,
-                        type,
-                        file: base64String,
-                    })
+                const res = await uploadDocumentAction(formData)
 
-                    if (res.success) {
-                        toast.success("Dokumen berhasil diupload")
-                        setOpen(false)
-                        setFile(null)
-                        setName("")
-                        setType("")
-                    } else {
-                        toast.error("Gagal mengupload dokumen")
-                    }
+                if (res.success) {
+                    toast.success("Dokumen berhasil diupload")
+                    setOpen(false)
+                    setFile(null)
+                    setName("")
+                    setType("")
+                } else {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    toast.error((res as any).message || "Gagal mengupload dokumen")
                 }
-                reader.readAsDataURL(file)
             } catch {
                 toast.error("Terjadi kesalahan saat memproses file")
             }
