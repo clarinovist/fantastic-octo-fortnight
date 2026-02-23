@@ -24,7 +24,7 @@ export default async function BookingPage({ params }: BookingPageProps) {
     startDate: formatDate(now),
     endDate: formatDate(twoWeeksLater),
   })
-  const apiKey = process.env.NEXT_GOOGLE_KEY || ""
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_GOOGLE_KEY || ""
   return (
     <LayoutCustomer isShowSidebar isShowBackButton wrapperHeaderChildrenClassName="h-screen">
       <BookingCourse detail={data} apiKey={apiKey} availableDates={bookedDate.data} />

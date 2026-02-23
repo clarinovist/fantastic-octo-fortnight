@@ -6,6 +6,6 @@ export default async function AccountPage() {
   if (!me.data) {
     return null
   }
-  const apiKey = process.env.NEXT_GOOGLE_KEY || ""
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_GOOGLE_KEY || ""
   return <AccountContainer apiKey={apiKey} detail={me.data} />
 }
