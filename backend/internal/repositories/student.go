@@ -125,60 +125,71 @@ func (r *StudentRepository) Get(ctx context.Context, filter model.StudentFilter)
 		}
 	)
 
-	db := r.db.Read.WithContext(ctx).Model(&model.Student{}).Select("students.*").Joins("User").Preload("User")
+	// Build base query with raw JOIN for filtering on user fields only
+	baseQuery := r.db.Read.WithContext(ctx).Model(&model.Student{})
+
+	// Only add the JOIN if we actually need to filter by user fields
+	needsUserJoin := filter.Query != "" || filter.Name != "" || filter.Email != ""
+	if needsUserJoin {
+		baseQuery = baseQuery.Joins("LEFT JOIN users ON users.id = students.user_id")
+	}
 
 	if filter.UserID != uuid.Nil {
-		db = db.Where("students.user_id = ?", filter.UserID)
+		baseQuery = baseQuery.Where("students.user_id = ?", filter.UserID)
 	}
 
 	if filter.Query != "" {
-		db = db.Where("(lower(User.name) LIKE lower(?) or lower(User.email) LIKE lower(?))", "%"+filter.Query+"%", "%"+filter.Query+"%")
+		baseQuery = baseQuery.Where("(LOWER(users.name) LIKE LOWER(?) OR LOWER(users.email) LIKE LOWER(?))", "%"+filter.Query+"%", "%"+filter.Query+"%")
 	}
 
 	if len(filter.IDs) > 0 {
-		db = db.Where("students.id IN (?)", filter.IDs)
+		baseQuery = baseQuery.Where("students.id IN (?)", filter.IDs)
 	}
 
 	if filter.Name != "" {
-		db = db.Where("lower(User.name) LIKE lower(?)", "%"+filter.Name+"%")
+		baseQuery = baseQuery.Where("LOWER(users.name) LIKE LOWER(?)", "%"+filter.Name+"%")
 	}
 
 	if filter.Email != "" {
-		db = db.Where("lower(User.email) LIKE lower(?)", "%"+filter.Email+"%")
+		baseQuery = baseQuery.Where("LOWER(users.email) LIKE LOWER(?)", "%"+filter.Email+"%")
 	}
 
 	if !filter.CreatedAtFrom.IsZero() {
-		db = db.Where("students.created_at >= ?", filter.CreatedAtFrom)
+		baseQuery = baseQuery.Where("students.created_at >= ?", filter.CreatedAtFrom)
 	}
 
 	if !filter.CreatedAtTo.IsZero() {
-		db = db.Where("students.created_at <= ?", filter.CreatedAtTo)
+		baseQuery = baseQuery.Where("students.created_at <= ?", filter.CreatedAtTo)
 	}
 
 	if filter.DeletedIsNull.Valid {
 		if filter.DeletedIsNull.Bool {
-			db = db.Where("students.deleted_at IS NULL")
+			baseQuery = baseQuery.Where("students.deleted_at IS NULL")
 		} else {
-			db = db.Where("students.deleted_at IS NOT NULL")
+			baseQuery = baseQuery.Where("students.deleted_at IS NOT NULL")
 		}
 	}
 
-	err := db.Count(&total).Error
+	// Count
+	err := baseQuery.Count(&total).Error
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("[Get] Error counting student")
 		return []model.Student{}, model.Metadata{}, err
 	}
 	metadata.Total = total
 
+	// Fetch with Preload("User") for data loading (separate query, no scan conflict)
+	findQuery := baseQuery.Preload("User")
+
 	if !filter.Pagination.IsEmpty() {
-		db = db.Limit(filter.Pagination.Limit()).Offset(filter.Pagination.Offset())
+		findQuery = findQuery.Limit(filter.Pagination.Limit()).Offset(filter.Pagination.Offset())
 	}
 
 	if filter.Sort.String() != "" {
-		db = db.Order(filter.Sort.String())
+		findQuery = findQuery.Order(filter.Sort.String())
 	}
 
-	err = db.Find(&results).Error
+	err = findQuery.Find(&results).Error
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("[Get] Failed to get students")
 		return nil, metadata, err
