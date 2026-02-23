@@ -1,0 +1,40 @@
+
+> mentor@0.1.0 lint
+> eslint
+
+
+/Users/nugroho/Documents/lesprivate/mentor/actions/document.ts
+  5:10  warning  'UploadDocumentRequest' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/nugroho/Documents/lesprivate/mentor/app/(mentor)/students/page.tsx
+  213:140  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  213:158  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/nugroho/Documents/lesprivate/mentor/components/course/wizard/steps/step-audiens.tsx
+  34:13  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/nugroho/Documents/lesprivate/mentor/components/course/wizard/steps/step-audiens.tsx:34:13
+  32 |     useEffect(() => {
+  33 |         if (detail?.courseCategory) {
+> 34 |             setSearchCategory(detail.courseCategory.name)
+     |             ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |             setSelectedCategory({ id: detail.courseCategory.id, name: detail.courseCategory.name })
+  36 |
+  37 |             // Pre-fetch sub-categories for the existing category  react-hooks/set-state-in-effect
+  58:8   warning  React Hook useEffect has a missing dependency: 'form'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            react-hooks/exhaustive-deps
+
+/Users/nugroho/Documents/lesprivate/mentor/components/course/wizard/wizard-form.tsx
+  198:77  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/nugroho/Documents/lesprivate/mentor/services/document.ts
+   3:25  warning  'UploadDocumentRequest' is defined but never used  @typescript-eslint/no-unused-vars
+  16:30  error    Unexpected any. Specify a different type           @typescript-eslint/no-explicit-any
+
+✖ 8 problems (5 errors, 3 warnings)
+

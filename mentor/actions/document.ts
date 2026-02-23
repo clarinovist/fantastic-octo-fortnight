@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { uploadTutorDocument, deleteTutorDocument } from "@/services/document";
-import { UploadDocumentRequest } from "@/utils/types/document";
+import { TutorDocument } from "@/utils/types/document";
 
 export async function uploadDocumentAction(formData: FormData) {
     try {

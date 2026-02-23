@@ -210,7 +210,7 @@ export default function StudentsPage() {
                                                         <div className="flex flex-col items-center gap-2">
                                                             <Search className="h-10 w-10 text-muted-foreground/50" />
                                                             <p className="text-muted-foreground font-medium">Pencarian tidak ditemukan</p>
-                                                            <p className="text-xs text-muted-foreground">Tidak ada murid yang cocok dengan "{debouncedSearch}".</p>
+                                                            <p className="text-xs text-muted-foreground">Tidak ada murid yang cocok dengan &quot;{debouncedSearch}&quot;.</p>
                                                         </div>
                                                     </td>
                                                 </tr>

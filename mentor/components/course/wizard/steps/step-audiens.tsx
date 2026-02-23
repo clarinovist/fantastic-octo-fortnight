@@ -31,8 +31,10 @@ export function StepAudiens({ form }: StepProps) {
     // Initialize from existing course data in edit mode
     useEffect(() => {
         if (detail?.courseCategory) {
-            setSearchCategory(detail.courseCategory.name)
-            setSelectedCategory({ id: detail.courseCategory.id, name: detail.courseCategory.name })
+            setTimeout(() => {
+                setSearchCategory(detail.courseCategory!.name)
+                setSelectedCategory({ id: detail.courseCategory!.id, name: detail.courseCategory!.name })
+            }, 0)
 
             // Pre-fetch sub-categories for the existing category
             fetch(`/api/v1/course-categories/${detail.courseCategory.id}/sub?page=1`)
@@ -55,6 +57,7 @@ export function StepAudiens({ form }: StepProps) {
                 })
                 .catch(() => { /* ignore */ })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [detail])
 
     return (

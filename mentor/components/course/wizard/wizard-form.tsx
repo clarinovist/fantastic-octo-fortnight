@@ -195,6 +195,7 @@ export function WizardForm() {
                                         onClick={form.handleSubmit(
                                             (data) => onSubmit(data),
                                             (errors) => {
+                                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                 const extractErrors = (obj: any): string[] => {
                                                     let msgs: string[] = [];
                                                     if (!obj) return msgs;

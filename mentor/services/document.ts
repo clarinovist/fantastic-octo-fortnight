@@ -1,6 +1,6 @@
 import { fetcherBase } from "./base";
 import { BaseResponse } from "@/utils/types";
-import { TutorDocument, UploadDocumentRequest } from "@/utils/types/document";
+import { TutorDocument } from "@/utils/types/document";
 
 export async function getTutorDocuments(): Promise<BaseResponse<TutorDocument[]>> {
     return fetcherBase<TutorDocument[]>("/v1/tutors/documents");
@@ -13,6 +13,7 @@ export async function uploadTutorDocument(formData: FormData): Promise<BaseRespo
     });
 
     if (!fileUpload.success) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return fileUpload as any;
     }
 

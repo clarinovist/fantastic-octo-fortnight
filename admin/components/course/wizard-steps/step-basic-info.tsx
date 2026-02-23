@@ -38,7 +38,7 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
     // Fetch initial subcategories when category changes
     useEffect(() => {
         if (courseCategoryID) {
-            setSubCategoryKey(prev => prev + 1);
+            setTimeout(() => setSubCategoryKey(prev => prev + 1), 0);
             fetch(`/api/v1/course-categories/${courseCategoryID}/sub?page=1`)
                 .then(res => res.json())
                 .then(({ data }) => {
@@ -47,7 +47,7 @@ export function StepBasicInfo({ categories, tutors }: StepBasicInfoProps) {
                 })
                 .catch(() => { /* ignore */ });
         } else {
-            setSubCategoryOptions([]);
+            setTimeout(() => setSubCategoryOptions([]), 0);
         }
     }, [courseCategoryID]);
 
