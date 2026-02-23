@@ -83,8 +83,14 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
       success: true
     };
   } catch (error: unknown) {
-    const err = error as { statusCode?: number; message?: string; metadata?: unknown; error?: unknown; code?: number };
-    console.error(`Fetch error ${url}:`, err);
+    const errMessage = error instanceof Error
+      ? error.message
+      : JSON.stringify(error);
+    console.error(`Fetch error ${url}:`, errMessage);
+
+    const err = error instanceof Error
+      ? { statusCode: 500, message: error.message, error: error.name }
+      : error as { statusCode?: number; message?: string; metadata?: unknown; error?: unknown; code?: number };
     // Check for 401 Unauthorized
     if (err.statusCode === 401) {
       const cookiesStore = await cookies();

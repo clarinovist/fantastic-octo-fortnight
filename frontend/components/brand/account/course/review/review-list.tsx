@@ -155,14 +155,16 @@ export function ReviewList() {
         {reviews.length === 0 ? (
           <div className="text-center text-gray-500 py-8">No reviews found</div>
         ) : (
-          reviews.map(review => (
-            <ReviewItem
-              isShowReviewerName={true}
-              key={review?.id}
-              review={review}
-              onButtonClick={() => handleReviewClick(review)}
-            />
-          ))
+          reviews
+            .filter(review => review != null)
+            .map((review, index) => (
+              <ReviewItem
+                isShowReviewerName={true}
+                key={review?.id ? `${review.id}-${index}` : index}
+                review={review}
+                onButtonClick={() => handleReviewClick(review)}
+              />
+            ))
         )}
 
         {/* Loading indicator for infinite scroll */}

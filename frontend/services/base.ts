@@ -70,15 +70,22 @@ export async function fetcherBase<T>(input: RequestInfo, options?: RequestInit):
       success: true
     };
   } catch (error: any) {
-    console.error(`Fetch error ${url}:`, JSON.stringify(error, null, 0));
+    const errMessage = error instanceof Error
+      ? error.message
+      : JSON.stringify(error);
+    console.error(`Fetch error ${url}:`, errMessage);
+
+    const err = error instanceof Error
+      ? { statusCode: 500, message: error.message, error: error.name }
+      : error as { statusCode?: number; message?: string; metadata?: unknown; error?: unknown; code?: number };
     return {
       data: null as T,
-      statusCode: error.statusCode || 500,
+      statusCode: err.statusCode || 500,
       success: false,
-      message: error.message || 'An error occurred',
-      ...(error.metadata ? { metadata: error.metadata } : {}),
-      ...(error.error ? { error: error.error } : {}),
-      ...(error.code ? { code: error.code } : {})
+      message: err.message || 'An error occurred',
+      ...(err.metadata ? { metadata: err.metadata } : {}),
+      ...(err.error ? { error: String(err.error) } : {}),
+      ...(err.code ? { code: err.code } : {})
     };
   }
 }

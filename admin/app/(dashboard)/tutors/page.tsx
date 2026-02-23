@@ -7,10 +7,11 @@ import { getTutors } from "@/services/tutor";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { page?: string; q?: string };
+  searchParams: Promise<{ page?: string; q?: string }>;
 }) {
-  const page = Number(searchParams.page) || 1;
-  const q = searchParams.q || "";
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const q = params.q || "";
   const pageSize = 10;
 
   const { data: tutors, metadata } = await getTutors({

@@ -126,7 +126,7 @@ func (r *StudentRepository) Get(ctx context.Context, filter model.StudentFilter)
 	)
 
 	// Build base query with raw JOIN for filtering on user fields only
-	baseQuery := r.db.Read.WithContext(ctx).Model(&model.Student{})
+	baseQuery := r.db.Read.WithContext(ctx).Debug().Model(&model.Student{})
 
 	// Only add the JOIN if we actually need to filter by user fields
 	needsUserJoin := filter.Query != "" || filter.Name != "" || filter.Email != ""

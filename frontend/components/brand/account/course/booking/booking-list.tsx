@@ -52,7 +52,7 @@ export function BookingHistoryList() {
   // Flatten all bookings from all pages
   const bookings: Booking[] = data
     ? data.flatMap(page =>
-      page.data.map((booking: any) => ({
+      (page.data || []).map((booking: any) => ({
         id: booking.id,
         bookingDate: booking.bookingDate || booking.date,
         bookingTime: booking.bookingTime || booking.time,

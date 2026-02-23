@@ -125,7 +125,7 @@ func (r *TutorRepository) Get(ctx context.Context, filter model.TutorFilter) ([]
 	// Only add the JOIN if we actually need to filter by user fields
 	needsUserJoin := filter.Query != "" || filter.Name != "" || filter.Email != ""
 	if needsUserJoin {
-		baseQuery = baseQuery.Joins("LEFT JOIN users ON users.id = tutors.user_id")
+		baseQuery = baseQuery.Select("tutors.*").Joins("LEFT JOIN users ON users.id = tutors.user_id")
 	}
 
 	if filter.Query != "" {
