@@ -33,7 +33,7 @@ export function CourseCard({ course }: CourseCardProps) {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handlePublishToggle = async (checked: boolean) => {
-        if (checked && course.status !== COURSE_STATUS.ACCEPTED) {
+        if (checked && course.status?.toLowerCase() !== COURSE_STATUS.ACCEPTED) {
             toast.error("Hanya kelas yang disetujui yang dapat dipublikasikan")
             return
         }
@@ -71,7 +71,7 @@ export function CourseCard({ course }: CourseCardProps) {
     }
 
     const getStatusBadge = (status: string) => {
-        switch (status) {
+        switch (status?.toLowerCase()) {
             case COURSE_STATUS.ACCEPTED:
                 return <Badge className="bg-green-500 hover:bg-green-600">Diterima</Badge>
             case COURSE_STATUS.REJECTED:
@@ -158,7 +158,7 @@ export function CourseCard({ course }: CourseCardProps) {
                     </label>
                 </div>
                 <div className="flex items-center gap-1">
-                    {(course.status === COURSE_STATUS.DRAFT || course.status === COURSE_STATUS.REJECTED) && (
+                    {(course.status?.toLowerCase() === COURSE_STATUS.DRAFT || course.status?.toLowerCase() === COURSE_STATUS.REJECTED) && (
                         <Button
                             variant="ghost"
                             size="icon"
