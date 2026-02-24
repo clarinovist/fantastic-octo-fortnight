@@ -85,7 +85,7 @@ export function PreviewAction({ className, id, status, isPublished }: PreviewAct
       if (!res.ok) throw new Error("Failed to update publish state")
       setPublished(value)
       toast.success("Course publish state updated")
-    } catch (e) {
+    } catch {
       // Optionally show error
     } finally {
       setLoading(false)

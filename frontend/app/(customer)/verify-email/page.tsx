@@ -30,7 +30,7 @@ function VerifyEmailContent() {
             } else {
                 setMessage(response.message || "Failed to resend verification email.")
             }
-        } catch (error) {
+        } catch {
             setMessage("An error occurred while resending the email.")
         } finally {
             setIsResending(false)
@@ -57,7 +57,7 @@ function VerifyEmailContent() {
                     setStatus("error")
                     setMessage(response.message || "Verification failed. The link may have expired.")
                 }
-            } catch (error) {
+            } catch {
                 setStatus("error")
                 setMessage("An error occurred during verification. Please try again later.")
             }

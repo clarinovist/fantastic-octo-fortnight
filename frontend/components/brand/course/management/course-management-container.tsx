@@ -295,6 +295,7 @@ export function CourseManagementContainer({ children, detail }: CourseManagement
       const cleanedOfflineSchedules = cleanSchedules(formValues.courseSchedulesOffline || {})
 
       // Prepare final API data
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { oneHourOnlinePrice, oneHourOfflinePrice, ...apiData } = formValues
 
       const finalApiData = {
@@ -363,6 +364,7 @@ export function CourseManagementContainer({ children, detail }: CourseManagement
     checkAllSteps()
 
     return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formInstance, schedulesOnline, schedulesOffline])
 
   // Auto-update current step based on form validation
@@ -394,6 +396,7 @@ export function CourseManagementContainer({ children, detail }: CourseManagement
     checkCurrentStep()
 
     return () => subscription.unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formInstance, currentStep, schedulesOnline, schedulesOffline])
 
   const stepContextValue: StepContextType = {

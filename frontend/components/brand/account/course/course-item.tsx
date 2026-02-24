@@ -63,7 +63,7 @@ export function CourseItem({ course }: CourseItemProps) {
       setIsPublished(value)
       toast.success("Course publish state updated")
       window.location.reload()
-    } catch (e) {
+    } catch {
       toast.error("Failed to update publish state")
       // Revert the local state on error
       setIsPublished(!value)
@@ -89,7 +89,7 @@ export function CourseItem({ course }: CourseItemProps) {
       if (!res.ok) throw new Error("Failed to delete course")
       toast.success("Course deleted successfully")
       window.location.reload()
-    } catch (e) {
+    } catch {
       toast.error("Failed to delete course")
     } finally {
       setDeleteLoading(false)

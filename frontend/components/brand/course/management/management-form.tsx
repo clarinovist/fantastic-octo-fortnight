@@ -448,13 +448,13 @@ const transformDetailToFormData = (detail: CourseSaved): Partial<FormData> => {
     // Set the 1-hour prices from the coursePrices
     oneHourOnlinePrice: detail.coursePrices.online?.find(p => p.durationInHour === 1)
       ? parseInt(
-          detail.coursePrices.online.find(p => p.durationInHour === 1)!.price.replace(/[^\d]/g, "")
-        ) || 0
+        detail.coursePrices.online.find(p => p.durationInHour === 1)!.price.replace(/[^\d]/g, "")
+      ) || 0
       : 0,
     oneHourOfflinePrice: detail.coursePrices.offline?.find(p => p.durationInHour === 1)
       ? parseInt(
-          detail.coursePrices.offline.find(p => p.durationInHour === 1)!.price.replace(/[^\d]/g, "")
-        ) || 0
+        detail.coursePrices.offline.find(p => p.durationInHour === 1)!.price.replace(/[^\d]/g, "")
+      ) || 0
       : 0,
   }
 }
@@ -471,38 +471,38 @@ export function ManagementForm({ detail }: ManagementFormProps) {
   const defaultValues = detail
     ? transformDetailToFormData(detail)
     : {
-        classType: [],
-        courseCategoryID: "",
-        coursePrices: {
-          offline: [
-            { durationInHour: 1, price: 0 },
-            { durationInHour: 2, price: 0 },
-          ],
-          online: [
-            { durationInHour: 1, price: 0 },
-            { durationInHour: 2, price: 0 },
-          ],
-        },
-        courseSchedulesOffline: {
-          Senin: [{ startTime: "", timezone: "" }],
-          Selasa: [{ startTime: "", timezone: "" }],
-          Rabu: [{ startTime: "", timezone: "" }],
-        },
-        courseSchedulesOnline: {
-          Senin: [{ startTime: "", timezone: "" }],
-          Selasa: [{ startTime: "", timezone: "" }],
-          Rabu: [{ startTime: "", timezone: "" }],
-        },
-        description: "",
-        isFreeFirstCourse: true,
-        levelEducationCourses: [],
-        onlineChannel: [],
-        subCategoryIDs: [],
-        title: "",
-        tutorDescription: "",
-        oneHourOnlinePrice: 0,
-        oneHourOfflinePrice: 0,
-      }
+      classType: [],
+      courseCategoryID: "",
+      coursePrices: {
+        offline: [
+          { durationInHour: 1, price: 0 },
+          { durationInHour: 2, price: 0 },
+        ],
+        online: [
+          { durationInHour: 1, price: 0 },
+          { durationInHour: 2, price: 0 },
+        ],
+      },
+      courseSchedulesOffline: {
+        Senin: [{ startTime: "", timezone: "" }],
+        Selasa: [{ startTime: "", timezone: "" }],
+        Rabu: [{ startTime: "", timezone: "" }],
+      },
+      courseSchedulesOnline: {
+        Senin: [{ startTime: "", timezone: "" }],
+        Selasa: [{ startTime: "", timezone: "" }],
+        Rabu: [{ startTime: "", timezone: "" }],
+      },
+      description: "",
+      isFreeFirstCourse: true,
+      levelEducationCourses: [],
+      onlineChannel: [],
+      subCategoryIDs: [],
+      title: "",
+      tutorDescription: "",
+      oneHourOnlinePrice: 0,
+      oneHourOfflinePrice: 0,
+    }
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -671,10 +671,10 @@ export function ManagementForm({ detail }: ManagementFormProps) {
           prev.map((sched, index) =>
             index === dayIndex
               ? {
-                  ...sched,
-                  timeSlots: [...sched.timeSlots, newSlot],
-                  isActive: true,
-                }
+                ...sched,
+                timeSlots: [...sched.timeSlots, newSlot],
+                isActive: true,
+              }
               : sched
           )
         )
@@ -696,10 +696,10 @@ export function ManagementForm({ detail }: ManagementFormProps) {
           prev.map((sched, index) =>
             index === dayIndex
               ? {
-                  ...sched,
-                  timeSlots: [...sched.timeSlots, newSlot],
-                  isActive: true,
-                }
+                ...sched,
+                timeSlots: [...sched.timeSlots, newSlot],
+                isActive: true,
+              }
               : sched
           )
         )
@@ -727,10 +727,10 @@ export function ManagementForm({ detail }: ManagementFormProps) {
           prev.map((sched, index) =>
             index === dayIndex
               ? {
-                  ...sched,
-                  timeSlots: updatedTimeSlots,
-                  isActive: updatedTimeSlots.length > 0,
-                }
+                ...sched,
+                timeSlots: updatedTimeSlots,
+                isActive: updatedTimeSlots.length > 0,
+              }
               : sched
           )
         )
@@ -750,7 +750,8 @@ export function ManagementForm({ detail }: ManagementFormProps) {
             form.setValue(`courseSchedulesOnline.${schedule.day}`, updatedDaySchedules)
           } else {
             // Remove the entire day if no schedules left
-            const { [schedule.day]: _, ...remainingSchedules } = currentSchedules
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [schedule.day]: _removed, ...remainingSchedules } = currentSchedules
             form.setValue("courseSchedulesOnline", remainingSchedules)
           }
         }
@@ -765,10 +766,10 @@ export function ManagementForm({ detail }: ManagementFormProps) {
           prev.map((sched, index) =>
             index === dayIndex
               ? {
-                  ...sched,
-                  timeSlots: updatedTimeSlots,
-                  isActive: updatedTimeSlots.length > 0,
-                }
+                ...sched,
+                timeSlots: updatedTimeSlots,
+                isActive: updatedTimeSlots.length > 0,
+              }
               : sched
           )
         )
@@ -788,7 +789,8 @@ export function ManagementForm({ detail }: ManagementFormProps) {
             form.setValue(`courseSchedulesOffline.${schedule.day}`, updatedDaySchedules)
           } else {
             // Remove the entire day if no schedules left
-            const { [schedule.day]: _, ...remainingSchedules } = currentSchedules
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [schedule.day]: _removed, ...remainingSchedules } = currentSchedules
             form.setValue("courseSchedulesOffline", remainingSchedules)
           }
         }
@@ -802,7 +804,8 @@ export function ManagementForm({ detail }: ManagementFormProps) {
       if (schedule) {
         // Remove from form data first
         const currentSchedules = form.getValues("courseSchedulesOnline")
-        const { [schedule.day]: _, ...remainingSchedules } = currentSchedules
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [schedule.day]: _removed, ...remainingSchedules } = currentSchedules
         form.setValue("courseSchedulesOnline", remainingSchedules)
 
         // Then remove from local state array
@@ -813,7 +816,8 @@ export function ManagementForm({ detail }: ManagementFormProps) {
       if (schedule) {
         // Remove from form data first
         const currentSchedules = form.getValues("courseSchedulesOffline")
-        const { [schedule.day]: _, ...remainingSchedules } = currentSchedules
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [schedule.day]: _removed, ...remainingSchedules } = currentSchedules
         form.setValue("courseSchedulesOffline", remainingSchedules)
 
         // Then remove from local state array
@@ -1170,9 +1174,8 @@ export function ManagementForm({ detail }: ManagementFormProps) {
                                     setSubCategoryHasMore(true)
                                     setSubCategoryOptions([])
                                   }}
-                                  className={`w-full px-6 py-3 text-left flex items-center gap-3 hover:bg-main-lighten-25 ${
-                                    isSelected ? "bg-purple-100" : ""
-                                  }`}
+                                  className={`w-full px-6 py-3 text-left flex items-center gap-3 hover:bg-main-lighten-25 ${isSelected ? "bg-purple-100" : ""
+                                    }`}
                                 >
                                   <span className="text-gray-700">
                                     <span className="text-black font-medium">{category.name}</span>
@@ -1224,7 +1227,7 @@ export function ManagementForm({ detail }: ManagementFormProps) {
                                 })
                                 setSubCategoryHasMore(newOptions.length === 20)
                                 return newOptions
-                              } catch (_error) {
+                              } catch {
                                 setSubCategoryHasMore(false)
                                 return []
                               }
