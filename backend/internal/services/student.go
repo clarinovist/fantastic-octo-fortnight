@@ -2,11 +2,13 @@ package services
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/guregu/null/v6"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/lesprivate/backend/internal/model"
 	"github.com/lesprivate/backend/internal/model/dto"
