@@ -209,6 +209,15 @@ func (s *StudentService) CreateAdminStudent(ctx context.Context, req dto.CreateA
 		return err
 	}
 
+	existingUser, err := s.user.GetByEmail(ctx, req.Email)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		logger.ErrorCtx(ctx).Err(err).Msg("[CreateAdminStudent] Failed to check existing user")
+		return err
+	}
+	if existingUser != nil {
+		return shared.MakeError(ErrBadRequest, "user with this email already exists")
+	}
+
 	role, err := s.role.GetByName(ctx, model.RoleNameStudent)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("[CreateAdminStudent] Failed to get role")
