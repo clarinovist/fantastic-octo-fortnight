@@ -151,21 +151,7 @@ func (s *CourseService) GetCourses(ctx context.Context, request dto.GetCoursesRe
 	}
 
 ReturnResponse:
-	// Deduplicate courses by tutor ID - keep only the first course per tutor
-	seenTutors := make(map[uuid.UUID]bool)
-	uniqueCourses := []model.Course{}
-	
-	for _, course := range courses {
-		if !seenTutors[course.TutorID] {
-			seenTutors[course.TutorID] = true
-			uniqueCourses = append(uniqueCourses, course)
-		}
-	}
-	
-	// Update metadata to reflect the actual count after deduplication
-	metadata.Total = int64(len(uniqueCourses))
-	
-	return uniqueCourses, metadata, nil
+	return courses, metadata, nil
 }
 
 func (s *CourseService) GetLocationByLatLong(ctx context.Context, latitude, longitude decimal.Decimal) (model.Location, error) {
