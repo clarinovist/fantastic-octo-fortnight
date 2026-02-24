@@ -22,6 +22,7 @@ import { CourseSaved } from "@/utils/types/course"
 import { COURSE_STATUS } from "@/utils/constants"
 import { publishCourseAction, deleteCourseAction, submitCourseAction } from "@/actions/course"
 import { toast } from "sonner"
+import { mutate } from "swr"
 
 interface CourseCardProps {
     course: CourseSaved
@@ -42,6 +43,7 @@ export function CourseCard({ course }: CourseCardProps) {
             const res = await publishCourseAction(course.id, checked)
             if (res.success) {
                 toast.success(`Kelas berhasil ${checked ? "dipublish" : "diunpublish"}`)
+                mutate("courses")
             } else {
                 toast.error("Gagal mengubah status publikasi")
             }
@@ -53,6 +55,7 @@ export function CourseCard({ course }: CourseCardProps) {
         const res = await submitCourseAction(course.id)
         if (res.success) {
             toast.success("Kelas berhasil diajukan untuk review admin")
+            mutate("courses")
         } else {
             toast.error("Gagal mengajukan kelas: " + (res.error || "Unknown error"))
         }
@@ -64,6 +67,7 @@ export function CourseCard({ course }: CourseCardProps) {
         const res = await deleteCourseAction(course.id)
         if (res.success) {
             toast.success("Kelas berhasil dihapus")
+            mutate("courses")
         } else {
             toast.error("Gagal menghapus kelas")
         }
