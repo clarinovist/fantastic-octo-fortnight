@@ -165,6 +165,27 @@ export function LoginForm() {
     }
   }
 
+  const handleResendVerification = async () => {
+    const email = form.getValues("email")
+    if (!email) return
+
+    try {
+      setIsSubmitting(true)
+      const { resendVerificationAction } = await import("@/actions/auth")
+      const res = await resendVerificationAction(email)
+      if (res.success) {
+        setSubmitError("Email verifikasi berhasil dikirim ulang. Silakan periksa inbox/spam Anda.")
+      } else {
+        setSubmitError(res.message || "Gagal mengirim ulang email verifikasi.")
+      }
+    } catch (error) {
+      console.error("Resend error:", error)
+      setSubmitError("Terjadi kesalahan saat mengirim ulang email verifikasi.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true)
     setSubmitError("")
@@ -189,19 +210,17 @@ export function LoginForm() {
   }
 
   const classNameInput = (isError: boolean) => {
-    return `focus-visible:border-main focus-visible:ring-0 border-2 pl-16 pr-4 py-6 text-lg rounded-full placeholder:text-main-300 ${
-      isError
-        ? "focus-visible:border-red-500 border-red-500 placeholder:opacity-75 placeholder:text-[#FF000440]"
-        : "border-main/50"
-    }`
+    return `focus-visible:border-main focus-visible:ring-0 border-2 pl-16 pr-4 py-6 text-lg rounded-full placeholder:text-main-300 ${isError
+      ? "focus-visible:border-red-500 border-red-500 placeholder:opacity-75 placeholder:text-[#FF000440]"
+      : "border-main/50"
+      }`
   }
 
   const classNameInputPassword = (isError: boolean) => {
-    return `focus-visible:border-main focus-visible:ring-0 border-2 pl-16 pr-16 py-6 text-lg rounded-full placeholder:text-main-300 ${
-      isError
-        ? "focus-visible:border-red-500 border-red-500 placeholder:opacity-75 placeholder:text-[#FF000440]"
-        : "border-main/50"
-    }`
+    return `focus-visible:border-main focus-visible:ring-0 border-2 pl-16 pr-16 py-6 text-lg rounded-full placeholder:text-main-300 ${isError
+      ? "focus-visible:border-red-500 border-red-500 placeholder:opacity-75 placeholder:text-[#FF000440]"
+      : "border-main/50"
+      }`
   }
 
   return (
@@ -232,8 +251,18 @@ export function LoginForm() {
 
             {/* Error Message */}
             {submitError && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                {submitError}
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex flex-col gap-2 relative">
+                <p>{submitError}</p>
+                {submitError.toLowerCase().includes("not verified") && (
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={isSubmitting}
+                    className="text-sm font-bold underline hover:text-red-800 self-start disabled:opacity-50"
+                  >
+                    Kirim Ulang Email Verifikasi
+                  </button>
+                )}
               </div>
             )}
 
@@ -249,9 +278,8 @@ export function LoginForm() {
                         <div className="relative">
                           <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
                             <div
-                              className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                errors.email ? "bg-red-500" : "bg-main"
-                              }`}
+                              className={`w-12 h-12 rounded-full flex items-center justify-center ${errors.email ? "bg-red-500" : "bg-main"
+                                }`}
                             >
                               <Mail />
                             </div>
@@ -296,9 +324,8 @@ export function LoginForm() {
 
                             <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
                               <div
-                                className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                                  errors.password ? "bg-red-500" : "bg-main"
-                                }`}
+                                className={`w-12 h-12 rounded-full flex items-center justify-center ${errors.password ? "bg-red-500" : "bg-main"
+                                  }`}
                               >
                                 <KeyIcon />
                               </div>

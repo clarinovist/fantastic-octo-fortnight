@@ -75,3 +75,7 @@ export async function resetPasswordAction(data: FormData) {
   const newPassword = data.get("newPassword") as string
   return resetPassword(token, newPassword)
 }
+export async function resendVerificationAction(email: string) {
+  const { resendVerification } = await import("@/services/auth");
+  return resendVerification(email);
+}
