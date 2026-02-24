@@ -144,10 +144,17 @@ const STEPS = [
 
 type ScheduleSlot = { startTime: string; timezone: string };
 
-export function CourseWizard({ tutors, categories, initialData, isEditMode = false }: CourseWizardProps) {
+export function CourseWizard({ tutors: initialTutors, categories, initialData, isEditMode = false }: CourseWizardProps) {
     const router = useRouter();
     const [currentStep, setCurrentStep] = useState(1);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Merge the assigned tutor into the list if not already present
+    const tutors = [...initialTutors];
+    if (initialData?.tutor && !tutors.some(t => t.id === initialData.tutor.id)) {
+        // @ts-ignore - Handle slight type mismatches if any
+        tutors.push(initialData.tutor);
+    }
 
     const form = useForm<CourseWizardData>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

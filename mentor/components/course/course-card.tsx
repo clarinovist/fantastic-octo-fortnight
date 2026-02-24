@@ -16,11 +16,11 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger
 } from "@/components/ui/alert-dialog"
-import { Pencil, Trash2, Loader2 } from "lucide-react"
+import { Pencil, Trash2, Loader2, Send } from "lucide-react"
 import Link from "next/link"
 import { CourseSaved } from "@/utils/types/course"
 import { COURSE_STATUS } from "@/utils/constants"
-import { publishCourseAction, deleteCourseAction } from "@/actions/course"
+import { publishCourseAction, deleteCourseAction, submitCourseAction } from "@/actions/course"
 import { toast } from "sonner"
 
 interface CourseCardProps {
@@ -30,8 +30,14 @@ interface CourseCardProps {
 export function CourseCard({ course }: CourseCardProps) {
     const [isPending, startTransition] = useTransition()
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const handlePublishToggle = async (checked: boolean) => {
+        if (checked && course.status !== COURSE_STATUS.ACCEPTED) {
+            toast.error("Hanya kelas yang disetujui yang dapat dipublikasikan")
+            return
+        }
+
         startTransition(async () => {
             const res = await publishCourseAction(course.id, checked)
             if (res.success) {
@@ -40,6 +46,17 @@ export function CourseCard({ course }: CourseCardProps) {
                 toast.error("Gagal mengubah status publikasi")
             }
         })
+    }
+
+    const handleSubmitForReview = async () => {
+        setIsSubmitting(true)
+        const res = await submitCourseAction(course.id)
+        if (res.success) {
+            toast.success("Kelas berhasil diajukan untuk review admin")
+        } else {
+            toast.error("Gagal mengajukan kelas: " + (res.error || "Unknown error"))
+        }
+        setIsSubmitting(false)
     }
 
     const handleDelete = async () => {
@@ -141,6 +158,18 @@ export function CourseCard({ course }: CourseCardProps) {
                     </label>
                 </div>
                 <div className="flex items-center gap-1">
+                    {(course.status === COURSE_STATUS.DRAFT || course.status === COURSE_STATUS.REJECTED) && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleSubmitForReview}
+                            disabled={isSubmitting || isPending}
+                            title="Ajukan untuk Review Admin"
+                            className="text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                        >
+                            {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                        </Button>
+                    )}
                     <Button variant="ghost" size="icon" asChild>
                         <Link href={`/courses/edit/${course.id}`}>
                             <Pencil className="w-4 h-4" />
