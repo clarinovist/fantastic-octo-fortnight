@@ -37,7 +37,8 @@ export function CourseCard({
     <div className={`bg-[#F3F0E9] shadow-main rounded-lg overflow-hidden ${className}`}>
       {/* Course Info */}
       <div className="p-[22px]">
-        <h3 className="font-bold font-lato text-[28px] leading-[100%]">{course.tutor.name}</h3>
+        <h3 className="font-bold font-lato text-[28px] leading-[100%] mb-2">{course.title}</h3>
+        <h4 className="font-semibold text-lg text-gray-700 mb-2">{course.tutor.name}</h4>
         <div className="flex items-center gap-2 mb-4">
           <svg
             className="size-4"
