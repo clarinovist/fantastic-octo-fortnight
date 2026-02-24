@@ -152,7 +152,7 @@ export function CourseWizard({ tutors: initialTutors, categories, initialData, i
     // Merge the assigned tutor into the list if not already present
     const tutors = [...initialTutors];
     if (initialData?.tutor && !tutors.some(t => t.id === initialData.tutor.id)) {
-        // @ts-ignore - Handle slight type mismatches if any
+        // @ts-expect-error - Handle slight type mismatches if any
         tutors.push(initialData.tutor);
     }
 

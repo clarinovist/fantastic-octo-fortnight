@@ -1,5 +1,6 @@
 export interface Course {
   id: string;
+  title: string;
   courseCategory: CourseCategory;
   tutor: Tutor;
   isFreeFirstCourse: boolean;
