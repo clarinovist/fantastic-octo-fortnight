@@ -531,7 +531,7 @@ func (s *UserService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 		return dto.ForgotPasswordResponse{}, Error(shared.MakeError(ErrInternalServer))
 	}
 
-	token, resetLink, err := s.generatePasswordResetToken(ctx, user.ID, user.Email)
+	token, resetLink, err := s.generatePasswordResetToken(ctx, user.ID, user.Email, req.Portal)
 	if err != nil {
 		logger.ErrorCtx(ctx).
 			Err(err).
@@ -642,7 +642,7 @@ func (s *UserService) ResetPassword(ctx context.Context, req dto.ResetPasswordRe
 }
 
 // generatePasswordResetToken generates a password reset token and stores it in Redis
-func (s *UserService) generatePasswordResetToken(ctx context.Context, userID uuid.UUID, email string) (string, string, error) {
+func (s *UserService) generatePasswordResetToken(ctx context.Context, userID uuid.UUID, email string, portal string) (string, string, error) {
 	tokenBytes := make([]byte, 32)
 	if _, err := rand.Read(tokenBytes); err != nil {
 		return "", "", fmt.Errorf("failed to generate random token: %w", err)
@@ -656,7 +656,19 @@ func (s *UserService) generatePasswordResetToken(ctx context.Context, userID uui
 		return "", "", fmt.Errorf("failed to store reset token in Redis: %w", err)
 	}
 
-	resetLink := fmt.Sprintf("%s%s?token=%s", s.config.Frontend.BaseURL, s.config.Frontend.ResetPasswordPath, token)
+	baseURL := s.config.Frontend.BaseURL
+	switch portal {
+	case "admin":
+		if s.config.Frontend.AdminBaseURL != "" {
+			baseURL = s.config.Frontend.AdminBaseURL
+		}
+	case "mentor":
+		if s.config.Frontend.MentorBaseURL != "" {
+			baseURL = s.config.Frontend.MentorBaseURL
+		}
+	}
+
+	resetLink := fmt.Sprintf("%s%s?token=%s", baseURL, s.config.Frontend.ResetPasswordPath, token)
 
 	return token, resetLink, nil
 }

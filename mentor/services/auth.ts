@@ -47,7 +47,7 @@ export async function uploadFile(formData: FormData): Promise<BaseResponse<Uploa
 export async function forgotPassword(email: string): Promise<BaseResponse<{ message: string }>> {
     return fetcherBase<{ message: string }>('/v1/auth/forgot-password', {
         method: 'POST',
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, portal: "mentor" }),
     });
 }
 

@@ -4,12 +4,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"strconv"
 	"strings"
 	"text/template"
 	"time"
 
-	"gopkg.in/gomail.v2"
+	"github.com/resend/resend-go/v2"
 
 	"github.com/goodsign/monday"
 	"github.com/leekchan/accounting"
@@ -39,24 +38,16 @@ type EmailService interface {
 // Service implements EmailService interface
 type Service struct {
 	config *config.Config
-	dialer *gomail.Dialer
+	resend *resend.Client
 }
 
 // NewEmailService creates a new email service instance
 func NewEmailService(cfg *config.Config) EmailService {
-	port, err := strconv.Atoi(cfg.Mail.Port)
-	if err != nil {
-		// Use a background context for initialization logging
-		ctx := context.Background()
-		logger.ErrorCtx(ctx).Err(err).Str("port", cfg.Mail.Port).Msg("invalid mail port, using default 587")
-		port = 587
-	}
-
-	dialer := gomail.NewDialer(cfg.Mail.Host, port, cfg.Mail.Email, cfg.Mail.Password)
+	client := resend.NewClient(cfg.Resend.ApiKey)
 
 	return &Service{
 		config: cfg,
-		dialer: dialer,
+		resend: client,
 	}
 }
 
@@ -520,25 +511,32 @@ func (s *Service) SendUpdateStatusBookingStudentEmail(ctx context.Context, stude
 
 // SendEmail sends an email with the specified parameters
 func (s *Service) SendEmail(ctx context.Context, to, subject, body string) error {
-	m := gomail.NewMessage()
-	m.SetHeader("From", fmt.Sprintf("%s <%s>", s.config.Mail.Name, s.config.Mail.Email))
-	m.SetHeader("To", to)
-	m.SetHeader("Subject", subject)
-	m.SetBody("text/html", body)
+	from := s.config.Resend.From
+	if from == "" {
+		from = "onboarding@resend.dev"
+	}
 
-	if err := s.dialer.DialAndSend(m); err != nil {
+	params := &resend.SendEmailRequest{
+		From:    from,
+		To:      []string{to},
+		Subject: subject,
+		Html:    body,
+	}
+
+	_, err := s.resend.Emails.SendWithContext(ctx, params)
+	if err != nil {
 		logger.ErrorCtx(ctx).
 			Err(err).
 			Str("to", to).
 			Str("subject", subject).
-			Msg("failed to send email")
+			Msg("failed to send email via resend")
 		return fmt.Errorf("failed to send email: %w", err)
 	}
 
 	logger.InfoCtx(ctx).
 		Str("to", to).
 		Str("subject", subject).
-		Msg("email sent successfully")
+		Msg("email sent successfully via resend")
 
 	return nil
 }

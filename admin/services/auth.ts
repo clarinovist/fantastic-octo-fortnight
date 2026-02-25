@@ -23,7 +23,7 @@ export async function authGoogle(payload: AuthGoogle): Promise<BaseResponse<Goog
 export async function forgotPassword(email: string): Promise<BaseResponse<{ message: string }>> {
   return fetcherBase<{ message: string }>('/v1/auth/forgot-password', {
     method: 'POST',
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, portal: "admin" }),
   });
 }
 

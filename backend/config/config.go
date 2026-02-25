@@ -61,6 +61,8 @@ type Config struct {
 	} `mapstructure:"DB"`
 	Frontend struct {
 		BaseURL             string `mapstructure:"BASE_URL"`
+		AdminBaseURL        string `mapstructure:"ADMIN_BASE_URL"`
+		MentorBaseURL       string `mapstructure:"MENTOR_BASE_URL"`
 		Account             string `mapstructure:"ACCOUNT"`
 		VerifyEmailPath     string `mapstructure:"VERIFY_EMAIL_PATH"`
 		ResetPasswordPath   string `mapstructure:"RESET_PASSWORD_PATH"`
@@ -107,6 +109,10 @@ type Config struct {
 		Host     string `mapstructure:"HOST"`
 		Port     string `mapstructure:"PORT"`
 	} `mapstructure:"MAIL"`
+	Resend struct {
+		ApiKey string `mapstructure:"API_KEY"`
+		From   string `mapstructure:"FROM"`
+	} `mapstructure:"RESEND"`
 	Notification struct {
 		RetentionDuration time.Duration `mapstructure:"RETENTION_DURATION"`
 	} `mapstructure:"NOTIFICATION"`
