@@ -13,6 +13,7 @@ type Claims struct {
 	UserID uuid.UUID `json:"user_id"`
 	Email  string    `json:"email"`
 	Name   string    `json:"name"`
+	Role   string    `json:"role"`
 	jwt.RegisteredClaims
 }
 
@@ -33,7 +34,7 @@ func NewJWT(secretKey string, expiresIn, refreshExpiresIn time.Duration) *JWT {
 }
 
 // GenerateToken generates a new JWT token for the given user
-func (j *JWT) GenerateToken(userID uuid.UUID, email, name string) (string, int64, error) {
+func (j *JWT) GenerateToken(userID uuid.UUID, email, name, role string) (string, int64, error) {
 	now := time.Now()
 	expiresAt := now.Add(j.expiresIn)
 
@@ -41,6 +42,7 @@ func (j *JWT) GenerateToken(userID uuid.UUID, email, name string) (string, int64
 		UserID: userID,
 		Email:  email,
 		Name:   name,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -60,7 +62,7 @@ func (j *JWT) GenerateToken(userID uuid.UUID, email, name string) (string, int64
 }
 
 // GenerateRefreshToken generates a new refresh token for the given user
-func (j *JWT) GenerateRefreshToken(userID uuid.UUID, email, name string) (string, int64, error) {
+func (j *JWT) GenerateRefreshToken(userID uuid.UUID, email, name, role string) (string, int64, error) {
 	now := time.Now()
 	expiresAt := now.Add(j.refreshExpiresIn)
 
@@ -68,6 +70,7 @@ func (j *JWT) GenerateRefreshToken(userID uuid.UUID, email, name string) (string
 		UserID: userID,
 		Email:  email,
 		Name:   name,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -87,15 +90,15 @@ func (j *JWT) GenerateRefreshToken(userID uuid.UUID, email, name string) (string
 }
 
 // GenerateTokenPair generates both access and refresh tokens for the given user
-func (j *JWT) GenerateTokenPair(userID uuid.UUID, email, name string) (accessToken, refreshToken string, accessExpiresAt, refreshExpiresAt int64, err error) {
+func (j *JWT) GenerateTokenPair(userID uuid.UUID, email, name, role string) (accessToken, refreshToken string, accessExpiresAt, refreshExpiresAt int64, err error) {
 	// Generate access token
-	accessToken, accessExpiresAt, err = j.GenerateToken(userID, email, name)
+	accessToken, accessExpiresAt, err = j.GenerateToken(userID, email, name, role)
 	if err != nil {
 		return "", "", 0, 0, fmt.Errorf("failed to generate access token: %w", err)
 	}
 
 	// Generate refresh token
-	refreshToken, refreshExpiresAt, err = j.GenerateRefreshToken(userID, email, name)
+	refreshToken, refreshExpiresAt, err = j.GenerateRefreshToken(userID, email, name, role)
 	if err != nil {
 		return "", "", 0, 0, fmt.Errorf("failed to generate refresh token: %w", err)
 	}
@@ -131,5 +134,5 @@ func (j *JWT) RefreshToken(tokenString string) (string, int64, error) {
 	}
 
 	// Generate new token with same user data
-	return j.GenerateToken(claims.UserID, claims.Email, claims.Name)
+	return j.GenerateToken(claims.UserID, claims.Email, claims.Name, claims.Role)
 }

@@ -184,7 +184,7 @@ func (s *UserService) Login(ctx context.Context, req dto.LoginRequest) (dto.Logi
 	}
 
 	// Generate JWT token pair (access and refresh tokens)
-	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name)
+	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name, user.FirstRole().Name)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("failed to generate JWT token pair")
 		return dto.LoginResponse{}, Error(shared.MakeError(ErrInternalServer))
@@ -237,7 +237,7 @@ func (s *UserService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequ
 	}
 
 	// Generate new token pair
-	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name)
+	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name, user.FirstRole().Name)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("failed to generate new token pair during refresh")
 		return dto.RefreshTokenResponse{}, Error(shared.MakeError(ErrInternalServer))
@@ -331,7 +331,7 @@ func (s *UserService) VerifyEmail(ctx context.Context, req dto.VerifyEmailReques
 		Msg("email verified successfully")
 
 	// Generate JWT token pair (access and refresh tokens)
-	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name)
+	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name, user.FirstRole().Name)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("failed to generate JWT token pair")
 		return dto.LoginResponse{}, Error(shared.MakeError(ErrInternalServer))
@@ -464,7 +464,7 @@ func (s *UserService) GoogleLogin(ctx context.Context, req dto.GoogleLoginReques
 	}
 
 	// Generate JWT token pair (access and refresh tokens)
-	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name)
+	accessToken, refreshToken, accessExpiresAt, refreshExpiresAt, err := s.jwt.GenerateTokenPair(user.ID, user.Email, user.Name, user.FirstRole().Name)
 	if err != nil {
 		logger.ErrorCtx(ctx).Err(err).Msg("failed to generate JWT token pair for Google login")
 		return dto.GoogleLoginResponse{}, Error(shared.MakeError(ErrInternalServer))
