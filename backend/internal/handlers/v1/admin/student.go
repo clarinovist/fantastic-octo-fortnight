@@ -2,6 +2,7 @@ package admin
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -369,4 +370,58 @@ func (a *Api) UpdateStudentPremium(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.Success(w, http.StatusOK, "success")
+}
+
+// GenerateMonthlyReport
+// @Summary Generate monthly report
+// @Description Generate a PDF monthly report for a student
+// @Tags admin-student
+// @Accept json
+// @Produce application/pdf
+// @Security BearerAuth
+// @Param id path string true "Student ID"
+// @Param month query int true "Month (1-12)"
+// @Param year query int true "Year"
+// @Success 200 {file} file "Returns the PDF file"
+// @Failure 400 {object} base.Base
+// @Failure 401 {object} base.Base
+// @Failure 403 {object} base.Base
+// @Failure 404 {object} base.Base
+// @Failure 500 {object} base.Base
+// @Router /v1/admin/students/{id}/reports/monthly [get]
+func (a *Api) GenerateMonthlyReport(w http.ResponseWriter, r *http.Request) {
+	var (
+		ctx   = r.Context()
+		idStr = chi.URLParam(r, "id")
+	)
+
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error decoding ID format")
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid ID format"))
+		return
+	}
+
+	monthStr := r.URL.Query().Get("month")
+	yearStr := r.URL.Query().Get("year")
+
+	var month, year int
+	if _, err := fmt.Sscanf(monthStr, "%d", &month); err != nil || month < 1 || month > 12 {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid month specified"))
+		return
+	}
+	if _, err := fmt.Sscanf(yearStr, "%d", &year); err != nil || year < 2000 {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid year specified"))
+		return
+	}
+
+	pdfBytes, filename, err := a.monthlyReport.GenerateMonthlyReport(ctx, id, month, year)
+	if err != nil {
+		response.Failure(w, base.CustomError(services.Error(err)))
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/pdf")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", filename))
+	_, _ = w.Write(pdfBytes)
 }

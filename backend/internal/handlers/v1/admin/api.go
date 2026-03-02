@@ -24,6 +24,7 @@ type Api struct {
 	subscriptionPrice  *services.SubscriptionPriceService
 	dashboard          *services.DashboardService
 	mentorBalanceAdmin *services.MentorBalanceAdminService
+	monthlyReport      *services.MonthlyReportService
 	jwt                *jwt.JWT
 	userRepo           *repositories.UserRepository
 	roleRepo           *repositories.RoleRepository
@@ -41,6 +42,7 @@ func NewApi(
 	subscriptionPrice *services.SubscriptionPriceService,
 	dashboard *services.DashboardService,
 	mentorBalanceAdmin *services.MentorBalanceAdminService,
+	monthlyReport *services.MonthlyReportService,
 	jwt *jwt.JWT,
 	userRepo *repositories.UserRepository,
 	roleRepo *repositories.RoleRepository,
@@ -57,6 +59,7 @@ func NewApi(
 		subscriptionPrice:  subscriptionPrice,
 		dashboard:          dashboard,
 		mentorBalanceAdmin: mentorBalanceAdmin,
+		monthlyReport:      monthlyReport,
 		jwt:                jwt,
 		userRepo:           userRepo,
 		roleRepo:           roleRepo,
@@ -90,6 +93,7 @@ func (a *Api) Router(r chi.Router) {
 		r.Post("/{id}/change-role", a.ChangeRoleStudent)
 		r.Put("/{id}/status", a.UpdateStudentStatus)
 		r.Put("/{id}/premium", a.UpdateStudentPremium)
+		r.Get("/{id}/reports/monthly", a.GenerateMonthlyReport)
 	})
 
 	r.Route("/tutors", func(r chi.Router) {

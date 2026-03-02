@@ -408,6 +408,7 @@ Query Parameters:
 GET /v1/students/booking/{id}
 Authorization: Bearer <token>
 ```
+**Response Format Note:** The booking detail response now includes a `sessionTasks` array (with instructor-uploaded tasks, submissions, and scores) and a `reportBooking` object (containing `progress_notes` in the `body` field) for mentor feedback.
 
 ---
 
@@ -459,6 +460,35 @@ Content-Type: application/json
 
 {
   "reason": "Jadwal bentrok"
+}
+```
+
+---
+
+### Add Task for Booking session (Tutor)
+```http
+POST /v1/mentor/bookings/{sessionId}/tasks
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "title": "Tugas Aljabar 1",
+  "description": "Kerjakan soal 1-5 halaman 20",
+  "attachment_url": "https://link-to-pdf.com/file.pdf"
+}
+```
+
+---
+
+### Grade Task Submission (Tutor)
+```http
+POST /v1/mentor/tasks/{taskId}/submissions
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "submission_url": "https://link-to-image.png",
+  "score": 85.5
 }
 ```
 
@@ -790,6 +820,18 @@ Content-Type: application/json
   "message": "Notification message",
   "type": "info"
 }
+```
+
+---
+
+### Generate Monthly Student Report (Admin)
+```http
+GET /v1/admin/students/{id}/reports/monthly?month=3&year=2026
+Authorization: Bearer <admin_token>
+
+Response:
+Content-Type: application/pdf
+(Downloads "Report_{StudentName}_March 2026.pdf")
 ```
 
 ---

@@ -16,16 +16,17 @@ const (
 )
 
 type ReportBooking struct {
-	ID        uuid.UUID           `gorm:"type:char(36);primary_key" json:"id"`
-	BookingID uuid.UUID           `gorm:"type:char(36);not null" json:"booking_id"`
-	StudentID uuid.UUID           `gorm:"type:char(36);not null" json:"report_id"`
-	Topic     string              `gorm:"type:varchar(255);not null" json:"topic"`
-	Body      string              `gorm:"type:text;not null" json:"body"`
-	Status    ReportBookingStatus `gorm:"type:varchar(255);not null" json:"status"`
-	CreatedAt time.Time           `json:"created_at"`
-	UpdatedAt time.Time           `json:"updated_at"`
-	DeletedAt null.Time           `json:"deleted_at"`
-	CreatedBy uuid.UUID           `gorm:"type:char(36)" json:"created_by"`
-	UpdatedBy uuid.UUID           `gorm:"type:char(36)" json:"updated_by"`
-	DeletedBy uuid.NullUUID       `gorm:"type:char(36)" json:"deleted_by"`
+	ID            uuid.UUID           `gorm:"type:char(36);primary_key" json:"id"`
+	BookingID     uuid.UUID           `gorm:"type:char(36);not null" json:"booking_id"`
+	StudentID     uuid.UUID           `gorm:"type:char(36);not null" json:"report_id"`
+	Topic         string              `gorm:"type:varchar(255);not null" json:"topic"`
+	Body          string              `gorm:"type:text;not null" json:"body"`
+	ProgressNotes null.String         `gorm:"type:text" json:"progress_notes"` // For grading/parent notes
+	Status        ReportBookingStatus `gorm:"type:varchar(255);not null" json:"status"`
+	CreatedAt     time.Time           `json:"created_at"`
+	UpdatedAt     time.Time           `json:"updated_at"`
+	DeletedAt     null.Time           `json:"deleted_at"`
+	CreatedBy     uuid.UUID           `gorm:"type:char(36)" json:"created_by"`
+	UpdatedBy     uuid.UUID           `gorm:"type:char(36)" json:"updated_by"`
+	DeletedBy     uuid.NullUUID       `gorm:"type:char(36)" json:"deleted_by"`
 }

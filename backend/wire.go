@@ -70,6 +70,8 @@ var svc = wire.NewSet(
 	services.NewMentorStudentService,
 	services.NewMentorBalanceService,
 	services.NewMentorBalanceAdminService,
+	services.NewSessionTaskService,
+	services.NewMonthlyReportService,
 	provideXendit,
 )
 
@@ -97,6 +99,7 @@ var repo = wire.NewSet(
 	repositories.NewMentorBalanceRepository,
 	repositories.NewWithdrawalRepository,
 	repositories.NewMentorInviteCodeRepository,
+	repositories.NewSessionTaskRepository,
 )
 
 // provideJWT creates a JWT service from config

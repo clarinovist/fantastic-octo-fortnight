@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Monthly Progress Report</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }
+        .header h1 { color: #0056b3; margin: 0 0 10px 0; font-size: 28px; }
+        .sub-header { display: flex; justify-content: space-between; font-size: 14px; color: #555; }
+        .student-info { margin-bottom: 20px; font-size: 16px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; color: #0056b3; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #888; border-top: 1px solid #ddd; padding-top: 10px; }
+        .no-data { text-align: center; padding: 20px; font-style: italic; color: #777; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Monthly Progress Report</h1>
+        <div class="sub-header">
+            <span>Period: <strong>{{.MonthYear}}</strong></span>
+            <span>Generated Date: <strong>{{.Date}}</strong></span>
+        </div>
+    </div>
+
+    <div class="student-info">
+        Student Name: <span style="color:#0056b3;">{{.StudentName}}</span>
+    </div>
+
+    {{if .Sessions}}
+    <table>
+        <thead>
+            <tr>
+                <th width="12%">Date</th>
+                <th width="18%">Subject</th>
+                <th width="18%">Tutor</th>
+                <th width="8%">Tasks</th>
+                <th width="10%">Avg Score</th>
+                <th width="34%">Progress Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Sessions}}
+            <tr>
+                <td>{{.Date}}</td>
+                <td>{{.Subject}}</td>
+                <td>{{.TutorName}}</td>
+                <td style="text-align:center;">{{.Tasks}}</td>
+                <td style="text-align:center; font-weight:bold;">{{.AverageScore}}</td>
+                <td>{{.ProgressNotes}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+    {{else}}
+    <div class="no-data">No learning sessions found for this period.</div>
+    {{end}}
+
+    <div class="footer">
+        Generated automatically by Les Private System
+    </div>
+</body>
+</html>

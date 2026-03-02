@@ -170,9 +170,27 @@ export async function getStudentDetail(studentId: string): Promise<BaseResponse<
     return fetcherBase<StudentDetail>(`/v1/mentor/students/${studentId}`);
 }
 
+export interface TaskSubmission {
+    id: string;
+    session_task_id: string;
+    submission_url: string;
+    score: number;
+    created_at: string;
+}
+
+export interface SessionTask {
+    id: string;
+    booking_id: string;
+    title: string;
+    description: string;
+    attachment_url: string;
+    created_at: string;
+    submission?: TaskSubmission;
+}
+
 // Session Detail & Status
-export async function getSessionDetail(sessionId: string): Promise<BaseResponse<Session>> {
-    return fetcherBase<Session>(`/v1/mentor/bookings/${sessionId}`);
+export async function getSessionDetail(sessionId: string): Promise<BaseResponse<Session & { session_tasks?: SessionTask[], report_booking?: any }>> {
+    return fetcherBase<Session & { session_tasks?: SessionTask[], report_booking?: any }>(`/v1/mentor/bookings/${sessionId}`);
 }
 
 export async function updateSessionStatus(sessionId: string, status: string): Promise<BaseResponse<null>> {
@@ -184,4 +202,29 @@ export async function updateSessionStatus(sessionId: string, status: string): Pr
 
 export async function getFinanceStats(): Promise<BaseResponse<FinanceStats>> {
     return fetcherBase<FinanceStats>("/v1/mentor/finance/stats");
+}
+
+export interface CreateTaskFormData {
+    title: string;
+    description: string;
+    attachment_url?: string;
+}
+
+export async function createSessionTask(sessionId: string, data: CreateTaskFormData): Promise<BaseResponse<SessionTask>> {
+    return fetcherBase<SessionTask>(`/v1/mentor/bookings/${sessionId}/tasks`, {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
+}
+
+export interface GradeTaskFormData {
+    submission_url: string;
+    score: number;
+}
+
+export async function gradeSessionTask(taskId: string, data: GradeTaskFormData): Promise<BaseResponse<TaskSubmission>> {
+    return fetcherBase<TaskSubmission>(`/v1/mentor/tasks/${taskId}/grade`, {
+        method: "POST",
+        body: JSON.stringify(data),
+    });
 }

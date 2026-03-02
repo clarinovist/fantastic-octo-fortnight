@@ -24,6 +24,7 @@ type MentorHandler struct {
 	mentorStudent *services.MentorStudentService
 	mentorBalance *services.MentorBalanceService
 	tutorBooking  *services.TutorBookingService
+	sessionTask   *services.SessionTaskService
 	jwt           *jwt.JWT
 }
 
@@ -32,6 +33,7 @@ func NewMentorHandler(
 	mentorStudent *services.MentorStudentService,
 	mentorBalance *services.MentorBalanceService,
 	tutorBooking *services.TutorBookingService,
+	sessionTask *services.SessionTaskService,
 	jwt *jwt.JWT,
 ) *MentorHandler {
 	return &MentorHandler{
@@ -39,6 +41,7 @@ func NewMentorHandler(
 		mentorStudent: mentorStudent,
 		mentorBalance: mentorBalance,
 		tutorBooking:  tutorBooking,
+		sessionTask:   sessionTask,
 		jwt:           jwt,
 	}
 }
@@ -62,6 +65,13 @@ func (h *MentorHandler) Router(r chi.Router) {
 		r.Get("/{sessionId}", h.GetSessionDetail)
 		r.Post("/{sessionId}/accept", h.ApproveBooking)
 		r.Post("/{sessionId}/reject", h.DeclineBooking)
+
+		// Tasks
+		r.Post("/{sessionId}/tasks", h.CreateSessionTask)
+	})
+
+	r.Route("/tasks", func(r chi.Router) {
+		r.Post("/{taskId}/submissions", h.GradeSessionTask)
 	})
 }
 
@@ -470,4 +480,55 @@ func (h *MentorHandler) GetFinanceStats(w http.ResponseWriter, r *http.Request) 
 	}
 
 	response.Success(w, http.StatusOK, res)
+}
+
+func (h *MentorHandler) CreateSessionTask(w http.ResponseWriter, r *http.Request) {
+	sessionIDStr := chi.URLParam(r, "sessionId")
+	sessionID, err := uuid.Parse(sessionIDStr)
+	if err != nil {
+		response.Failure(w, base.SetError("invalid session ID"))
+		return
+	}
+
+	var req CreateSessionTaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"), base.SetError(err.Error()))
+		return
+	}
+
+	task, err := h.sessionTask.AddTaskToBooking(r.Context(), sessionID, req.Title, null.StringFromPtr(req.Description), null.StringFromPtr(req.AttachmentURL))
+	if err != nil {
+		response.Failure(w, base.SetError(err.Error()))
+		return
+	}
+
+	response.Success(w, http.StatusOK, task)
+}
+
+func (h *MentorHandler) GradeSessionTask(w http.ResponseWriter, r *http.Request) {
+	taskIDStr := chi.URLParam(r, "taskId")
+	taskID, err := uuid.Parse(taskIDStr)
+	if err != nil {
+		response.Failure(w, base.SetError("invalid task ID"))
+		return
+	}
+
+	var req GradeTaskRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"), base.SetError(err.Error()))
+		return
+	}
+
+	var score decimal.NullDecimal
+	if req.Score != nil {
+		score = decimal.NewNullDecimal(decimal.NewFromFloat(*req.Score))
+	}
+
+	submission, err := h.sessionTask.GradeTask(r.Context(), taskID, null.StringFromPtr(req.SubmissionURL), score)
+	if err != nil {
+		response.Failure(w, base.SetError(err.Error()))
+		return
+	}
+
+	response.Success(w, http.StatusOK, submission)
 }

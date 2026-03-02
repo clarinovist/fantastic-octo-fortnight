@@ -49,6 +49,7 @@ type Booking struct {
 	Student       Student       `gorm:"foreignKey:StudentID" json:"student"`
 	Course        Course        `gorm:"foreignKey:CourseID" json:"course"`
 	ReportBooking ReportBooking `gorm:"foreignKey:BookingID" json:"report_booking"`
+	SessionTasks  []SessionTask `gorm:"foreignKey:BookingID" json:"session_tasks"`
 }
 
 func (b *Booking) GetStatus() BookingStatus {

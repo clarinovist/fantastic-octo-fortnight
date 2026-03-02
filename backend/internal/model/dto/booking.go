@@ -132,6 +132,22 @@ type BookingCourse struct {
 	Description string `json:"description"`
 }
 
+type TaskSubmissionDTO struct {
+	ID            uuid.UUID       `json:"id"`
+	SubmissionURL null.String     `json:"submissionUrl"`
+	Score         decimal.Decimal `json:"score"`
+	CreatedAt     time.Time       `json:"createdAt"`
+}
+
+type SessionTaskDTO struct {
+	ID            uuid.UUID          `json:"id"`
+	Title         string             `json:"title"`
+	Description   null.String        `json:"description"`
+	AttachmentURL null.String        `json:"attachmentUrl"`
+	Submission    *TaskSubmissionDTO `json:"submission,omitempty"`
+	CreatedAt     time.Time          `json:"createdAt"`
+}
+
 type BookingDetail struct {
 	ID           uuid.UUID           `json:"id"`
 	Tutor        BookingTutor        `json:"tutor"`
@@ -148,25 +164,53 @@ type BookingDetail struct {
 	Status       model.BookingStatus `json:"status"`
 	ExpiredAt    time.Time           `json:"expiredAt"`
 	CreatedAt    time.Time           `json:"createdAt"`
+	// Mentor grading feature
+	SessionTasks  []SessionTaskDTO `json:"sessionTasks"`
+	ReportBooking *ReportBooking   `json:"reportBooking,omitempty"`
 }
 
 func NewBookingDetail(booking *model.Booking) BookingDetail {
+	var sessionTasks []SessionTaskDTO
+	for _, st := range booking.SessionTasks {
+		var subDTO *TaskSubmissionDTO
+		if len(st.TaskSubmissions) > 0 {
+			sub := st.TaskSubmissions[0] // Since it's a 1-to-1 relationship logically (one submission per task)
+			subDTO = &TaskSubmissionDTO{
+				ID:            sub.ID,
+				SubmissionURL: sub.SubmissionURL,
+				Score:         sub.Score.Decimal,
+				CreatedAt:     sub.CreatedAt,
+			}
+		}
+
+		sessionTasks = append(sessionTasks, SessionTaskDTO{
+			ID:            st.ID,
+			Title:         st.Title,
+			Description:   st.Description,
+			AttachmentURL: st.AttachmentURL,
+			Submission:    subDTO,
+			CreatedAt:     st.CreatedAt,
+		})
+	}
+
 	return BookingDetail{
-		ID:           booking.ID,
-		Tutor:        NewBookingTutor(&booking.Tutor, booking.Status),
-		Student:      NewBookingStudent(&booking.Student, booking.Status),
-		Course:       BookingCourse{Title: booking.Course.Title, Description: booking.Course.Description},
-		BookingDate:  booking.BookingDate.Format("2006-01-02"),
-		BookingTime:  booking.BookingTime,
-		Timezone:     booking.Timezone,
-		NotesTutor:   booking.NotesTutor.String,
-		NotesStudent: booking.NotesStudent.String,
-		ClassType:    string(booking.ClassType),
-		Latitude:     booking.Latitude,
-		Longitude:    booking.Longitude,
-		Status:       booking.GetStatus(),
-		ExpiredAt:    booking.ExpiredAt,
-		CreatedAt:    booking.CreatedAt,
+		ID:            booking.ID,
+		Tutor:         NewBookingTutor(&booking.Tutor, booking.Status),
+		Student:       NewBookingStudent(&booking.Student, booking.Status),
+		Course:        BookingCourse{Title: booking.Course.Title, Description: booking.Course.Description},
+		BookingDate:   booking.BookingDate.Format("2006-01-02"),
+		BookingTime:   booking.BookingTime,
+		Timezone:      booking.Timezone,
+		NotesTutor:    booking.NotesTutor.String,
+		NotesStudent:  booking.NotesStudent.String,
+		ClassType:     string(booking.ClassType),
+		Latitude:      booking.Latitude,
+		Longitude:     booking.Longitude,
+		Status:        booking.GetStatus(),
+		ExpiredAt:     booking.ExpiredAt,
+		CreatedAt:     booking.CreatedAt,
+		SessionTasks:  sessionTasks,
+		ReportBooking: NewReportBooking(booking.ReportBooking),
 	}
 }
 

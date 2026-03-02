@@ -59,7 +59,26 @@ export interface BookingDetail extends Booking {
   latitude: string
   longitude: string
   createdAt: string
+  sessionTasks?: SessionTaskDTO[]
+  reportBooking?: any
 }
+
+export interface TaskSubmissionDTO {
+  id: string
+  submissionUrl: string | null
+  score: number | string
+  createdAt: string
+}
+
+export interface SessionTaskDTO {
+  id: string
+  title: string
+  description: string | null
+  attachmentUrl: string | null
+  submission?: TaskSubmissionDTO
+  createdAt: string
+}
+
 export interface BookingReview {
   courseTitle: string
   id: string

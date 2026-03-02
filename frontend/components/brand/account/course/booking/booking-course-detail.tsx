@@ -20,6 +20,7 @@ import {
 import Image from "next/image"
 import { useState } from "react"
 import { ReportDialog } from "./booking-report"
+import { SessionHistoryAccordion } from "./session-history-accordion"
 
 type BookingCourseDetailProps = {
   isReportable?: boolean
@@ -213,6 +214,14 @@ export function BookingCourseDetail({
                 <NoteBlock title="Catatan untuk murid">{booking.notesStudent}</NoteBlock>
               )}
             </section>
+
+            {/* Session History & Grades Accordion */}
+            {(booking.sessionTasks && booking.sessionTasks.length > 0) && (
+              <SessionHistoryAccordion
+                tasks={booking.sessionTasks}
+                progressNotes={booking.reportBooking?.progressNotes || booking.reportBooking?.progress_notes}
+              />
+            )}
 
             {/* Footer */}
             {(isReportable || isShowStatus) && (

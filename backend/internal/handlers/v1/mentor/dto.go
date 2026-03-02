@@ -187,3 +187,14 @@ func ToStudentDetailResponse(ms model.MentorStudent, bookings []model.Booking) S
 		Sessions:          sessions,
 	}
 }
+
+type CreateSessionTaskRequest struct {
+	Title         string  `json:"title" validate:"required"`
+	Description   *string `json:"description"`
+	AttachmentURL *string `json:"attachment_url"`
+}
+
+type GradeTaskRequest struct {
+	SubmissionURL *string  `json:"submission_url"`
+	Score         *float64 `json:"score"`
+}

@@ -157,7 +157,9 @@ func (r *BookingRepository) GetByID(ctx context.Context, id uuid.UUID) (*model.B
 		Preload("Student.User").
 		Preload("Tutor.User").
 		Preload("Course.CourseCategory").
-		Preload("ReportBooking")
+		Preload("ReportBooking").
+		Preload("SessionTasks").
+		Preload("SessionTasks.TaskSubmissions")
 	err := db.Where("id = ?", id).First(&result).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
