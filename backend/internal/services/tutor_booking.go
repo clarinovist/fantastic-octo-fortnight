@@ -314,6 +314,7 @@ func (s *TutorBookingService) Create(ctx context.Context, request dto.CreateTuto
 		NotesTutor:  request.Notes, // Mentor creates notes for themselves/student? NotesStudent is usually what student sees. Let's use NotesTutor for internal notes or NotesStudent for message to student? Use NotesStudent as per params.
 		Latitude:    decimal.NewFromFloat(request.Latitude),
 		Longitude:   decimal.NewFromFloat(request.Longitude),
+		ExpiredAt:   bookingDate.Add(24 * time.Hour), // Default: expire 1 day after booking date
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		CreatedBy:   middleware.GetUserID(ctx),
