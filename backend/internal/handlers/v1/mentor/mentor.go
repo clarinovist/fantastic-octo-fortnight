@@ -102,7 +102,7 @@ func (h *MentorHandler) ListSessions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var res []SessionResponse
+	res := make([]SessionResponse, 0, len(sessions))
 	for _, s := range sessions {
 		res = append(res, ToSessionResponse(s))
 	}

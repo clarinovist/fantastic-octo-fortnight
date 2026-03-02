@@ -199,14 +199,14 @@ export default function SessionsPage() {
                                         <TableCell><div className="flex justify-end gap-2"><Skeleton className="h-8 w-8" /></div></TableCell>
                                     </TableRow>
                                 ))
-                            ) : data?.data?.length === 0 ? (
+                            ) : (data?.data?.length ?? 0) === 0 ? (
                                 <TableRow>
                                     <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                                         Belum ada sesi mengajar.
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                data?.data?.map((session) => (
+                                (data?.data ?? []).map((session) => (
                                     <TableRow key={session.id} className="hover:bg-muted/50 transition-colors">
                                         <TableCell>
                                             <div className="flex items-center gap-3">
