@@ -124,7 +124,7 @@ export interface CreateSessionRequest {
 export async function getMentorSessions(page = 1, limit = 10): Promise<BaseResponse<Session[]>> {
     const query = new URLSearchParams({
         page: page.toString(),
-        limit: limit.toString(),
+        pageSize: limit.toString(),
     });
     return fetcherBase<Session[]>(`/v1/mentor/bookings?${query}`);
 }

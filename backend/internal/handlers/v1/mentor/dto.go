@@ -1,6 +1,7 @@
 package mentor
 
 import (
+	"github.com/google/uuid"
 	"github.com/lesprivate/backend/internal/model"
 )
 
@@ -132,18 +133,26 @@ type SessionResponse struct {
 }
 
 func ToSessionResponse(b model.Booking) SessionResponse {
-	return SessionResponse{
+	res := SessionResponse{
 		ID:          b.ID.String(),
 		StudentID:   b.StudentID.String(),
-		StudentName: b.Student.User.Name,
-		CourseName:  b.Course.Title,
 		BookingDate: b.BookingDate.Format("2006-01-02"),
 		BookingTime: b.BookingTime,
 		Status:      string(b.Status),
 		ClassType:   string(b.ClassType),
 		Code:        b.Code,
-		Notes:       b.NotesStudent.String, // Or NotesTutor?
+		Notes:       b.NotesStudent.String,
 	}
+
+	if b.Student.User.ID != uuid.Nil {
+		res.StudentName = b.Student.User.Name
+	}
+
+	if b.Course.ID != uuid.Nil {
+		res.CourseName = b.Course.Title
+	}
+
+	return res
 }
 
 type StudentDetailResponse struct {

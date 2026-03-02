@@ -545,7 +545,7 @@ func (s *TutorService) GetTutorCourses(ctx context.Context, tutorID uuid.UUID) (
 	courses, _, err := s.course.Get(ctx, model.CourseFilter{
 		TutorID: tutorID,
 		Pagination: model.Pagination{
-			PageSize: 6,
+			PageSize: 100,
 		},
 		Sort: model.Sort{
 			Sort:          "created_at",

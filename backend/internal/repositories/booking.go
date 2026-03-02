@@ -30,7 +30,11 @@ func (r *BookingRepository) Get(ctx context.Context, filter model.BookingFilter)
 			PageSize: filter.PageSize,
 		}
 	)
-	db := r.db.Read.Model(&model.Booking{}).Preload("Student.User").Preload("Tutor.User").Preload("Course")
+	db := r.db.Read.Model(&model.Booking{}).
+		Preload("Student.User").
+		Preload("Tutor.User").
+		Preload("Course").
+		Where("bookings.deleted_at IS NULL")
 
 	if len(filter.NotIDs) > 0 {
 		db = db.Where("id NOT IN (?)", filter.NotIDs)
@@ -181,7 +185,7 @@ func (r *BookingRepository) Count(ctx context.Context, filter model.BookingFilte
 	db := r.db.Read.Model(&model.Booking{})
 
 	if filter.CourseID != uuid.Nil {
-		db = db.Where("course_id = ?", filter.StudentID)
+		db = db.Where("course_id = ?", filter.CourseID)
 	}
 
 	if filter.StudentID != uuid.Nil {
