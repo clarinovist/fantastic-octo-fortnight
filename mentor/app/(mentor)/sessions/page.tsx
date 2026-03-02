@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { getMentorSessions } from "@/services/mentor";
+import { getBookingStats } from "@/services/booking";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CreateSessionDialog } from "@/components/sessions/create-session-dialog";
 import { SessionDetailDialog } from "@/components/sessions/session-detail-dialog";
@@ -49,31 +50,28 @@ export default function SessionsPage() {
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
     const { data, isLoading, mutate } = useSWR(["/mentor/sessions", page], () => getMentorSessions(page));
+    const { data: statsData, mutate: mutateStats } = useSWR("/mentor/bookings/stats", getBookingStats);
     const { isLoaded } = useGoogleMaps();
 
-    // Calculate stats from API response metadata
+    // Calculate stats from dedicated stats API
     const stats = [
         {
             title: "Total Sesi",
-            value: data?.metadata?.total_items || 0,
+            value: statsData?.data?.total || 0,
             icon: CalendarCheck,
             color: "text-primary",
             bgColor: "bg-primary/10",
         },
         {
             title: "Sesi Bulan Ini",
-            value: data?.data?.filter(s => {
-                const date = new Date(s.booking_date);
-                const now = new Date();
-                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-            }).length || 0,
+            value: statsData?.data?.accepted || 0,
             icon: CalendarRange,
             color: "text-blue-600",
             bgColor: "bg-blue-100",
         },
         {
             title: "Menunggu Konfirmasi",
-            value: data?.data?.filter(s => s.status === 'pending').length || 0,
+            value: statsData?.data?.pending || 0,
             icon: Clock,
             color: "text-amber-600",
             bgColor: "bg-amber-100",
@@ -113,7 +111,7 @@ export default function SessionsPage() {
             <CreateSessionDialog
                 open={isCreateDialogOpen}
                 onOpenChange={setIsCreateDialogOpen}
-                onSuccess={() => mutate()}
+                onSuccess={() => { mutate(); mutateStats(); }}
             />
 
             {/* Header Section */}
@@ -259,7 +257,7 @@ export default function SessionsPage() {
                     {/* Pagination */}
                     <div className="p-6 border-t flex items-center justify-between">
                         <p className="text-sm text-muted-foreground">
-                            Menampilkan {data?.data?.length || 0} dari {data?.metadata?.total_items || 0} sesi
+                            Menampilkan {data?.data?.length || 0} dari {data?.metadata?.total || 0} sesi
                         </p>
                         <div className="flex gap-2">
                             <Button
