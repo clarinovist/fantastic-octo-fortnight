@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/guregu/null/v6"
 	"github.com/lesprivate/backend/config"
 	"github.com/lesprivate/backend/internal/model"
 	"github.com/lesprivate/backend/internal/model/dto"
@@ -376,4 +377,38 @@ func (s *TutorBookingService) GetStats(ctx context.Context, userID uuid.UUID) (*
 		Completed: 0, // Need logic for completed
 		Total:     int(total),
 	}, nil
+}
+
+func (s *TutorBookingService) UpdateNotes(ctx context.Context, id uuid.UUID, notes string) error {
+	tutor, err := s.tutor.GetByUserID(ctx, middleware.GetUserID(ctx))
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateNotes] Error getting tutor by user ID")
+		return shared.MakeError(ErrInternalServer)
+	}
+
+	if tutor == nil {
+		return shared.MakeError(ErrEntityNotFound, "tutor")
+	}
+
+	booking, err := s.booking.GetByID(ctx, id)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateNotes] Error getting booking")
+		return shared.MakeError(ErrInternalServer)
+	}
+
+	if booking == nil || booking.TutorID != tutor.ID {
+		return shared.MakeError(ErrEntityNotFound, "booking")
+	}
+
+	booking.NotesStudent = null.StringFrom(notes)
+	booking.UpdatedAt = time.Now()
+	booking.UpdatedBy = middleware.GetUserID(ctx)
+
+	err = s.booking.Update(ctx, booking)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateNotes] Error updating booking notes")
+		return shared.MakeError(ErrInternalServer)
+	}
+
+	return nil
 }

@@ -4,7 +4,7 @@ import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
-import { getSessionDetail, createSessionTask, gradeSessionTask, SessionTask } from "@/services/mentor";
+import { getSessionDetail, createSessionTask, gradeSessionTask, SessionTask, updateSessionNotes } from "@/services/mentor";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import {
-    ArrowLeft,
     CheckCircle2,
     FileText,
     Image as ImageIcon,
@@ -45,16 +44,35 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
             await createSessionTask(id, {
                 title: taskTitle,
                 description: taskDesc,
-                attachment_url: "https://example.com/dummy-attachment.pdf", // Mocked for now
+                attachment_url: undefined, // User can upload later or provide URL
             });
             toast.success("Tugas berhasil ditambahkan");
             setTaskTitle("");
             setTaskDesc("");
             mutate();
-        } catch (err: any) {
-            toast.error(err?.message || "Gagal menambahkan tugas");
+        } catch (err) {
+            const error = err as Error;
+            toast.error(error?.message || "Gagal menambahkan tugas");
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    // Form state for notes
+    const [isSavingNotes, setIsSavingNotes] = useState(false);
+    const [notes, setNotes] = useState(session?.report_booking?.notes || "");
+
+    const handleSaveNotes = async () => {
+        setIsSavingNotes(true);
+        try {
+            await updateSessionNotes(id, notes);
+            toast.success("Catatan berhasil disimpan");
+            mutate();
+        } catch (err) {
+            const error = err as Error;
+            toast.error(error?.message || "Gagal menyimpan catatan");
+        } finally {
+            setIsSavingNotes(false);
         }
     };
 
@@ -178,8 +196,17 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
                                     className="mb-4"
                                     placeholder="Tulis ringkasan penilaian dan perkembangan siswa untuk sesi ini (akan dibaca oleh orang tua)..."
                                     rows={6}
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                    disabled={isSavingNotes}
                                 />
-                                <Button className="w-full shadow-md" size="lg">
+                                <Button
+                                    className="w-full shadow-md"
+                                    size="lg"
+                                    onClick={handleSaveNotes}
+                                    disabled={isSavingNotes}
+                                >
+                                    {isSavingNotes ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                                     Simpan & Notifikasi Orang Tua
                                 </Button>
                                 <p className="text-center text-[10px] text-muted-foreground mt-3">
@@ -205,13 +232,14 @@ function TaskCard({ task, onUpdated }: { task: SessionTask, onUpdated: () => voi
         setIsSubmittingGrade(true);
         try {
             await gradeSessionTask(task.id, {
-                submission_url: "https://example.com/student-work-photo.jpg", // Mock upload
+                submission_url: task.submission?.submission_url || "https://example.com/dummy-work.jpg", // Kept mock until file upload is built
                 score: Number(score),
             });
             toast.success("Nilai berhasil disimpan");
             onUpdated();
-        } catch (err: any) {
-            toast.error(err?.message || "Gagal menyimpan nilai");
+        } catch (err) {
+            const error = err as Error;
+            toast.error(error?.message || "Gagal menyimpan nilai");
         } finally {
             setIsSubmittingGrade(false);
         }

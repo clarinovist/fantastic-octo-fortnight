@@ -83,3 +83,14 @@ func (r *MentorStudentRepository) CountByTutor(ctx context.Context, tutorID uuid
 	}
 	return total, nil
 }
+
+func (r *MentorStudentRepository) ListByStudent(ctx context.Context, studentID uuid.UUID) ([]model.MentorStudent, error) {
+	var mentorStudents []model.MentorStudent
+	if err := r.db.WithContext(ctx).Model(&model.MentorStudent{}).
+		Where("student_id = ? AND status = ?", studentID, "active").
+		Preload("Tutor").Preload("Tutor.User").
+		Find(&mentorStudents).Error; err != nil {
+		return nil, err
+	}
+	return mentorStudents, nil
+}

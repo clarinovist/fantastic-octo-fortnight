@@ -65,6 +65,7 @@ func (h *MentorHandler) Router(r chi.Router) {
 		r.Get("/{sessionId}", h.GetSessionDetail)
 		r.Post("/{sessionId}/accept", h.ApproveBooking)
 		r.Post("/{sessionId}/reject", h.DeclineBooking)
+		r.Patch("/{sessionId}/notes", h.UpdateSessionNotes)
 
 		// Tasks
 		r.Post("/{sessionId}/tasks", h.CreateSessionTask)
@@ -401,6 +402,29 @@ func (h *MentorHandler) DeclineBooking(w http.ResponseWriter, r *http.Request) {
 		ID:    sessionID,
 		Notes: null.StringFrom(req.Reason),
 	})
+	if err != nil {
+		response.Failure(w, base.SetError(err.Error()))
+		return
+	}
+
+	response.Success(w, http.StatusOK, nil)
+}
+
+func (h *MentorHandler) UpdateSessionNotes(w http.ResponseWriter, r *http.Request) {
+	sessionIDStr := chi.URLParam(r, "sessionId")
+	sessionID, err := uuid.Parse(sessionIDStr)
+	if err != nil {
+		response.Failure(w, base.SetError("invalid session ID"))
+		return
+	}
+
+	var req UpdateSessionNotesRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		response.Failure(w, base.SetStatusCode(http.StatusBadRequest), base.SetMessage("Invalid JSON format"), base.SetError(err.Error()))
+		return
+	}
+
+	err = h.tutorBooking.UpdateNotes(r.Context(), sessionID, req.Notes)
 	if err != nil {
 		response.Failure(w, base.SetError(err.Error()))
 		return

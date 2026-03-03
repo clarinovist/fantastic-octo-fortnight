@@ -87,3 +87,10 @@ type TutorLevelInfo struct {
 	NextLevel    string `json:"next_level"`
 	PointsNeeded uint   `json:"points_needed"`
 }
+
+type StudentTutorResponse struct {
+	TutorID      uuid.UUID   `json:"tutor_id"`
+	Name         string      `json:"name"`
+	PhotoProfile null.String `json:"photo_profile"`
+	JoinedAt     time.Time   `json:"joined_at"`
+}

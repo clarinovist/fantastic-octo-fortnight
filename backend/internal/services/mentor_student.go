@@ -157,3 +157,14 @@ func (s *MentorStudentService) GetStudentDetail(ctx context.Context, userID uuid
 
 	return ms, nil
 }
+
+func (s *MentorStudentService) ListStudentTutors(ctx context.Context, userID uuid.UUID) ([]model.MentorStudent, error) {
+	student, err := s.student.GetByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	if student == nil {
+		return nil, shared.MakeError("not_found", "student not found")
+	}
+	return s.mentorStudent.ListByStudent(ctx, student.ID)
+}

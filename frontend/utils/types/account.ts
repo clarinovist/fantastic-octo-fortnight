@@ -44,3 +44,11 @@ export interface MyCourseResponse {
   isPublished: boolean
   status: string
 }
+
+export interface StudentTutorResponse {
+  tutor_id: string
+  name: string
+  photo_profile: string | null
+  joined_at: string
+}
+

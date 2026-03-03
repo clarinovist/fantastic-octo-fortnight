@@ -84,8 +84,8 @@ export function BookingCard({ booking }: BookingCardProps) {
             <CardHeader className="p-4 pb-2 flex flex-row items-start justify-between space-y-0">
                 <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10 border">
-                        <AvatarImage src={booking.student.photo_url || ""} alt={booking.student.name} />
-                        <AvatarFallback>{booking.student.name.charAt(0)}</AvatarFallback>
+                        <AvatarImage src={booking.student?.photoProfile || ""} alt={booking.student?.name || "Student"} />
+                        <AvatarFallback>{booking.student?.name?.charAt(0) || "S"}</AvatarFallback>
                     </Avatar>
                     <div>
                         <h4 className="font-semibold text-sm leading-none">{booking.student.name}</h4>

@@ -42,6 +42,7 @@ type Api struct {
 	jwt                 *jwt.JWT
 	admin               *admin.Api
 	mentor              *mentor.MentorHandler
+	mentorStudent       *services.MentorStudentService
 	courseRepo          *repositories.CourseRepository
 	userRepo            *repositories.UserRepository
 	roleRepo            *repositories.RoleRepository
@@ -72,6 +73,7 @@ func NewApi(
 	roleRepo *repositories.RoleRepository,
 	adminAPI *admin.Api,
 	mentorHandler *mentor.MentorHandler,
+	mentorStudent *services.MentorStudentService,
 	jwt *jwt.JWT,
 ) *Api {
 	return &Api{
@@ -97,6 +99,7 @@ func NewApi(
 		jwt:                 jwt,
 		admin:               adminAPI,
 		mentor:              mentorHandler,
+		mentorStudent:       mentorStudent,
 		courseRepo:          courseRepo,
 		userRepo:            userRepo,
 		roleRepo:            roleRepo,
@@ -187,6 +190,8 @@ func (a *Api) Router(r chi.Router) {
 	r.Route("/students", func(r chi.Router) {
 		r.Use(middleware.JWTAuth(a.jwt))
 		// TODO: add middleware to validate role student
+
+		r.Get("/tutors", a.GetStudentTutors)
 
 		r.Route("/booking", func(r chi.Router) {
 			r.Post("/", a.CreateStudentBooking)

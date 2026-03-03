@@ -3,7 +3,7 @@ export interface BookingStudent {
     name: string;
     email: string;
     phone: string;
-    photo_url: string | null;
+    photoProfile: string | null;
 }
 
 export interface BookingCourse {

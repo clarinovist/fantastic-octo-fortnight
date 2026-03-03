@@ -107,6 +107,15 @@ export interface Session {
     notes?: string;
     latitude?: number;
     longitude?: number;
+    session_tasks?: SessionTask[];
+    report_booking?: ReportBooking;
+}
+
+export interface ReportBooking {
+    id: string;
+    booking_id: string;
+    notes?: string;
+    attachment_url?: string;
 }
 
 export interface CreateSessionRequest {
@@ -189,14 +198,21 @@ export interface SessionTask {
 }
 
 // Session Detail & Status
-export async function getSessionDetail(sessionId: string): Promise<BaseResponse<Session & { session_tasks?: SessionTask[], report_booking?: any }>> {
-    return fetcherBase<Session & { session_tasks?: SessionTask[], report_booking?: any }>(`/v1/mentor/bookings/${sessionId}`);
+export async function getSessionDetail(sessionId: string): Promise<BaseResponse<Session>> {
+    return fetcherBase<Session>(`/v1/mentor/bookings/${sessionId}`);
 }
 
 export async function updateSessionStatus(sessionId: string, status: string): Promise<BaseResponse<null>> {
     return fetcherBase<null>(`/v1/mentor/bookings/${sessionId}/status`, {
         method: "PATCH",
         body: JSON.stringify({ status }),
+    });
+}
+
+export async function updateSessionNotes(sessionId: string, notes: string): Promise<BaseResponse<null>> {
+    return fetcherBase<null>(`/v1/mentor/bookings/${sessionId}/notes`, {
+        method: "PATCH",
+        body: JSON.stringify({ notes }),
     });
 }
 

@@ -13,13 +13,14 @@ import {
     Edit,
     Eye,
     MapPin,
-    FileText,
     Calendar,
     Loader2,
+    StickyNote,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/page-header";
+import { toast } from "sonner";
 import {
     Select,
     SelectContent,
@@ -41,6 +42,15 @@ import { getBookingStats } from "@/services/booking";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CreateSessionDialog } from "@/components/sessions/create-session-dialog";
 import { SessionDetailDialog } from "@/components/sessions/session-detail-dialog";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { updateSessionNotes } from "@/services/mentor";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { useGoogleMaps } from "@/contexts/google-maps";
 
@@ -48,6 +58,9 @@ export default function SessionsPage() {
     const [page, setPage] = useState(1);
     const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
     const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+    const [isNotesDialogOpen, setIsNotesDialogOpen] = useState(false);
+    const [noteText, setNoteText] = useState("");
+    const [isSavingNote, setIsSavingNote] = useState(false);
     const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
     const { data, isLoading, mutate } = useSWR(["/mentor/sessions", page], () => getMentorSessions(page));
     const { data: statsData, mutate: mutateStats } = useSWR("/mentor/bookings/stats", getBookingStats);
@@ -105,6 +118,24 @@ export default function SessionsPage() {
         lat: Number(nextOfflineSession.latitude),
         lng: Number(nextOfflineSession.longitude)
     } : { lat: -6.2088, lng: 106.8456 }; // Default to Jakarta
+
+    // Find "Last Session" for the notes block
+    const lastSession = data?.data && data.data.length > 0 ? data.data[0] : null;
+
+    const handleSaveNote = async () => {
+        if (!lastSession) return;
+        setIsSavingNote(true);
+        try {
+            await updateSessionNotes(lastSession.id, noteText);
+            toast.success("Catatan berhasil disimpan");
+            setIsNotesDialogOpen(false);
+            mutate();
+        } catch {
+            toast.error("Gagal menyimpan catatan");
+        } finally {
+            setIsSavingNote(false);
+        }
+    };
 
     return (
         <div className="flex flex-col flex-1">
@@ -330,18 +361,55 @@ export default function SessionsPage() {
                         <h3 className="font-bold text-lg mb-4">Catatan Sesi Terakhir</h3>
                         <div className="space-y-4">
                             <div className="flex gap-4 p-3 rounded-lg bg-muted/50">
-                                <FileText className="h-5 w-5 text-primary shrink-0" />
-                                <div>
+                                <StickyNote className="h-5 w-5 text-primary shrink-0" />
+                                <div className="flex-1">
                                     <p className="text-sm font-semibold">Tautan Zoom / Materi</p>
-                                    <p className="text-xs text-muted-foreground italic">&quot;Belum ada catatan baru.&quot;</p>
+                                    <p className="text-xs text-muted-foreground whitespace-pre-wrap">
+                                        {lastSession?.notes || <span className="italic">&quot;Belum ada catatan baru.&quot;</span>}
+                                    </p>
                                 </div>
                             </div>
-                            <div className="flex gap-4 p-3 rounded-lg border border-dashed justify-center items-center h-20 hover:bg-muted/50 cursor-pointer transition-colors">
-                                <button className="text-primary text-sm font-semibold hover:underline">+ Tambah Catatan Baru</button>
+                            <div
+                                className="flex gap-4 p-3 rounded-lg border border-dashed justify-center items-center h-20 hover:bg-muted/50 cursor-pointer transition-colors"
+                                onClick={() => {
+                                    setNoteText(lastSession?.notes || "");
+                                    setIsNotesDialogOpen(true);
+                                }}
+                            >
+                                <button className="text-primary text-sm font-semibold hover:underline">
+                                    {lastSession?.notes ? "Edit Catatan" : "+ Tambah Catatan Baru"}
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {/* Edit Note Dialog */}
+                <Dialog open={isNotesDialogOpen} onOpenChange={setIsNotesDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Edit Catatan Sesi</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <p className="text-sm text-muted-foreground">
+                                Tambahkan tautan zoom, materi, atau catatan penting lainnya untuk sesi ini.
+                            </p>
+                            <Textarea
+                                placeholder="Masukkan catatan sesi..."
+                                className="min-h-[150px]"
+                                value={noteText}
+                                onChange={(e) => setNoteText(e.target.value)}
+                            />
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsNotesDialogOpen(false)}>Batal</Button>
+                            <Button onClick={handleSaveNote} disabled={isSavingNote}>
+                                {isSavingNote && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Simpan Catatan
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
                 <SessionDetailDialog
                     sessionId={selectedSessionId}
                     open={detailDialogOpen}

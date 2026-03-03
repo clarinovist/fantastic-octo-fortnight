@@ -1,8 +1,12 @@
 package mentor
 
 import (
+	"time"
+
 	"github.com/google/uuid"
+	"github.com/guregu/null/v6"
 	"github.com/lesprivate/backend/internal/model"
+	"github.com/shopspring/decimal"
 )
 
 type JoinByCodeRequest struct {
@@ -120,16 +124,18 @@ func ToWithdrawalResponse(w model.WithdrawalRequest) WithdrawalResponse {
 }
 
 type SessionResponse struct {
-	ID          string `json:"id"`
-	StudentID   string `json:"student_id"`
-	StudentName string `json:"student_name"`
-	CourseName  string `json:"course_name"`
-	BookingDate string `json:"booking_date"`
-	BookingTime string `json:"booking_time"`
-	Status      string `json:"status"`
-	ClassType   string `json:"class_type"`
-	Code        string `json:"code"`
-	Notes       string `json:"notes"`
+	ID            string               `json:"id"`
+	StudentID     string               `json:"student_id"`
+	StudentName   string               `json:"student_name"`
+	CourseName    string               `json:"course_name"`
+	BookingDate   string               `json:"booking_date"`
+	BookingTime   string               `json:"booking_time"`
+	Status        string               `json:"status"`
+	ClassType     string               `json:"class_type"`
+	Code          string               `json:"code"`
+	Notes         string               `json:"notes"`
+	SessionTasks  []SessionTaskDTO     `json:"session_tasks,omitempty"`
+	ReportBooking *model.ReportBooking `json:"report_booking,omitempty"`
 }
 
 func ToSessionResponse(b model.Booking) SessionResponse {
@@ -142,6 +148,30 @@ func ToSessionResponse(b model.Booking) SessionResponse {
 		ClassType:   string(b.ClassType),
 		Code:        b.Code,
 		Notes:       b.NotesStudent.String,
+	}
+
+	if b.ReportBooking.ID != uuid.Nil {
+		res.ReportBooking = &b.ReportBooking
+	}
+
+	for _, task := range b.SessionTasks {
+		taskDTO := SessionTaskDTO{
+			ID:            task.ID,
+			Title:         task.Title,
+			Description:   task.Description,
+			AttachmentURL: task.AttachmentURL,
+			CreatedAt:     task.CreatedAt,
+		}
+		if len(task.TaskSubmissions) > 0 {
+			sub := task.TaskSubmissions[0]
+			taskDTO.Submission = &TaskSubmissionDTO{
+				ID:            sub.ID,
+				SubmissionURL: sub.SubmissionURL,
+				Score:         sub.Score,
+				CreatedAt:     sub.CreatedAt,
+			}
+		}
+		res.SessionTasks = append(res.SessionTasks, taskDTO)
 	}
 
 	if b.Student.User.ID != uuid.Nil {
@@ -206,4 +236,24 @@ type CreateSessionTaskRequest struct {
 type GradeTaskRequest struct {
 	SubmissionURL *string  `json:"submission_url"`
 	Score         *float64 `json:"score"`
+}
+
+type UpdateSessionNotesRequest struct {
+	Notes string `json:"notes" validate:"required"`
+}
+
+type SessionTaskDTO struct {
+	ID            uuid.UUID          `json:"id"`
+	Title         string             `json:"title"`
+	Description   null.String        `json:"description"`
+	AttachmentURL null.String        `json:"attachmentUrl"`
+	Submission    *TaskSubmissionDTO `json:"submission,omitempty"`
+	CreatedAt     time.Time          `json:"createdAt"`
+}
+
+type TaskSubmissionDTO struct {
+	ID            uuid.UUID           `json:"id"`
+	SubmissionURL null.String         `json:"submissionUrl"`
+	Score         decimal.NullDecimal `json:"score"`
+	CreatedAt     time.Time           `json:"createdAt"`
 }
