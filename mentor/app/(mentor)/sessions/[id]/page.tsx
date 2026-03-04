@@ -34,6 +34,7 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [taskTitle, setTaskTitle] = useState("");
     const [taskDesc, setTaskDesc] = useState("");
+    const [attachmentUrl, setAttachmentUrl] = useState("");
 
     const handleCreateTask = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,11 +45,12 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
             await createSessionTask(id, {
                 title: taskTitle,
                 description: taskDesc,
-                attachment_url: undefined, // User can upload later or provide URL
+                attachment_url: attachmentUrl || undefined,
             });
             toast.success("Tugas berhasil ditambahkan");
             setTaskTitle("");
             setTaskDesc("");
+            setAttachmentUrl("");
             mutate();
         } catch (err) {
             const error = err as Error;
@@ -154,6 +156,15 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
                                             rows={2}
                                             value={taskDesc}
                                             onChange={(e) => setTaskDesc(e.target.value)}
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium text-foreground">Link Lampiran (Opsional)</label>
+                                        <Input
+                                            placeholder="https://link-google-drive-atau-lainnya..."
+                                            value={attachmentUrl}
+                                            onChange={(e) => setAttachmentUrl(e.target.value)}
                                             disabled={isSubmitting}
                                         />
                                     </div>

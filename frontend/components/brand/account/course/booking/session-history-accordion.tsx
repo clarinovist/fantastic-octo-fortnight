@@ -86,8 +86,8 @@ export function SessionHistoryAccordion({ tasks, progressNotes }: SessionHistory
                                                 )}
                                             </div>
                                         </div>
-                                        {task.attachmentUrl && (
-                                            <a href={task.attachmentUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline sm:ml-auto bg-primary/5 px-2 py-1.5 rounded-md">
+                                        {task.attachment_url && (
+                                            <a href={task.attachment_url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs font-medium text-primary hover:underline sm:ml-auto bg-primary/5 px-2 py-1.5 rounded-md">
                                                 <Download className="h-3.5 w-3.5" /> Lihat Lampiran
                                             </a>
                                         )}
@@ -102,16 +102,16 @@ export function SessionHistoryAccordion({ tasks, progressNotes }: SessionHistory
                                 Hasil Pengerjaan
                             </p>
                             <div className="flex gap-3 overflow-x-auto pb-2">
-                                {tasks.filter(t => t.submission && t.submission.submissionUrl).length === 0 ? (
+                                {tasks.filter(t => t.submission && t.submission.submission_url).length === 0 ? (
                                     <div className="text-xs text-muted-foreground italic px-2 py-4 border-2 border-dashed w-full text-center rounded-lg">
                                         Tugas belum dikumpulkan / belum diunggah oleh mentor.
                                     </div>
                                 ) : (
                                     tasks.map((task) => {
-                                        if (!task.submission || !task.submission.submissionUrl) return null
+                                        if (!task.submission || !task.submission.submission_url) return null
                                         return (
                                             <div key={`sub-${task.id}`} className="relative min-w-[120px] aspect-square rounded-lg bg-cover bg-center border shadow-sm flex-shrink-0 group overflow-hidden"
-                                                style={{ backgroundImage: `url('${task.submission.submissionUrl}')` }}>
+                                                style={{ backgroundImage: `url('${task.submission.submission_url}')` }}>
                                                 <div className="absolute inset-0 bg-black/5 group-hover:bg-black/20 transition-colors" />
                                                 {task.submission.score && (
                                                     <div className={cn(

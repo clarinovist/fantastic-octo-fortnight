@@ -65,18 +65,18 @@ export interface BookingDetail extends Booking {
 
 export interface TaskSubmissionDTO {
   id: string
-  submissionUrl: string | null
+  submission_url: string | null
   score: number | string
-  createdAt: string
+  created_at: string
 }
 
 export interface SessionTaskDTO {
   id: string
   title: string
   description: string | null
-  attachmentUrl: string | null
+  attachment_url: string | null
   submission?: TaskSubmissionDTO
-  createdAt: string
+  created_at: string
 }
 
 export interface BookingReview {

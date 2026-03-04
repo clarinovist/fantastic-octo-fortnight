@@ -246,14 +246,14 @@ type SessionTaskDTO struct {
 	ID            uuid.UUID          `json:"id"`
 	Title         string             `json:"title"`
 	Description   null.String        `json:"description"`
-	AttachmentURL null.String        `json:"attachmentUrl"`
+	AttachmentURL null.String        `json:"attachment_url"`
 	Submission    *TaskSubmissionDTO `json:"submission,omitempty"`
-	CreatedAt     time.Time          `json:"createdAt"`
+	CreatedAt     time.Time          `json:"created_at"`
 }
 
 type TaskSubmissionDTO struct {
 	ID            uuid.UUID           `json:"id"`
-	SubmissionURL null.String         `json:"submissionUrl"`
+	SubmissionURL null.String         `json:"submission_url"`
 	Score         decimal.NullDecimal `json:"score"`
-	CreatedAt     time.Time           `json:"createdAt"`
+	CreatedAt     time.Time           `json:"created_at"`
 }
