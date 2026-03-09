@@ -318,6 +318,8 @@ func (s *BookingService) CreateReviewBooking(ctx context.Context) error {
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		err = s.notificationService.CreateReviewBooking(context.Background(), bookings)
 		if err != nil {
 			logger.ErrorCtx(ctx).Err(err).Msg("[CreateReviewBooking] Error bulk creating notifications")

@@ -113,6 +113,7 @@ func (s *StudentReviewService) Update(ctx context.Context, request dto.UpdateRev
 	if !isSubmitted {
 		// Update tutor level point
 		go func() {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			bgCtx := context.Background()
 
 			tutor, err := s.tutor.GetByID(bgCtx, review.TutorID)

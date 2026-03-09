@@ -1,12 +1,14 @@
 package v1
 
 import (
-	"context"
 	"net/http"
 
+	"github.com/lesprivate/backend/shared/base"
 	"github.com/lesprivate/backend/shared/logger"
 	"github.com/lesprivate/backend/transport/http/response"
 )
+
+// context import removed — handlers now use r.Context() directly
 
 // ExpiredBooking expired booking
 // @Summary expired booking
@@ -20,13 +22,13 @@ import (
 // @Failure 500 {object} base.Base
 // @Router /v1/internal/booking/expired [post]
 func (a *Api) ExpiredBooking(w http.ResponseWriter, r *http.Request) {
-	go func() {
-		ctx := context.Background()
-		err := a.booking.ExpiredBooking(ctx)
-		if err != nil {
-			logger.ErrorCtx(ctx).Err(err).Msg("[ExpiredBooking] Error expired booking")
-		}
-	}()
+	ctx := r.Context()
+	err := a.booking.ExpiredBooking(ctx)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[ExpiredBooking] Error expired booking")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("failed to process expired bookings"))
+		return
+	}
 
 	response.Success(w, http.StatusOK, "success")
 }
@@ -43,13 +45,13 @@ func (a *Api) ExpiredBooking(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} base.Base
 // @Router /v1/internal/booking/reminder-expired [post]
 func (a *Api) ReminderExpiredBooking(w http.ResponseWriter, r *http.Request) {
-	go func() {
-		ctx := context.Background()
-		err := a.booking.ReminderExpiredBooking(ctx)
-		if err != nil {
-			logger.ErrorCtx(ctx).Err(err).Msg("[ExpiredBooking] Error expired booking")
-		}
-	}()
+	ctx := r.Context()
+	err := a.booking.ReminderExpiredBooking(ctx)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[ReminderExpiredBooking] Error reminder expired booking")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("failed to process reminder expired bookings"))
+		return
+	}
 
 	response.Success(w, http.StatusOK, "success")
 }
@@ -66,13 +68,13 @@ func (a *Api) ReminderExpiredBooking(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} base.Base
 // @Router /v1/internal/booking/reminder-course [post]
 func (a *Api) ReminderCourseBooking(w http.ResponseWriter, r *http.Request) {
-	go func() {
-		ctx := context.Background()
-		err := a.booking.ReminderCourseBooking(ctx)
-		if err != nil {
-			logger.ErrorCtx(ctx).Err(err).Msg("[ExpiredBooking] Error expired booking")
-		}
-	}()
+	ctx := r.Context()
+	err := a.booking.ReminderCourseBooking(ctx)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[ReminderCourseBooking] Error reminder course booking")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("failed to process reminder course bookings"))
+		return
+	}
 
 	response.Success(w, http.StatusOK, "success")
 }
@@ -89,13 +91,13 @@ func (a *Api) ReminderCourseBooking(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} base.Base
 // @Router /v1/internal/booking/review [post]
 func (a *Api) CreateReviewBooking(w http.ResponseWriter, r *http.Request) {
-	go func() {
-		ctx := context.Background()
-		err := a.booking.CreateReviewBooking(ctx)
-		if err != nil {
-			logger.ErrorCtx(ctx).Err(err).Msg("[CreateReviewBooking] Error create review booking")
-		}
-	}()
+	ctx := r.Context()
+	err := a.booking.CreateReviewBooking(ctx)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[CreateReviewBooking] Error create review booking")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("failed to create review bookings"))
+		return
+	}
 
 	response.Success(w, http.StatusOK, "success")
 }
@@ -111,13 +113,13 @@ func (a *Api) CreateReviewBooking(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} base.Base
 // @Router /v1/internal/notifications/retention [delete]
 func (a *Api) RetentionNotification(w http.ResponseWriter, r *http.Request) {
-	go func() {
-		ctx := context.Background()
-		err := a.notification.RetentionNotification(ctx)
-		if err != nil {
-			logger.ErrorCtx(ctx).Err(err).Msg("Error retention notification")
-		}
-	}()
+	ctx := r.Context()
+	err := a.notification.RetentionNotification(ctx)
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("Error retention notification")
+		response.Failure(w, base.SetStatusCode(http.StatusInternalServerError), base.SetMessage("failed to process retention notification"))
+		return
+	}
 
 	response.Success(w, http.StatusOK, "success")
 }

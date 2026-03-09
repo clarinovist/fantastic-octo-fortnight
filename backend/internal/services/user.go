@@ -133,6 +133,7 @@ func (s *UserService) Register(ctx context.Context, req dto.RegisterRequest) (mo
 
 	// Send verification email asynchronously (non-blocking)
 	go func() {
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		// Create a new context for the email operation to avoid cancellation
 		emailCtx := context.Background()
 		if err := s.notification.RegisterUser(emailCtx, user, *role); err != nil {
@@ -424,6 +425,8 @@ func (s *UserService) GoogleLogin(ctx context.Context, req dto.GoogleLoginReques
 		user = &newUser
 
 		go func() {
+
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			if roleName == model.RoleNameTutor {
 				s.notification.TutorNotificationUpdateProfile(ctx, *user)
 			}
@@ -542,6 +545,8 @@ func (s *UserService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		emailCtx := context.Background()
 		if err := s.email.SendPasswordResetEmail(emailCtx, user.Email, resetLink); err != nil {
 			logger.ErrorCtx(emailCtx).
@@ -688,20 +693,14 @@ func (s *UserService) prepareRoleSpecificRecord(user *model.User, roleName strin
 		return student, nil
 
 	case "tutor":
-		// Get a default location ID (first available location)
-		defaultLocationID, err := uuid.Parse("0002cd1f-d7fd-487c-9702-9073bea4e2d6") // Using first location as default
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse default location ID: %w", err)
-		}
-
-		// Prepare tutor record with proper default values
+		// Prepare tutor record with default values
 		tutor := &model.Tutor{
 			UserID:        user.ID,
 			Description:   "",
 			ClassType:     model.AllClassType, // Default to "all" class type
 			OnlineChannel: model.OnlineChannel{},
 			Level:         null.StringFrom(string(model.TutorLevelGuru)),
-			LocationID:    uuid.NullUUID{UUID: defaultLocationID, Valid: true}, // Default location, will be updated when tutor completes profile
+			LocationID:    uuid.NullUUID{Valid: false}, // Default location, will be updated when tutor completes profile
 			CreatedAt:     time.Now(),
 			UpdatedAt:     time.Now(),
 			CreatedBy:     uuid.NullUUID{UUID: user.ID, Valid: true},
@@ -776,6 +775,7 @@ func (s *UserService) ResendVerification(ctx context.Context, req dto.ResendVeri
 
 	// Send verification email asynchronously
 	go func() {
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		emailCtx := context.Background()
 		if err := s.notification.RegisterUser(emailCtx, *user, user.FirstRole()); err != nil {
 			logger.ErrorCtx(emailCtx).

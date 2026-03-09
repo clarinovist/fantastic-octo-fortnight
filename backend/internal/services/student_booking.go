@@ -274,6 +274,7 @@ func (s *StudentBookingService) Create(ctx context.Context, request dto.CreateSt
 
 	// Auto-join logic: establish tutor-student relationship if it doesn't exist
 	go func() {
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		ctx := context.Background()
 		_, err := s.mentorStudent.GetByTutorAndStudent(ctx, course.TutorID, student.ID)
 		if err != nil {
@@ -286,19 +287,22 @@ func (s *StudentBookingService) Create(ctx context.Context, request dto.CreateSt
 	}()
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		ctx := context.Background()
 		location := model.Location{FullName: string(model.OnlineClassType)}
 		if booking.ClassType == model.OfflineClassType {
-			location, err = s.courseService.GetLocationByLatLong(ctx, booking.Latitude, booking.Longitude)
-			if err != nil {
-				logger.ErrorCtx(ctx).Err(err).Msg("[CreateStudentBooking] Error getting location by ID")
+			var locErr error
+			location, locErr = s.courseService.GetLocationByLatLong(ctx, booking.Latitude, booking.Longitude)
+			if locErr != nil {
+				logger.ErrorCtx(ctx).Err(locErr).Msg("[CreateStudentBooking] Error getting location by ID")
 				location = model.Location{FullName: string(model.OfflineClassType)}
 			}
 		}
 
-		err := s.notification.StudentBookingCourse(ctx, *booking, location)
-		if err != nil {
-			logger.ErrorCtx(ctx).Err(err).Msg("[CreateStudentBooking] Error sending student booking course notification")
+		notifErr := s.notification.StudentBookingCourse(ctx, *booking, location)
+		if notifErr != nil {
+			logger.ErrorCtx(ctx).Err(notifErr).Msg("[CreateStudentBooking] Error sending student booking course notification")
 		}
 	}()
 

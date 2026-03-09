@@ -56,6 +56,7 @@ export async function logoutAction() {
   const cookiesStore = await cookies()
   cookiesStore.delete(TOKEN_KEY)
   cookiesStore.delete(ID_TOKEN)
+  cookiesStore.delete("tutor_profile_completed")
 }
 export async function verifyEmailAction(token: string) {
   const cookiesStore = await cookies()

@@ -9,14 +9,14 @@ import (
 )
 
 type SessionTask struct {
-	ID            uuid.UUID        `gorm:"type:char(36);primary_key" json:"id"`
-	BookingID     uuid.UUID        `gorm:"type:char(36);not null" json:"booking_id"`
-	Title         string           `gorm:"type:varchar(255);not null" json:"title"`
-	Description   null.String      `gorm:"type:text" json:"description"`
-	AttachmentURL null.String      `gorm:"type:varchar(255)" json:"attachment_url"`
-	CreatedAt     time.Time        `json:"created_at"`
-	UpdatedAt     time.Time        `json:"updated_at"`
-	DeletedAt     null.Time        `gorm:"index" json:"deleted_at"`
+	ID            uuid.UUID   `gorm:"type:char(36);primary_key" json:"id"`
+	BookingID     uuid.UUID   `gorm:"type:char(36);not null" json:"booking_id"`
+	Title         string      `gorm:"type:varchar(255);not null" json:"title"`
+	Description   null.String `gorm:"type:text" json:"description"`
+	AttachmentURL null.String `gorm:"type:varchar(255)" json:"attachment_url"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
+	DeletedAt     null.Time   `gorm:"index" json:"deleted_at"`
 
 	TaskSubmissions []TaskSubmission `gorm:"foreignKey:SessionTaskID" json:"task_submissions"`
 }

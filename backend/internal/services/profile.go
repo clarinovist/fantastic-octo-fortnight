@@ -208,6 +208,7 @@ func (s *ProfileService) updateNotificationTutorUpdateProfile(ctx context.Contex
 
 	if tutor.IsFinishUpdateProfile() {
 		go func() {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			bgCtx := context.Background()
 
 			// Check if tutor has active documents

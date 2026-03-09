@@ -9,6 +9,7 @@ import (
 
 	"github.com/lesprivate/backend/internal/model/dto"
 	"github.com/lesprivate/backend/internal/services"
+	"github.com/lesprivate/backend/shared"
 	"github.com/lesprivate/backend/shared/base"
 	"github.com/lesprivate/backend/shared/logger"
 	"github.com/lesprivate/backend/transport/http/response"
@@ -102,6 +103,8 @@ func (a *Api) GetDetailCourse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		userID := uuid.Nil
 		if uid := r.Context().Value("user_id"); uid != nil {
 			if parsedUID, ok := uid.(uuid.UUID); ok {

@@ -237,13 +237,13 @@ func (r *ForgotPasswordRequest) Validate() error {
 	if !emailRegex.MatchString(r.Email) {
 		return errors.New("invalid email format")
 	}
-	
+
 	if r.Portal != "" {
 		if r.Portal != "student" && r.Portal != "mentor" && r.Portal != "admin" {
 			return errors.New("invalid portal origin")
 		}
 	}
-	
+
 	return nil
 }
 

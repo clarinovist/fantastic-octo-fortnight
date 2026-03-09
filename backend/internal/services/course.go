@@ -197,6 +197,8 @@ func (s *CourseService) GetLocationByLatLong(ctx context.Context, latitude, long
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		err = s.redis.Client.Set(ctx, key, location, time.Hour*24*14).Err()
 		if err != nil {
 			logger.ErrorCtx(ctx).Err(err).Msg("[getLocationByLatLong] Error setting location to redis")
@@ -245,6 +247,8 @@ func (s *CourseService) getLatLongByLocationID(ctx context.Context, locationID u
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		err = s.redis.Client.Set(ctx, key, latLong, time.Hour*24*14).Err()
 		if err != nil {
 			logger.ErrorCtx(ctx).Err(err).Msg("[GetCourses] Error setting lat long to redis")

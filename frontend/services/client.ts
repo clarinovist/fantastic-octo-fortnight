@@ -64,7 +64,6 @@ export function clientFetchRaw<T>(
       return res.json();
     })
     .then((data) => {
-      console.log("Raw Data:", data);
       return data as T;
     })
     .catch(async (err) => {

@@ -108,15 +108,9 @@ func (s *WebhookService) handleWebhookXenditRecurringCycleSucceeded(ctx context.
 	student := subscription.Student
 	student.PremiumUntil = null.TimeFrom(subscription.EndDate)
 
-	err = s.subscription.Update(ctx, subscription)
+	err = s.subscription.UpdateWithStudent(ctx, subscription, &student)
 	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).Msgf("[handleWebhookXenditRecurringCycleSucceeded] failed to update subscription by reference id: %s", data.PlanID)
-		return err
-	}
-
-	err = s.student.Update(ctx, &student)
-	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).Msgf("[handleWebhookXenditRecurringCycleSucceeded] failed to update student by reference id: %s", data.PlanID)
+		logger.ErrorCtx(ctx).Err(err).Msgf("[handleWebhookXenditRecurringCycleSucceeded] failed to update subscription and student by reference id: %s", data.PlanID)
 		return err
 	}
 
@@ -160,19 +154,15 @@ func (s *WebhookService) handleWebhookXenditPaymentSessionCompleted(ctx context.
 	student := payment.Student
 	student.PremiumUntil = null.TimeFrom(payment.EndDate)
 
-	err = s.payment.Update(ctx, payment)
+	err = s.payment.UpdateWithStudent(ctx, payment, &student)
 	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).Interface("data", data).Msg("[handleWebhookXenditPaymentSessionCompleted] failed to update subscription by id")
-		return err
-	}
-
-	err = s.student.Update(ctx, &student)
-	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).Interface("data", data).Msgf("[handleWebhookXenditPaymentSessionCompleted] failed to update student by id")
+		logger.ErrorCtx(ctx).Err(err).Interface("data", data).Msg("[handleWebhookXenditPaymentSessionCompleted] failed to update payment and student by id")
 		return err
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		err = s.notification.PaymentCompleted(context.Background(), student, *payment)
 		if err != nil {
 			logger.ErrorCtx(context.Background()).Err(err).Msg("[handleWebhookXenditPaymentSessionCompleted] Error sending payment completed notification")
@@ -182,6 +172,7 @@ func (s *WebhookService) handleWebhookXenditPaymentSessionCompleted(ctx context.
 	// Credit mentor balance if payment is for a booking
 	if payment.TutorID != uuid.Nil {
 		go func() {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			if err := s.mentorBalance.CreditFromBooking(
 				context.Background(),
 				payment.TutorID,

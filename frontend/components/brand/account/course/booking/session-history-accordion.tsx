@@ -209,7 +209,7 @@ export function SessionHistoryAccordion({ tasks, progressNotes }: SessionHistory
                                             <h3 className="text-base font-bold text-foreground">Catatan Mentor</h3>
                                         </div>
                                         <p className="text-base italic text-slate-700 leading-relaxed font-medium pl-14 border-l-4 border-primary/20 ml-2">
-                                            "{progressNotes}"
+                                            &quot;{progressNotes}&quot;
                                         </p>
                                     </div>
                                 </div>

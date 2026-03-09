@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 
 	"github.com/lesprivate/backend/infras"
 	"github.com/lesprivate/backend/internal/model"
@@ -60,4 +61,16 @@ func (r *PaymentRepository) GetByInvoiceNumber(ctx context.Context, id string) (
 
 func (r *PaymentRepository) Update(ctx context.Context, payment *model.Payment) error {
 	return r.db.Write.WithContext(ctx).Save(payment).Error
+}
+
+func (r *PaymentRepository) UpdateWithStudent(ctx context.Context, payment *model.Payment, student *model.Student) error {
+	return r.db.Write.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Save(payment).Error; err != nil {
+			return err
+		}
+		if err := tx.Save(student).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }

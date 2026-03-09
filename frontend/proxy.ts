@@ -64,12 +64,33 @@ export async function proxy(req: NextRequest) {
   // Only run profile check if token exists and not on login/plans page
   if (token?.value && url.pathname !== "/account" && !url.pathname.startsWith("/login") && url.pathname !== "/plans") {
     try {
-      const res = await getMe()
-      if (res?.data?.role === "tutor") {
-        if (!res?.data?.finish_update_profile) {
-          return NextResponse.redirect(new URL("/account", req.url))
+      let role = "";
+      try {
+        const payload = JSON.parse(atob(token.value.split('.')[1]));
+        role = payload.role;
+      } catch (e) {
+        // Silently handle error
+      }
+
+      // We only care about checking profile completion for tutors
+      if (role === "tutor") {
+        const profileCompleted = cookieStore.get("tutor_profile_completed");
+        if (!profileCompleted?.value) {
+          const res = await getMe()
+          if (res?.data?.role === "tutor") {
+            if (!res?.data?.finish_update_profile) {
+              return NextResponse.redirect(new URL("/account", req.url))
+            } else {
+              let response = NextResponse.next();
+              if (isBookingPage) {
+                response = NextResponse.redirect(new URL("/", req.url));
+              }
+              response.cookies.set("tutor_profile_completed", "1", { maxAge: 60 * 60 * 24 * 7 });
+              return response;
+            }
+          }
         } else if (isBookingPage) {
-          return NextResponse.redirect(new URL("/", req.url))
+          return NextResponse.redirect(new URL("/", req.url));
         }
       }
     } catch (error) {

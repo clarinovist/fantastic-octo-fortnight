@@ -181,6 +181,8 @@ func (s *TutorBookingService) ApproveBooking(ctx context.Context, request dto.Ap
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		_ = s.sendEmailWhenUpdatStatusBooking(context.Background(), *booking)
 	}()
 
@@ -233,6 +235,8 @@ func (s *TutorBookingService) DeclineBooking(ctx context.Context, request dto.De
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		_ = s.sendEmailWhenUpdatStatusBooking(context.Background(), *booking)
 	}()
 
@@ -337,6 +341,7 @@ func (s *TutorBookingService) Create(ctx context.Context, request dto.CreateTuto
 
 	// Send notification?
 	go func() {
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		_ = s.sendEmailWhenUpdatStatusBooking(context.Background(), booking)
 	}()
 

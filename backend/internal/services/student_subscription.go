@@ -211,6 +211,8 @@ func (s *StudentSubscriptionService) RegularPayment(ctx context.Context, request
 	}
 
 	go func() {
+
+		defer shared.RecoverBackground(context.Background(), "Goroutine")
 		err = s.notification.PaymentCreated(context.Background(), *student, *payment)
 		if err != nil {
 			logger.ErrorCtx(context.Background()).Err(err).Msg("[RegularPayment] Error sending payment created notification")

@@ -85,11 +85,13 @@ func (s *NotificationService) DismissNotification(ctx context.Context, id uuid.U
 	}
 
 	if notification == nil {
+		err := shared.MakeError(ErrEntityNotFound, "notification")
 		logger.ErrorCtx(ctx).Err(err).Msg("[DismissNotification] Notification not found")
 		return err
 	}
 
 	if notification.UserID != userID {
+		err := shared.MakeError(ErrUnauthorized, "notification does not belong to user")
 		logger.ErrorCtx(ctx).Err(err).Msg("[DismissNotification] Notification does not belong to user")
 		return err
 	}
@@ -116,11 +118,13 @@ func (s *NotificationService) ReadNotification(ctx context.Context, id uuid.UUID
 	}
 
 	if notification == nil {
+		err := shared.MakeError(ErrEntityNotFound, "notification")
 		logger.ErrorCtx(ctx).Err(err).Msg("[ReadNotification] Notification not found")
 		return err
 	}
 
 	if notification.UserID != userID {
+		err := shared.MakeError(ErrUnauthorized, "notification does not belong to user")
 		logger.ErrorCtx(ctx).Err(err).Msg("[ReadNotification] Notification does not belong to user")
 		return err
 	}
@@ -147,11 +151,13 @@ func (s *NotificationService) DeleteNotification(ctx context.Context, id uuid.UU
 	}
 
 	if notification == nil {
+		err := shared.MakeError(ErrEntityNotFound, "notification")
 		logger.ErrorCtx(ctx).Err(err).Msg("[DeleteNotification] Notification not found")
 		return err
 	}
 
 	if notification.UserID != userID {
+		err := shared.MakeError(ErrUnauthorized, "notification does not belong to user")
 		logger.ErrorCtx(ctx).Err(err).Msg("[DeleteNotification] Notification does not belong to user")
 		return err
 	}
@@ -300,7 +306,7 @@ func (s *NotificationService) TutorChangeStatusBooking(ctx context.Context, book
 		message = fmt.Sprintf("Selamat! Permintaan les kamu untuk %s telah diterima oleh tutor. Siapkan diri kamu untuk belajar!", booking.Course.Title)
 	case model.BookingStatusDeclined:
 		title = "Booking Declined"
-		message = fmt.Sprintf("Maaf, tutor tidak menolak permintaan les kamu. Silahkan bisa cari tutor lain atau booking diwaktu yang lain. ")
+		message = "Maaf, tutor menolak permintaan les kamu. Jangan khawatir, kamu bisa mencari tutor lain yang sesuai dengan kebutuhanmu di halaman Carian Tutor."
 	}
 
 	notification := &model.Notification{
@@ -435,6 +441,7 @@ func (s *NotificationService) generateVerificationToken(ctx context.Context, use
 func (s *NotificationService) ReminderExpiredBooking(ctx context.Context, notifications []model.Notification, bookings []model.Booking) error {
 	for _, booking := range bookings {
 		go func() {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			var err error
 			location := model.Location{FullName: string(model.OnlineClassType)}
 			if booking.ClassType == model.OfflineClassType {
@@ -460,6 +467,7 @@ func (s *NotificationService) ReminderExpiredBooking(ctx context.Context, notifi
 func (s *NotificationService) ReminderCourseBookingForStudent(ctx context.Context, notifications []model.Notification, bookings []model.Booking) error {
 	for _, booking := range bookings {
 		go func(b model.Booking) {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			err := s.SendReminderBookingToStudent(ctx, b)
 			if err != nil {
 				logger.ErrorCtx(ctx).Err(err).Msg("[SendReminderToStudent] Error sending reminder email")
@@ -480,6 +488,7 @@ func (s *NotificationService) CreateReviewBooking(ctx context.Context, bookings 
 	notifications := []model.Notification{}
 	for _, booking := range bookings {
 		go func() {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			location := model.Location{FullName: string(model.OnlineClassType)}
 			if booking.ClassType == model.OfflineClassType {
 				var e error
@@ -534,6 +543,14 @@ func (s *NotificationService) CreateReviewBooking(ctx context.Context, bookings 
 			CreatedBy:    uuid.MustParse(model.SystemID),
 			UpdatedBy:    uuid.MustParse(model.SystemID),
 		})
+	}
+
+	if len(notifications) > 0 {
+		err := s.notification.BulkCreate(ctx, notifications)
+		if err != nil {
+			logger.ErrorCtx(ctx).Err(err).Msg("[CreateReviewBooking] Error bulk creating notifications")
+			return err
+		}
 	}
 
 	return nil
@@ -646,6 +663,7 @@ func (s *NotificationService) AdminCreateNotification(ctx context.Context, req d
 	switch req.Type {
 	case model.EmailBroadcastNotificationType:
 		go func() {
+			defer shared.RecoverBackground(context.Background(), "Goroutine")
 			s.sendEmail(context.Background(), req, users)
 		}()
 		return nil
