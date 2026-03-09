@@ -62,11 +62,11 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
 
     // Form state for notes
     const [isSavingNotes, setIsSavingNotes] = useState(false);
-    const [notes, setNotes] = useState(session?.notes || "");
+    const [notes, setNotes] = useState(session?.report_booking?.notes || "");
 
     useEffect(() => {
         if (session) {
-            setNotes(session.notes || "");
+            setNotes(session.report_booking?.notes || "");
         }
     }, [session]);
 

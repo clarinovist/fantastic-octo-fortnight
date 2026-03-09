@@ -21,6 +21,7 @@ type TutorBookingService struct {
 	course        *repositories.CourseRepository
 	tutor         *repositories.TutorRepository
 	student       *repositories.StudentRepository
+	reportBooking *repositories.ReportBookingRepository
 	notification  *NotificationService
 	courseService *CourseService
 	config        *config.Config
@@ -31,6 +32,7 @@ func NewTutorBookingService(
 	booking *repositories.BookingRepository,
 	course *repositories.CourseRepository,
 	tutor *repositories.TutorRepository,
+	reportBooking *repositories.ReportBookingRepository,
 	notification *NotificationService,
 	courseService *CourseService,
 	config *config.Config,
@@ -40,6 +42,7 @@ func NewTutorBookingService(
 		booking:       booking,
 		course:        course,
 		tutor:         tutor,
+		reportBooking: reportBooking,
 		config:        config,
 		notification:  notification,
 		courseService: courseService,
@@ -405,13 +408,43 @@ func (s *TutorBookingService) UpdateNotes(ctx context.Context, id uuid.UUID, not
 		return shared.MakeError(ErrEntityNotFound, "booking")
 	}
 
-	booking.NotesStudent = null.StringFrom(notes)
-	booking.UpdatedAt = time.Now()
-	booking.UpdatedBy = middleware.GetUserID(ctx)
+	userID := middleware.GetUserID(ctx)
+	now := time.Now()
 
-	err = s.booking.Update(ctx, booking)
+	// Upsert progress notes into ReportBooking
+	report, err := s.reportBooking.GetByBookingID(ctx, booking.ID)
 	if err != nil {
-		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateNotes] Error updating booking notes")
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateNotes] Error getting report booking")
+		return shared.MakeError(ErrInternalServer)
+	}
+
+	if report == nil {
+		// Create a new ReportBooking record
+		report = &model.ReportBooking{
+			ID:            uuid.New(),
+			BookingID:     booking.ID,
+			StudentID:     booking.StudentID,
+			Topic:         "Progress Notes",
+			Body:          notes,
+			ProgressNotes: null.StringFrom(notes),
+			Status:        model.ReportBookingStatusDone,
+			CreatedAt:     now,
+			UpdatedAt:     now,
+			CreatedBy:     userID,
+			UpdatedBy:     userID,
+		}
+		err = s.reportBooking.Create(ctx, report)
+	} else {
+		// Update existing report
+		report.ProgressNotes = null.StringFrom(notes)
+		report.Body = notes
+		report.UpdatedAt = now
+		report.UpdatedBy = userID
+		err = s.reportBooking.Update(ctx, report)
+	}
+
+	if err != nil {
+		logger.ErrorCtx(ctx).Err(err).Msg("[UpdateNotes] Error saving report booking notes")
 		return shared.MakeError(ErrInternalServer)
 	}
 

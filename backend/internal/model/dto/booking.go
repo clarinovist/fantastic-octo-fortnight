@@ -253,6 +253,7 @@ type ReportBooking struct {
 	StudentID uuid.UUID                 `json:"studentId"`
 	Topic     string                    `json:"topic"`
 	Body      string                    `json:"body"`
+	Notes     string                    `json:"notes"`
 	Status    model.ReportBookingStatus `json:"status"`
 	CreatedAt time.Time                 `json:"createdAt"`
 	UpdatedAt time.Time                 `json:"updatedAt"`
@@ -268,6 +269,7 @@ func NewReportBooking(report model.ReportBooking) *ReportBooking {
 		StudentID: report.StudentID,
 		Topic:     report.Topic,
 		Body:      report.Body,
+		Notes:     report.ProgressNotes.String,
 		Status:    report.Status,
 		CreatedAt: report.CreatedAt,
 		UpdatedAt: report.UpdatedAt,
