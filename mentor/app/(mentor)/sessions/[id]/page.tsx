@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
@@ -62,7 +62,13 @@ export default function SessionGradingPage({ params }: { params: Promise<{ id: s
 
     // Form state for notes
     const [isSavingNotes, setIsSavingNotes] = useState(false);
-    const [notes, setNotes] = useState(session?.report_booking?.notes || "");
+    const [notes, setNotes] = useState(session?.notes || "");
+
+    useEffect(() => {
+        if (session) {
+            setNotes(session.notes || "");
+        }
+    }, [session]);
 
     const handleSaveNotes = async () => {
         setIsSavingNotes(true);

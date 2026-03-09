@@ -267,7 +267,7 @@ func (s *TutorService) CreateAdminTutor(ctx context.Context, req dto.CreateAdmin
 	}
 
 	dateOfBirth := null.Time{}
-	if req.DateOfBirth.Valid {
+	if req.DateOfBirth.Valid && req.DateOfBirth.String != "" {
 		t, err := time.Parse(time.DateOnly, req.DateOfBirth.String)
 		if err != nil {
 			logger.ErrorCtx(ctx).Err(err).Msg("[CreateAdminTutor] Failed to parse date of birth")
@@ -287,6 +287,7 @@ func (s *TutorService) CreateAdminTutor(ctx context.Context, req dto.CreateAdmin
 		SocialMediaLink: socialMediaLinks,
 		Latitude:        req.Latitude,
 		Longitude:       req.Longitude,
+		LevelPoint:      req.LevelPoint,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		CreatedBy: uuid.NullUUID{
@@ -350,7 +351,7 @@ func (s *TutorService) UpdateAdminTutor(ctx context.Context, req dto.UpdateAdmin
 	}
 
 	dateOfBirth := null.Time{}
-	if req.DateOfBirth.Valid {
+	if req.DateOfBirth.Valid && req.DateOfBirth.String != "" {
 		t, err := time.Parse(time.DateOnly, req.DateOfBirth.String)
 		if err != nil {
 			logger.ErrorCtx(ctx).Err(err).Msg("[CreateAdminTutor] Failed to parse date of birth")

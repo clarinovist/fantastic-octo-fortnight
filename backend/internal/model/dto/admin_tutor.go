@@ -67,6 +67,7 @@ type CreateAdminTutorRequest struct {
 	Latitude         decimal.NullDecimal `json:"latitude"`
 	Longitude        decimal.NullDecimal `json:"longitude"`
 	PhotoProfile     null.String         `json:"photoProfile"`
+	LevelPoint       uint                `json:"levelPoint"`
 }
 
 func (r *CreateAdminTutorRequest) Validate() error {
